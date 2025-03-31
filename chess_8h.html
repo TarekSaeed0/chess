@@ -124,14 +124,20 @@ $(document).ready(function(){initNavTree('chess_8h.html',''); initResizable(); }
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structchess.html">chess</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a chess game.  <a href="structchess.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structchess__squares.html">chess_squares</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a list of chess squares.  <a href="structchess__squares.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structchess__move.html">chess_move</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a chess move.  <a href="structchess__move.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structchess__moves.html">chess_moves</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a list of chess moves.  <a href="structchess__moves.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structchess.html">chess</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a chess game.  <a href="structchess.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structchess__get__attackers__filter.html">chess_get_attackers_filter</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a filter for finding attackers.  <a href="structchess__get__attackers__filter.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structchess__get__moves__filter.html">chess_get_moves_filter</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a filter for chess move generation.  <a href="structchess__get__moves__filter.html#details">More...</a><br /></td></tr>
@@ -263,6 +269,7 @@ Enumerations</h2></td></tr>
 <tr class="separator:a6ae62ea510b6e99876e8b483bb400326"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6df3846999cd8b644471bd01da18c233" id="r_a6df3846999cd8b644471bd01da18c233"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="chess_8h.html#a6df3846999cd8b644471bd01da18c233">chess_status</a> { <b>chess_status_ongoing</b>
 , <b>chess_status_check</b>
+, <b>chess_status_checkmate</b>
  }</td></tr>
 <tr class="separator:a6df3846999cd8b644471bd01da18c233"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -298,6 +305,10 @@ enum <a class="el" href="chess_8h.html#a6df3846999cd8b644471bd01da18c233">chess_
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
+<tr class="memitem:ab7a899f10fc6485b533139311b6c8ecd" id="r_ab7a899f10fc6485b533139311b6c8ecd"><td class="memItemLeft" align="right" valign="top"><a id="ab7a899f10fc6485b533139311b6c8ecd" name="ab7a899f10fc6485b533139311b6c8ecd"></a>
+constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><b>CHESS_SQUARES_MAXIMUM_COUNT</b> = 64</td></tr>
+<tr class="memdesc:ab7a899f10fc6485b533139311b6c8ecd"><td class="mdescLeft">&#160;</td><td class="mdescRight">The maximum number of squares that can be stored. <br /></td></tr>
+<tr class="separator:ab7a899f10fc6485b533139311b6c8ecd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d7664df53ef7ba8ebf2ac26d698573e" id="r_a3d7664df53ef7ba8ebf2ac26d698573e"><td class="memItemLeft" align="right" valign="top">constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="chess_8h.html#a3d7664df53ef7ba8ebf2ac26d698573e">CHESS_MOVES_MAXIMUM_COUNT</a> = 256</td></tr>
 <tr class="memdesc:a3d7664df53ef7ba8ebf2ac26d698573e"><td class="mdescLeft">&#160;</td><td class="mdescRight">The maximum number of moves that can be generated. which must be at least 218.  <br /></td></tr>
 <tr class="separator:a3d7664df53ef7ba8ebf2ac26d698573e"><td class="memSeparator" colspan="2">&#160;</td></tr>

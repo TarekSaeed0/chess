@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=11" />
   <meta name="generator" content="Doxygen 1.9.8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Chess: Class Members - Variables</title>
+  <title>Chess: chess_squares Struct Reference</title>
   <!--BEGIN PROJECT_ICON-->
   <link rel="icon" href="$projecticon" type="image/x-icon" />
   <!--END PROJECT_ICON-->
@@ -79,7 +79,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(document).ready(function(){initNavTree('functions_vars.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('structchess__squares.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -104,23 +104,41 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 </div>
 </div>
 
+<div class="header">
+  <div class="summary">
+<a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="structchess__squares-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">chess_squares Struct Reference</div></div>
+</div><!--header-->
 <div class="contents">
-<div class="textblock">Here is a list of all documented variables with links to the class documentation for each member:</div><ul>
-<li>board&#160;:&#160;<a class="el" href="structchess.html#a7cb63b95ca67e979efbb458c475aee37">chess</a></li>
-<li>color&#160;:&#160;<a class="el" href="structchess__get__attackers__filter.html#ae8a50c012fed8989067e85556f0bad4f">chess_get_attackers_filter</a>, <a class="el" href="structchess__get__moves__filter.html#af2b4ec57e77b27df77c3017d431ffabe">chess_get_moves_filter</a></li>
-<li>count&#160;:&#160;<a class="el" href="structchess__moves.html#a064bd6a44e64fd533bf486b990f3642d">chess_moves</a>, <a class="el" href="structchess__squares.html#a39556f06f907672e6290fc23253f398a">chess_squares</a></li>
-<li>flags&#160;:&#160;<a class="el" href="structchess__get__attackers__filter.html#a764d7461aef1ff81921b4712c21d6c91">chess_get_attackers_filter</a>, <a class="el" href="structchess__get__moves__filter.html#ae9029188b011fd01492c847e3ce68bf2">chess_get_moves_filter</a></li>
-<li>from&#160;:&#160;<a class="el" href="structchess__get__attackers__filter.html#a7796ebb1cd69a51169cc66507c38e436">chess_get_attackers_filter</a>, <a class="el" href="structchess__get__moves__filter.html#a940c10d05e097c85813cd0344c8b45d1">chess_get_moves_filter</a>, <a class="el" href="structchess__move.html#af0d2ee159fd5c9c7ab94e080099b5c83">chess_move</a></li>
-<li>moves&#160;:&#160;<a class="el" href="structchess__moves.html#afa6d506ba13dd068d4896322e0d255a2">chess_moves</a></li>
-<li>squares&#160;:&#160;<a class="el" href="structchess__squares.html#aad84e824eac9ccf4f3d45983a0f17658">chess_squares</a></li>
-<li>to&#160;:&#160;<a class="el" href="structchess__get__moves__filter.html#a9a5d619ed4fb284a0d157f973f01538a">chess_get_moves_filter</a>, <a class="el" href="structchess__move.html#af3a66a923326f4a763055dbb72bbb52b">chess_move</a></li>
-<li>turn&#160;:&#160;<a class="el" href="structchess.html#a90c25afe9e8ef5c1694c48099356b75a">chess</a></li>
+
+<p>Represents a list of chess squares.  
+ <a href="structchess__squares.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="chess_8h_source.html">chess.h</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:aad84e824eac9ccf4f3d45983a0f17658" id="r_aad84e824eac9ccf4f3d45983a0f17658"><td class="memItemLeft" align="right" valign="top"><a id="aad84e824eac9ccf4f3d45983a0f17658" name="aad84e824eac9ccf4f3d45983a0f17658"></a>
+enum <a class="el" href="chess_8h.html#a6ae62ea510b6e99876e8b483bb400326">chess_square</a>&#160;</td><td class="memItemRight" valign="bottom"><b>squares</b> [<a class="el" href="chess_8h.html#ab7a899f10fc6485b533139311b6c8ecd">CHESS_SQUARES_MAXIMUM_COUNT</a>]</td></tr>
+<tr class="memdesc:aad84e824eac9ccf4f3d45983a0f17658"><td class="mdescLeft">&#160;</td><td class="mdescRight">The list of squares. <br /></td></tr>
+<tr class="separator:aad84e824eac9ccf4f3d45983a0f17658"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39556f06f907672e6290fc23253f398a" id="r_a39556f06f907672e6290fc23253f398a"><td class="memItemLeft" align="right" valign="top"><a id="a39556f06f907672e6290fc23253f398a" name="a39556f06f907672e6290fc23253f398a"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>count</b></td></tr>
+<tr class="memdesc:a39556f06f907672e6290fc23253f398a"><td class="mdescLeft">&#160;</td><td class="mdescRight">The number of squares in the list. <br /></td></tr>
+<tr class="separator:a39556f06f907672e6290fc23253f398a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Represents a list of chess squares. </p>
+</div><hr/>The documentation for this struct was generated from the following file:<ul>
+<li>/github/workspace/include/<a class="el" href="chess_8h_source.html">chess.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
+    <li class="navelem"><a class="el" href="structchess__squares.html">chess_squares</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>

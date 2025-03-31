@@ -1,8 +1,10 @@
 var chess_8h =
 [
-    [ "chess", "structchess.html", "structchess" ],
+    [ "chess_squares", "structchess__squares.html", "structchess__squares" ],
     [ "chess_move", "structchess__move.html", "structchess__move" ],
     [ "chess_moves", "structchess__moves.html", "structchess__moves" ],
+    [ "chess", "structchess.html", "structchess" ],
+    [ "chess_get_attackers_filter", "structchess__get__attackers__filter.html", "structchess__get__attackers__filter" ],
     [ "chess_get_moves_filter", "structchess__get__moves__filter.html", "structchess__get__moves__filter" ],
     [ "chess_piece", "chess_8h.html#a1a815ea2de41ad0b5e6bfc9f0b5c2fa6", [
       [ "chess_piece_none", "chess_8h.html#a1a815ea2de41ad0b5e6bfc9f0b5c2fa6a9e36b9128342e2acf5323899f3ca7c72", null ],
@@ -99,7 +101,8 @@ var chess_8h =
     ] ],
     [ "chess_status", "chess_8h.html#a6df3846999cd8b644471bd01da18c233", [
       [ "chess_status_ongoing", "chess_8h.html#a6df3846999cd8b644471bd01da18c233ad70a1835ca09bc50c715297899e3ae27", null ],
-      [ "chess_status_check", "chess_8h.html#a6df3846999cd8b644471bd01da18c233a2e67fb2863ba42ecc2306709169b0947", null ]
+      [ "chess_status_check", "chess_8h.html#a6df3846999cd8b644471bd01da18c233a2e67fb2863ba42ecc2306709169b0947", null ],
+      [ "chess_status_checkmate", "chess_8h.html#a6df3846999cd8b644471bd01da18c233a70554d91b96de8e825da11304eb04ae6", null ]
     ] ],
     [ "chess_new", "chess_8h.html#a5d4f8a9f6c63715791a8df13f2a1f5cf", null ],
     [ "chess_piece_color_opposite", "chess_8h.html#a721001f916c597f0c68d32222f30b588", null ],
@@ -109,5 +112,6 @@ var chess_8h =
     [ "chess_square_get_file", "chess_8h.html#a0444267eb98c503d3699847e07c1976a", null ],
     [ "chess_square_get_rank", "chess_8h.html#ad70099b26f9fbf7476b06e71b6b29d51", null ],
     [ "chess_square_new", "chess_8h.html#aedb12ffdf71d8e36a3e0fb83da922cf9", null ],
-    [ "CHESS_MOVES_MAXIMUM_COUNT", "chess_8h.html#a3d7664df53ef7ba8ebf2ac26d698573e", null ]
+    [ "CHESS_MOVES_MAXIMUM_COUNT", "chess_8h.html#a3d7664df53ef7ba8ebf2ac26d698573e", null ],
+    [ "CHESS_SQUARES_MAXIMUM_COUNT", "chess_8h.html#ab7a899f10fc6485b533139311b6c8ecd", null ]
 ];

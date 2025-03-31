@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=11" />
   <meta name="generator" content="Doxygen 1.9.8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Chess: chess_get_moves_filter Struct Reference</title>
+  <title>Chess: chess_get_attackers_filter Struct Reference</title>
   <!--BEGIN PROJECT_ICON-->
   <link rel="icon" href="$projecticon" type="image/x-icon" />
   <!--END PROJECT_ICON-->
@@ -79,7 +79,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(document).ready(function(){initNavTree('structchess__get__moves__filter.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('structchess__get__attackers__filter.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -107,51 +107,43 @@ $(document).ready(function(){initNavTree('structchess__get__moves__filter.html',
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="structchess__get__moves__filter-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">chess_get_moves_filter Struct Reference</div></div>
+<a href="structchess__get__attackers__filter-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">chess_get_attackers_filter Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p>Represents a filter for chess move generation.  
- <a href="structchess__get__moves__filter.html#details">More...</a></p>
+<p>Represents a filter for finding attackers.  
+ <a href="structchess__get__attackers__filter.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="chess_8h_source.html">chess.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ae9029188b011fd01492c847e3ce68bf2" id="r_ae9029188b011fd01492c847e3ce68bf2"><td class="memItemLeft" ><a id="ae9029188b011fd01492c847e3ce68bf2" name="ae9029188b011fd01492c847e3ce68bf2"></a>
+<tr class="memitem:a764d7461aef1ff81921b4712c21d6c91" id="r_a764d7461aef1ff81921b4712c21d6c91"><td class="memItemLeft" ><a id="a764d7461aef1ff81921b4712c21d6c91" name="a764d7461aef1ff81921b4712c21d6c91"></a>
 struct {&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a328f2298f8c8a4b8dfe4f88e8e0f7da4" id="r_a328f2298f8c8a4b8dfe4f88e8e0f7da4"><td class="memItemLeft" >
+<tr class="memitem:a89c530c898b0dbfce886ee4ac9f13767" id="r_a89c530c898b0dbfce886ee4ac9f13767"><td class="memItemLeft" >
 &#160;&#160;&#160;bool&#160;&#160;&#160;<b>from</b>: 1&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="memdesc:a328f2298f8c8a4b8dfe4f88e8e0f7da4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag indicating whether to filter moves by starting square. <br /></td></tr>
-<tr class="separator:a328f2298f8c8a4b8dfe4f88e8e0f7da4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c5224018ab1960a8fbdcb00225723db" id="r_a6c5224018ab1960a8fbdcb00225723db"><td class="memItemLeft" >
-&#160;&#160;&#160;bool&#160;&#160;&#160;<b>to</b>: 1&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="memdesc:a6c5224018ab1960a8fbdcb00225723db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag indicating whether to filter moves by starting and ending square. <br /></td></tr>
-<tr class="separator:a6c5224018ab1960a8fbdcb00225723db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4f402c54d30d1fcb3806530628f38c60" id="r_a4f402c54d30d1fcb3806530628f38c60"><td class="memItemLeft" >
+<tr class="memdesc:a89c530c898b0dbfce886ee4ac9f13767"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag indicating whether to filter attackers by square. <br /></td></tr>
+<tr class="separator:a89c530c898b0dbfce886ee4ac9f13767"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a73daa8ff8026fc342e310c35f89c9848" id="r_a73daa8ff8026fc342e310c35f89c9848"><td class="memItemLeft" >
 &#160;&#160;&#160;bool&#160;&#160;&#160;<b>color</b>: 1&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="memdesc:a4f402c54d30d1fcb3806530628f38c60"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag indicating whether to filter moves by chess piece color. <br /></td></tr>
-<tr class="separator:a4f402c54d30d1fcb3806530628f38c60"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9029188b011fd01492c847e3ce68bf2" id="r_ae9029188b011fd01492c847e3ce68bf2"><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><b>flags</b>&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="memdesc:ae9029188b011fd01492c847e3ce68bf2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flags indicating which fields to filter by. <br /></td></tr>
-<tr class="separator:ae9029188b011fd01492c847e3ce68bf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae83222af27465ce0fd246a8ced454632" id="r_ae83222af27465ce0fd246a8ced454632"><td class="memItemLeft" align="right" valign="top"><a id="ae83222af27465ce0fd246a8ced454632" name="ae83222af27465ce0fd246a8ced454632"></a>
+<tr class="memdesc:a73daa8ff8026fc342e310c35f89c9848"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag indicating whether to filter attackers by chess piece color. <br /></td></tr>
+<tr class="separator:a73daa8ff8026fc342e310c35f89c9848"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a764d7461aef1ff81921b4712c21d6c91" id="r_a764d7461aef1ff81921b4712c21d6c91"><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><b>flags</b>&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="memdesc:a764d7461aef1ff81921b4712c21d6c91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flags indicating which fields to filter by. <br /></td></tr>
+<tr class="separator:a764d7461aef1ff81921b4712c21d6c91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af33492012b973e62b8b2f45a6e0bb65e" id="r_af33492012b973e62b8b2f45a6e0bb65e"><td class="memItemLeft" align="right" valign="top"><a id="af33492012b973e62b8b2f45a6e0bb65e" name="af33492012b973e62b8b2f45a6e0bb65e"></a>
 enum <a class="el" href="chess_8h.html#a4d2ef8dfa232b9ced3dd5faec4180282">chess_piece_color</a>&#160;</td><td class="memItemRight" valign="bottom"><b>color</b></td></tr>
-<tr class="memdesc:ae83222af27465ce0fd246a8ced454632"><td class="mdescLeft">&#160;</td><td class="mdescRight">The color of the chess piece to move. <br /></td></tr>
-<tr class="separator:ae83222af27465ce0fd246a8ced454632"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a00fc6b17862a71c4712f5aef63503345" id="r_a00fc6b17862a71c4712f5aef63503345"><td class="memItemLeft" align="right" valign="top"><a id="a00fc6b17862a71c4712f5aef63503345" name="a00fc6b17862a71c4712f5aef63503345"></a>
+<tr class="memdesc:af33492012b973e62b8b2f45a6e0bb65e"><td class="mdescLeft">&#160;</td><td class="mdescRight">The color of the attacker. <br /></td></tr>
+<tr class="separator:af33492012b973e62b8b2f45a6e0bb65e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8ab754fd6e2d1d958bc2109a872a007" id="r_ab8ab754fd6e2d1d958bc2109a872a007"><td class="memItemLeft" align="right" valign="top"><a id="ab8ab754fd6e2d1d958bc2109a872a007" name="ab8ab754fd6e2d1d958bc2109a872a007"></a>
 enum <a class="el" href="chess_8h.html#a6ae62ea510b6e99876e8b483bb400326">chess_square</a>&#160;</td><td class="memItemRight" valign="bottom"><b>from</b></td></tr>
-<tr class="memdesc:a00fc6b17862a71c4712f5aef63503345"><td class="mdescLeft">&#160;</td><td class="mdescRight">The starting square of the move. <br /></td></tr>
-<tr class="separator:a00fc6b17862a71c4712f5aef63503345"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7921ee474184d2239cb5c0e1cc9e449c" id="r_a7921ee474184d2239cb5c0e1cc9e449c"><td class="memItemLeft" align="right" valign="top"><a id="a7921ee474184d2239cb5c0e1cc9e449c" name="a7921ee474184d2239cb5c0e1cc9e449c"></a>
-enum <a class="el" href="chess_8h.html#a6ae62ea510b6e99876e8b483bb400326">chess_square</a>&#160;</td><td class="memItemRight" valign="bottom"><b>to</b></td></tr>
-<tr class="memdesc:a7921ee474184d2239cb5c0e1cc9e449c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The ending square of the move. <br /></td></tr>
-<tr class="separator:a7921ee474184d2239cb5c0e1cc9e449c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memdesc:ab8ab754fd6e2d1d958bc2109a872a007"><td class="mdescLeft">&#160;</td><td class="mdescRight">The square of the attacker. <br /></td></tr>
+<tr class="separator:ab8ab754fd6e2d1d958bc2109a872a007"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Represents a filter for chess move generation. </p>
+<div class="textblock"><p>Represents a filter for finding attackers. </p>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li>/github/workspace/include/<a class="el" href="chess_8h_source.html">chess.h</a></li>
 </ul>
@@ -160,7 +152,7 @@ enum <a class="el" href="chess_8h.html#a6ae62ea510b6e99876e8b483bb400326">chess_
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="structchess__get__moves__filter.html">chess_get_moves_filter</a></li>
+    <li class="navelem"><a class="el" href="structchess__get__attackers__filter.html">chess_get_attackers_filter</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
