@@ -228,6 +228,47 @@ static inline uint8_t chess_square_get_rank(enum chess_square square) {
 }
 
 /**
+ * @var CHESS_SQUARES_MAXIMUM_COUNT
+ * @brief The maximum number of squares that can be stored.
+ */
+constexpr size_t CHESS_SQUARES_MAXIMUM_COUNT = 64;
+
+/**
+ * @struct chess_squares
+ * @brief Represents a list of chess squares.
+ */
+struct chess_squares {
+	enum chess_square squares[CHESS_SQUARES_MAXIMUM_COUNT]; ///< The list of squares.
+	size_t count;											///< The number of squares in the list.
+};
+
+/**
+ * @struct chess_move
+ * @brief Represents a chess move.
+ */
+struct chess_move {
+	enum chess_square from; ///< The starting square of the move.
+	enum chess_square to;	///< The ending square of the move.
+};
+
+/**
+ * @var CHESS_MOVES_MAXIMUM_COUNT
+ * @brief The maximum number of moves that can be generated. which must be at least 218.
+ *
+ * @see https://www.stmintz.com/ccc/index.php?id=424966
+ */
+constexpr size_t CHESS_MOVES_MAXIMUM_COUNT = 256;
+
+/**
+ * @struct chess_moves
+ * @brief Represents a list of chess moves.
+ */
+struct chess_moves {
+	struct chess_move moves[CHESS_MOVES_MAXIMUM_COUNT]; ///< The list of moves.
+	size_t count;										///< The number of moves in the list.
+};
+
+/**
  * @struct chess
  * @brief Represents a chess game.
  */
@@ -235,6 +276,7 @@ struct chess {
 	enum chess_piece board[128]; ///< The chess board.
 	enum chess_piece_color turn; ///< The color of the current player.
 };
+
 /**
  * @brief Creates a new chess game.
  *
@@ -286,30 +328,34 @@ static inline struct chess chess_new(void) {
 }
 
 /**
- * @struct chess_move
- * @brief Represents a chess move.
+ * @struct chess_get_attackers_filter
+ * @brief Represents a filter for finding attackers.
  */
-struct chess_move {
-	enum chess_square from; ///< The starting square of the move.
-	enum chess_square to;	///< The ending square of the move.
+struct chess_get_attackers_filter {
+	struct {
+		bool from : 1;	///< Flag indicating whether to filter attackers by square.
+		bool color : 1; ///< Flag indicating whether to filter attackers by chess piece color.
+	} flags;			///< Flags indicating which fields to filter by.
+	enum chess_piece_color color; ///< The color of the attacker.
+	enum chess_square from;		  ///< The square of the attacker.
 };
 
 /**
- * @var CHESS_MOVES_MAXIMUM_COUNT
- * @brief The maximum number of moves that can be generated. which must be at least 218.
+ * @brief Gathers a list of attackers of a given square.
  *
- * @see https://www.stmintz.com/ccc/index.php?id=424966
+ * @param chess The chess position to search for attackers.
+ * @param to The square to search for attackers of.
+ * @param filter A filter to apply to the found attackers. See @ref chess_get_attackers_filter.
+ *
+ * @return A list of squares that attack the given square.
+ *
+ * @memberof chess
  */
-constexpr size_t CHESS_MOVES_MAXIMUM_COUNT = 256;
-
-/**
- * @struct chess_moves
- * @brief Represents a list of chess moves.
- */
-struct chess_moves {
-	struct chess_move moves[CHESS_MOVES_MAXIMUM_COUNT]; ///< The list of moves.
-	size_t count;										///< The number of moves in the list.
-};
+struct chess_squares chess_get_attackers(
+	const struct chess *chess,
+	enum chess_square to,
+	struct chess_get_attackers_filter filter
+);
 
 /**
  * @struct chess_get_moves_filter
@@ -330,14 +376,16 @@ struct chess_get_moves_filter {
  * @brief Generates a list of legal moves for a given chess position.
  *
  * @param chess The chess position to generate moves for.
- * @param filter A filter to apply to the generated moves. The filter can be used to
- *               filter moves by starting square, ending square, or color.
+ * @param filter A filter to apply to the generated moves. See @ref chess_get_moves_filter.
  *
  * @return A list of legal moves for the given chess position.
  *
  * @memberof chess
  */
-struct chess_moves chess_get_moves(const struct chess *chess, struct chess_get_moves_filter filter);
+struct chess_moves chess_get_legal_moves(
+	const struct chess *chess,
+	struct chess_get_moves_filter filter
+);
 
 /**
  * @brief Makes a move on the chess board.
@@ -359,6 +407,7 @@ bool chess_move(struct chess *chess, struct chess_move move);
 enum chess_status {
 	chess_status_ongoing,
 	chess_status_check,
+	chess_status_checkmate,
 };
 
 enum chess_status chess_get_status(const struct chess *chess);

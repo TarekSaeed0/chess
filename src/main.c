@@ -74,25 +74,58 @@ enum chess_square chess_square_scan(void) {
 int main(void) {
 	struct chess chess = chess_new();
 
+	chess_move(
+		&chess,
+		(struct chess_move){
+			.from = chess_square_f2,
+			.to = chess_square_f3,
+		}
+	);
+	chess_move(
+		&chess,
+		(struct chess_move){
+			.from = chess_square_e7,
+			.to = chess_square_e6,
+		}
+	);
+	chess_move(
+		&chess,
+		(struct chess_move){
+			.from = chess_square_b1,
+			.to = chess_square_c3,
+		}
+	);
+	chess_move(
+		&chess,
+		(struct chess_move){
+			.from = chess_square_d8,
+			.to = chess_square_h4,
+		}
+	);
+
 	chess_print(&chess);
 
 	while (true) {
-		enum chess_square king_square = 0;
-		for (enum chess_square square = chess_square_a8; square <= chess_square_h1; square++) {
-			if (square & 0x88U) {
-				square += 7;
-				continue;
-			}
-
-			if (chess.board[square] == chess_piece_new(chess_piece_type_king, chess.turn)) {
-				king_square = square;
-				break;
-			}
+		enum chess_status status = chess_get_status(&chess);
+		switch (status) {
+			case chess_status_ongoing: printf("Ongoing\n"); break;
+			case chess_status_check: printf("Check\n"); break;
+			case chess_status_checkmate: printf("Checkmate\n"); break;
 		}
 
-		printf("king is on ");
-		chess_square_print(king_square);
-		printf(" square\n");
+		struct chess_moves moves = chess_get_legal_moves(
+			&chess,
+			(struct chess_get_moves_filter){
+				.flags.color = true,
+				.color = chess.turn,
+			}
+		);
+		for (size_t i = 0; i < moves.count; i++) {
+			chess_square_print(moves.moves[i].from);
+			chess_square_print(moves.moves[i].to);
+			printf(" ");
+		}
+		printf("\n");
 
 		struct chess_move move = { .from = chess_square_scan(), .to = chess_square_scan() };
 		if (!chess_move(&chess, move)) {

@@ -11,6 +11,8 @@ html.dark-mode {
 
   --side-nav-background: #11111b;
 
+  --header-background: var(--side-nav-background);
+
   --code-background: #1e1e2e;
 
   --fragment-background: #1e1e2e;
@@ -26,4 +28,3 @@ html.dark-mode {
   --fragment-linenumber-background: #181825;
   --fragment-linenumber-border: #585b70;
 }
-

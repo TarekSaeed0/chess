@@ -4,24 +4,14 @@ static inline bool chess_square_is_off_the_board(enum chess_square square) {
 	return (square & 0x88U) != 0U;
 }
 
-bool chess_moves_contain(const struct chess_moves *moves, struct chess_move move) {
-	assert(moves != nullptr);
-
-	for (size_t i = 0; i < moves->count; i++) {
-		if (moves->moves[i].from == move.from && moves->moves[i].to == move.to) {
-			return true;
-		}
-	}
-	return false;
-}
-
-void chess_get_moves_from(
+static void chess_get_attackers_from(
 	const struct chess *chess,
-	struct chess_moves *moves,
-	struct chess_get_moves_filter filter
+	struct chess_squares *attackers,
+	enum chess_square to,
+	struct chess_get_attackers_filter filter
 ) {
 	assert(
-		chess != nullptr && moves != nullptr && filter.flags.from &&
+		chess != nullptr && attackers != nullptr && filter.flags.from &&
 		!chess_square_is_off_the_board(filter.from)
 	);
 
@@ -37,18 +27,17 @@ void chess_get_moves_from(
 		return;
 	}
 
-	if (filter.flags.to) {
-		static const uint8_t flags[256] = {
-			// clang-format off
+	static const uint8_t can_attack[256] = {
+		// clang-format off
 			6, 0, 0, 0, 0, 0, 0,18, 0, 0, 0, 0, 0, 0, 6, 0,
 			0, 6, 0, 0, 0, 0, 0,18, 0, 0, 0, 0, 0, 6, 0, 0,
 			0, 0, 6, 0, 0, 0, 0,18, 0, 0, 0, 0, 6, 0, 0, 0,
 			0, 0, 0, 6, 0, 0, 0,18, 0, 0, 0, 6, 0, 0, 0, 0,
 			0, 0, 0, 0, 6, 0, 0,18, 0, 0, 6, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 6, 8,18, 8, 6, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0, 8, 7,19, 7, 8, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 8,39,19,39, 8, 0, 0, 0, 0, 0, 0,
 		 18,18,18,18,18,18,19, 0,19,18,18,18,18,18,18, 0,
-			0, 0, 0, 0, 0, 8, 7,19, 7, 8, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 8,39,19,39, 8, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 6, 8,18, 8, 6, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 6, 0, 0,18, 0, 0, 6, 0, 0, 0, 0, 0,
 			0, 0, 0, 6, 0, 0, 0,18, 0, 0, 0, 6, 0, 0, 0, 0,
@@ -56,12 +45,165 @@ void chess_get_moves_from(
 			0, 6, 0, 0, 0, 0, 0,18, 0, 0, 0, 0, 0, 6, 0, 0,
 			6, 0, 0, 0, 0, 0, 0,18, 0, 0, 0, 0, 0, 0, 6, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			// clang-format on
-		};
+		// clang-format on
+	};
 
-		enum chess_square to = filter.to;
+	int8_t difference = (int8_t)(from - to);
+	uint8_t index = (uint8_t)(difference + 0x77);
+	enum chess_piece_type type = chess_piece_get_type(piece);
+	if (can_attack[index] & (1U << type)) {
+		switch (type) {
+			case chess_piece_type_pawn: {
+				if ((difference > 0 && color == chess_piece_color_white) ||
+					(difference < 0 && color == chess_piece_color_black)) {
+					attackers->squares[attackers->count++] = from;
+				}
+			} break;
+			case chess_piece_type_king:
+			case chess_piece_type_knight: {
+				attackers->squares[attackers->count++] = from;
+			} break;
+			case chess_piece_type_queen:
+			case chess_piece_type_bishop:
+			case chess_piece_type_rook: {
+				static const int8_t direction[] = {
+					// clang-format off
+					 17,  0,  0,  0,  0,  0,  0, 16,  0,  0,  0,  0,  0,  0, 15,  0,
+						0, 17,  0,  0,  0,  0,  0, 16,  0,  0,  0,  0,  0, 15,  0,  0,
+						0,  0, 17,  0,  0,  0,  0, 16,  0,  0,  0,  0, 15,  0,  0,  0,
+						0,  0,  0, 17,  0,  0,  0, 16,  0,  0,  0, 15,  0,  0,  0,  0,
+						0,  0,  0,  0, 17,  0,  0, 16,  0,  0, 15,  0,  0,  0,  0,  0,
+						0,  0,  0,  0,  0, 17,  0, 16,  0, 15,  0,  0,  0,  0,  0,  0,
+						0,  0,  0,  0,  0,  0, 17, 16, 15,  0,  0,  0,  0,  0,  0,  0,
+						1,  1,  1,  1,  1,  1,  1,  0, -1, -1,  -1,-1, -1, -1, -1,  0,
+						0,  0,  0,  0,  0,  0,-15,-16,-17,  0,  0,  0,  0,  0,  0,  0,
+						0,  0,  0,  0,  0,-15,  0,-16,  0,-17,  0,  0,  0,  0,  0,  0,
+						0,  0,  0,  0,-15,  0,  0,-16,  0,  0,-17,  0,  0,  0,  0,  0,
+						0,  0,  0,-15,  0,  0,  0,-16,  0,  0,  0,-17,  0,  0,  0,  0,
+						0,  0,-15,  0,  0,  0,  0,-16,  0,  0,  0,  0,-17,  0,  0,  0,
+						0,-15,  0,  0,  0,  0,  0,-16,  0,  0,  0,  0,  0,-17,  0,  0,
+					-15,  0,  0,  0,  0,  0,  0,-16,  0,  0,  0,  0,  0,  0,-17,  0,
+						0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+					// clang-format on
+				};
 
-		uint8_t index = to - from + 0x77;
+				enum chess_square current = (enum chess_square)(from + direction[index]);
+				while (current != to) {
+					if (chess->board[current] != chess_piece_none) {
+						return;
+					}
+					current = (enum chess_square)(current + direction[index]);
+				}
+
+				attackers->squares[attackers->count++] = from;
+			} break;
+		}
+	}
+}
+struct chess_squares chess_get_attackers(
+	const struct chess *chess,
+	enum chess_square to,
+	struct chess_get_attackers_filter filter
+) {
+	assert(
+		chess != nullptr && !chess_square_is_off_the_board(to) &&
+		(!filter.flags.from || !chess_square_is_off_the_board(filter.from))
+	);
+
+	struct chess_squares attackers = { .count = 0 };
+
+	if (filter.flags.from) {
+		chess_get_attackers_from(chess, &attackers, to, filter);
+	} else {
+		filter.flags.from = true;
+		for (enum chess_square from = chess_square_a8; from <= chess_square_h1; from++) {
+			if (from & 0x88U) {
+				from += 7;
+				continue;
+			}
+
+			filter.from = from;
+			chess_get_attackers_from(chess, &attackers, to, filter);
+		}
+	}
+
+	return attackers;
+}
+
+bool chess_is_king_attacked(const struct chess *chess, enum chess_piece_color color) {
+	assert(chess != nullptr);
+
+	enum chess_piece king_piece = chess_piece_new(chess_piece_type_king, color);
+
+	enum chess_square king_square = 0;
+	for (enum chess_square square = chess_square_a8; square <= chess_square_h1; square++) {
+		if (square & 0x88U) {
+			square += 7;
+			continue;
+		}
+
+		if (chess->board[square] == king_piece) {
+			king_square = square;
+			break;
+		}
+	}
+
+	return chess_get_attackers(
+			   chess,
+			   king_square,
+			   (struct chess_get_attackers_filter){
+				   .flags.color = true,
+				   .color = chess_piece_color_opposite(chess->turn),
+			   }
+		   )
+			   .count != 0;
+}
+
+static inline void chess_get_legal_moves_from_to(
+	const struct chess *chess,
+	struct chess_moves *moves,
+	struct chess_get_moves_filter filter,
+	enum chess_square to
+) {
+	enum chess_square from = filter.from;
+
+	if (filter.flags.to && to != filter.to) {
+		return;
+	}
+
+	struct chess temporary = *chess;
+	temporary.board[to] = temporary.board[from];
+	temporary.board[from] = chess_piece_none;
+	if (chess_is_king_attacked(&temporary, chess->turn)) {
+		return;
+	}
+
+	moves->moves[moves->count++] = (struct chess_move){
+		.from = from,
+		.to = to,
+	};
+}
+static void chess_get_legal_moves_from(
+	const struct chess *chess,
+	struct chess_moves *moves,
+	struct chess_get_moves_filter filter
+) {
+	assert(
+		chess != nullptr && moves != nullptr && filter.flags.from &&
+		!chess_square_is_off_the_board(filter.from) &&
+		(!filter.flags.to || !chess_square_is_off_the_board(filter.to))
+	);
+
+	enum chess_square from = filter.from;
+
+	enum chess_piece piece = chess->board[from];
+	if (piece == chess_piece_none) {
+		return;
+	}
+
+	enum chess_piece_color color = chess_piece_get_color(piece);
+	if (filter.flags.color && color != filter.color) {
+		return;
 	}
 
 	enum chess_piece_type type = chess_piece_get_type(piece);
@@ -78,23 +220,13 @@ void chess_get_moves_from(
 
 			enum chess_square to = (enum chess_square)(from + pawn_offsets[color][0]);
 			if (!chess_square_is_off_the_board(to) && chess->board[to] == chess_piece_none) {
-				if (!filter.flags.to || to == filter.to) {
-					moves->moves[moves->count++] = (struct chess_move){
-						.from = from,
-						.to = to,
-					};
-				}
+				chess_get_legal_moves_from_to(chess, moves, filter, to);
 
 				if (chess_square_get_rank(from) == pawn_ranks[color]) {
 					to = (enum chess_square)(from + pawn_offsets[color][1]);
 					if (!chess_square_is_off_the_board(to) &&
 						chess->board[to] == chess_piece_none) {
-						if (!filter.flags.to || to == filter.to) {
-							moves->moves[moves->count++] = (struct chess_move){
-								.from = from,
-								.to = to,
-							};
-						}
+						chess_get_legal_moves_from_to(chess, moves, filter, to);
 					}
 				}
 
@@ -103,12 +235,7 @@ void chess_get_moves_from(
 					if (!chess_square_is_off_the_board(to) &&
 						chess->board[to] != chess_piece_none &&
 						chess_piece_get_color(chess->board[to]) != color) {
-						if (!filter.flags.to || to == filter.to) {
-							moves->moves[moves->count++] = (struct chess_move){
-								.from = from,
-								.to = to,
-							};
-						}
+						chess_get_legal_moves_from_to(chess, moves, filter, to);
 					}
 				}
 			}
@@ -137,12 +264,7 @@ void chess_get_moves_from(
 					(chess->board[to] == chess_piece_none ||
 					 chess_piece_get_color(chess->board[to]) != color)) {
 
-					if (!filter.flags.to || to == filter.to) {
-						moves->moves[moves->count++] = (struct chess_move){
-							.from = from,
-							.to = to,
-						};
-					}
+					chess_get_legal_moves_from_to(chess, moves, filter, to);
 				}
 			}
 		} break;
@@ -181,20 +303,10 @@ void chess_get_moves_from(
 					}
 
 					if (chess->board[to] == chess_piece_none) {
-						if (!filter.flags.to || to == filter.to) {
-							moves->moves[moves->count++] = (struct chess_move){
-								.from = from,
-								.to = to,
-							};
-						}
+						chess_get_legal_moves_from_to(chess, moves, filter, to);
 					} else {
 						if (chess_piece_get_color(chess->board[to]) != color) {
-							if (!filter.flags.to || to == filter.to) {
-								moves->moves[moves->count++] = (struct chess_move){
-									.from = from,
-									.to = to,
-								};
-							}
+							chess_get_legal_moves_from_to(chess, moves, filter, to);
 						}
 						break;
 					}
@@ -203,7 +315,7 @@ void chess_get_moves_from(
 		}
 	}
 }
-struct chess_moves chess_get_moves(
+struct chess_moves chess_get_legal_moves(
 	const struct chess *chess,
 	struct chess_get_moves_filter filter
 ) {
@@ -215,7 +327,7 @@ struct chess_moves chess_get_moves(
 	struct chess_moves moves = { .count = 0 };
 
 	if (filter.flags.from) {
-		chess_get_moves_from(chess, &moves, filter);
+		chess_get_legal_moves_from(chess, &moves, filter);
 	} else {
 		filter.flags.from = true;
 		for (enum chess_square from = chess_square_a8; from <= chess_square_h1; from++) {
@@ -225,16 +337,17 @@ struct chess_moves chess_get_moves(
 			}
 
 			filter.from = from;
-			chess_get_moves_from(chess, &moves, filter);
+			chess_get_legal_moves_from(chess, &moves, filter);
 		}
 	}
 
 	return moves;
 }
-bool chess_move(struct chess *chess, struct chess_move move) {
+
+bool chess_is_legal_move(const struct chess *chess, struct chess_move move) {
 	assert(chess != nullptr);
 
-	struct chess_moves moves = chess_get_moves(chess, (struct chess_get_moves_filter) {
+	return chess_get_legal_moves(chess, (struct chess_get_moves_filter) {
     .flags = {
       .from = true,
       .to = true,
@@ -243,9 +356,13 @@ bool chess_move(struct chess *chess, struct chess_move move) {
     .from = move.from,
     .to = move.to,
 		.color = chess->turn,
-  });
+  }).count != 0;
+}
 
-	if (moves.count == 0) {
+bool chess_move(struct chess *chess, struct chess_move move) {
+	assert(chess != nullptr);
+
+	if (!chess_is_legal_move(chess, move)) {
 		return false;
 	}
 
@@ -258,32 +375,17 @@ bool chess_move(struct chess *chess, struct chess_move move) {
 }
 
 enum chess_status chess_get_status(const struct chess *chess) {
-	enum chess_square king_square = 0;
-	for (enum chess_square square = chess_square_a8; square <= chess_square_h1; square++) {
-		if (square & 0x88U) {
-			square += 7;
-			continue;
+	if (chess_is_king_attacked(chess, chess->turn)) {
+		if (chess_get_legal_moves(
+				chess,
+				(struct chess_get_moves_filter){
+					.flags.color = true,
+					.color = chess->turn,
+				}
+			)
+				.count == 0) {
+			return chess_status_checkmate;
 		}
-
-		if (chess->board[square] == chess_piece_new(chess_piece_type_king, chess->turn)) {
-			king_square = square;
-			break;
-		}
-	}
-
-	struct chess_moves moves = chess_get_moves(
-		chess,
-		(struct chess_get_moves_filter) {
-			.flags = {
-				.color = true,
-				.to = true,
-			},
-			.color = chess_piece_color_opposite(chess->turn),
-			.to = king_square,
-		}
-	);
-
-	if (moves.count != 0) {
 		return chess_status_check;
 	}
 
