@@ -2,7 +2,7 @@ var searchData=
 [
   ['chess_5fget_5fattackers_0',['chess_get_attackers',['../structchess.html#acda7aee05b1d07a1759ac4114f990f9a',1,'chess']]],
   ['chess_5fget_5flegal_5fmoves_1',['chess_get_legal_moves',['../structchess.html#a623554b83bbb7cfc1298c7082d8c90b5',1,'chess']]],
-  ['chess_5fmove_2',['chess_move',['../structchess.html#a11036e21077b0b7f037cec01b772f352',1,'chess']]],
+  ['chess_5fmake_5fmove_2',['chess_make_move',['../structchess.html#a73eed58c690c8e3002befca2fb38a3d1',1,'chess']]],
   ['chess_5fnew_3',['chess_new',['../chess_8h.html#a5d4f8a9f6c63715791a8df13f2a1f5cf',1,'chess.h']]],
   ['chess_5fpiece_5fcolor_5fopposite_4',['chess_piece_color_opposite',['../chess_8h.html#a721001f916c597f0c68d32222f30b588',1,'chess.h']]],
   ['chess_5fpiece_5fget_5fcolor_5',['chess_piece_get_color',['../chess_8h.html#a00bb1bc31e1eefc83f3130778e2b97be',1,'chess.h']]],
