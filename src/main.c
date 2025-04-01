@@ -74,28 +74,28 @@ enum chess_square chess_square_scan(void) {
 int main(void) {
 	struct chess chess = chess_new();
 
-	chess_move(
+	chess_make_move(
 		&chess,
 		(struct chess_move){
 			.from = chess_square_f2,
 			.to = chess_square_f3,
 		}
 	);
-	chess_move(
+	chess_make_move(
 		&chess,
 		(struct chess_move){
 			.from = chess_square_e7,
 			.to = chess_square_e6,
 		}
 	);
-	chess_move(
+	chess_make_move(
 		&chess,
 		(struct chess_move){
 			.from = chess_square_b1,
 			.to = chess_square_c3,
 		}
 	);
-	chess_move(
+	chess_make_move(
 		&chess,
 		(struct chess_move){
 			.from = chess_square_d8,
@@ -128,7 +128,7 @@ int main(void) {
 		printf("\n");
 
 		struct chess_move move = { .from = chess_square_scan(), .to = chess_square_scan() };
-		if (!chess_move(&chess, move)) {
+		if (!chess_make_move(&chess, move)) {
 			continue;
 		}
 		chess_print(&chess);

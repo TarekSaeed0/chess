@@ -153,35 +153,30 @@ bool chess_is_king_attacked(const struct chess *chess, enum chess_piece_color co
 			   king_square,
 			   (struct chess_get_attackers_filter){
 				   .flags.color = true,
-				   .color = chess_piece_color_opposite(chess->turn),
+				   .color = chess_piece_color_opposite(color),
 			   }
 		   )
 			   .count != 0;
 }
 
-static inline void chess_get_legal_moves_from_to(
+void chess_make_move_unchecked(struct chess *chess, struct chess_move move);
+static inline void chess_get_legal_moves_add(
 	const struct chess *chess,
 	struct chess_moves *moves,
 	struct chess_get_moves_filter filter,
-	enum chess_square to
+	struct chess_move move
 ) {
-	enum chess_square from = filter.from;
-
-	if (filter.flags.to && to != filter.to) {
+	if (filter.flags.to && move.to != filter.to) {
 		return;
 	}
 
 	struct chess temporary = *chess;
-	temporary.board[to] = temporary.board[from];
-	temporary.board[from] = chess_piece_none;
+	chess_make_move_unchecked(&temporary, move);
 	if (chess_is_king_attacked(&temporary, chess->turn)) {
 		return;
 	}
 
-	moves->moves[moves->count++] = (struct chess_move){
-		.from = from,
-		.to = to,
-	};
+	moves->moves[moves->count++] = move;
 }
 static void chess_get_legal_moves_from(
 	const struct chess *chess,
@@ -220,13 +215,23 @@ static void chess_get_legal_moves_from(
 
 			enum chess_square to = (enum chess_square)(from + pawn_offsets[color][0]);
 			if (!chess_square_is_off_the_board(to) && chess->board[to] == chess_piece_none) {
-				chess_get_legal_moves_from_to(chess, moves, filter, to);
+				chess_get_legal_moves_add(
+					chess,
+					moves,
+					filter,
+					(struct chess_move){ .from = from, .to = to }
+				);
 
 				if (chess_square_get_rank(from) == pawn_ranks[color]) {
 					to = (enum chess_square)(from + pawn_offsets[color][1]);
 					if (!chess_square_is_off_the_board(to) &&
 						chess->board[to] == chess_piece_none) {
-						chess_get_legal_moves_from_to(chess, moves, filter, to);
+						chess_get_legal_moves_add(
+							chess,
+							moves,
+							filter,
+							(struct chess_move){ .from = from, .to = to }
+						);
 					}
 				}
 
@@ -235,7 +240,12 @@ static void chess_get_legal_moves_from(
 					if (!chess_square_is_off_the_board(to) &&
 						chess->board[to] != chess_piece_none &&
 						chess_piece_get_color(chess->board[to]) != color) {
-						chess_get_legal_moves_from_to(chess, moves, filter, to);
+						chess_get_legal_moves_add(
+							chess,
+							moves,
+							filter,
+							(struct chess_move){ .from = from, .to = to }
+						);
 					}
 				}
 			}
@@ -264,7 +274,12 @@ static void chess_get_legal_moves_from(
 					(chess->board[to] == chess_piece_none ||
 					 chess_piece_get_color(chess->board[to]) != color)) {
 
-					chess_get_legal_moves_from_to(chess, moves, filter, to);
+					chess_get_legal_moves_add(
+						chess,
+						moves,
+						filter,
+						(struct chess_move){ .from = from, .to = to }
+					);
 				}
 			}
 		} break;
@@ -303,10 +318,20 @@ static void chess_get_legal_moves_from(
 					}
 
 					if (chess->board[to] == chess_piece_none) {
-						chess_get_legal_moves_from_to(chess, moves, filter, to);
+						chess_get_legal_moves_add(
+							chess,
+							moves,
+							filter,
+							(struct chess_move){ .from = from, .to = to }
+						);
 					} else {
 						if (chess_piece_get_color(chess->board[to]) != color) {
-							chess_get_legal_moves_from_to(chess, moves, filter, to);
+							chess_get_legal_moves_add(
+								chess,
+								moves,
+								filter,
+								(struct chess_move){ .from = from, .to = to }
+							);
 						}
 						break;
 					}
@@ -359,17 +384,20 @@ bool chess_is_legal_move(const struct chess *chess, struct chess_move move) {
   }).count != 0;
 }
 
-bool chess_move(struct chess *chess, struct chess_move move) {
+void chess_make_move_unchecked(struct chess *chess, struct chess_move move) {
+	chess->board[move.to] = chess->board[move.from];
+	chess->board[move.from] = chess_piece_none;
+
+	chess->turn = chess_piece_color_opposite(chess->turn);
+}
+bool chess_make_move(struct chess *chess, struct chess_move move) {
 	assert(chess != nullptr);
 
 	if (!chess_is_legal_move(chess, move)) {
 		return false;
 	}
 
-	chess->board[move.to] = chess->board[move.from];
-	chess->board[move.from] = chess_piece_none;
-
-	chess->turn = chess_piece_color_opposite(chess->turn);
+	chess_make_move_unchecked(chess, move);
 
 	return true;
 }

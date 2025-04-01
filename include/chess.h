@@ -387,6 +387,8 @@ struct chess_moves chess_get_legal_moves(
 	struct chess_get_moves_filter filter
 );
 
+bool chess_is_legal_move(const struct chess *chess, struct chess_move move);
+
 /**
  * @brief Makes a move on the chess board.
  *
@@ -398,7 +400,7 @@ struct chess_moves chess_get_legal_moves(
  *
  * @memberof chess
  */
-bool chess_move(struct chess *chess, struct chess_move move);
+bool chess_make_move(struct chess *chess, struct chess_move move);
 
 /**
  * @enum chess_status
