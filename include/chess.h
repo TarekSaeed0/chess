@@ -1,13 +1,3 @@
-/**
- * @file chess.h
- * @brief Chess library using a 0x88-based chess board representation.
- *
- * @see https://en.wikipedia.org/wiki/0x88
- *
- * @author Tarek Saeed
- * @date 2025-03-23
- */
-
 #ifndef CHESS_H
 #define CHESS_H
 
@@ -15,404 +5,292 @@
 extern "C" {
 #endif
 
-#include <assert.h>
 #include <stddef.h>
 #include <stdint.h>
 
-/**
- * @enum chess_piece_type
- * @brief Represents the different types of chess pieces.
- */
+enum chess_color : uint8_t {
+	CHESS_COLOR_WHITE,
+	CHESS_COLOR_BLACK,
+};
+enum chess_color chess_color_opposite(enum chess_color color);
+
+enum chess_color_optional : uint8_t {
+	CHESS_COLOR_OPTIONAL_NONE = 0,
+	CHESS_COLOR_OPTIONAL_WHITE = CHESS_COLOR_WHITE + 1,
+	CHESS_COLOR_OPTIONAL_BLACK = CHESS_COLOR_BLACK + 1,
+};
+enum chess_color_optional chess_color_optional_wrap(enum chess_color color);
+enum chess_color chess_color_optional_unwrap(enum chess_color_optional color);
+
 enum chess_piece_type : uint8_t {
-	chess_piece_type_king,	 ///< King piece
-	chess_piece_type_queen,	 ///< Queen piece
-	chess_piece_type_bishop, ///< Bishop piece
-	chess_piece_type_knight, ///< Knight piece
-	chess_piece_type_rook,	 ///< Rook piece
-	chess_piece_type_pawn,	 ///< Pawn piece
+	CHESS_PIECE_TYPE_PAWN,
+	CHESS_PIECE_TYPE_KNIGHT,
+	CHESS_PIECE_TYPE_BISHOP,
+	CHESS_PIECE_TYPE_ROOK,
+	CHESS_PIECE_TYPE_QUEEN,
+	CHESS_PIECE_TYPE_KING,
 };
 
-/**
- * @enum chess_piece_color
- * @brief Represents the color of a chess piece.
- */
-enum chess_piece_color : uint8_t {
-	chess_piece_color_white, ///< White piece
-	chess_piece_color_black, ///< White piece
+enum chess_piece_type_optional : uint8_t {
+	CHESS_PIECE_TYPE_OPTIONAL_NONE = 0,
+
+	CHESS_PIECE_TYPE_OPTIONAL_PAWN = CHESS_PIECE_TYPE_PAWN + 1,
+	CHESS_PIECE_TYPE_OPTIONAL_KNIGHT = CHESS_PIECE_TYPE_KNIGHT + 1,
+	CHESS_PIECE_TYPE_OPTIONAL_BISHOP = CHESS_PIECE_TYPE_BISHOP + 1,
+	CHESS_PIECE_TYPE_OPTIONAL_ROOK = CHESS_PIECE_TYPE_ROOK + 1,
+	CHESS_PIECE_TYPE_OPTIONAL_QUEEN = CHESS_PIECE_TYPE_QUEEN + 1,
+	CHESS_PIECE_TYPE_OPTIONAL_KING = CHESS_PIECE_TYPE_KING + 1,
 };
+enum chess_piece_type_optional chess_piece_type_optional_wrap(enum chess_piece_type type);
+enum chess_piece_type chess_piece_type_optional_unwrap(enum chess_piece_type_optional type);
 
-/**
- * @brief Returns the opposite color of a given chess piece color.
- *
- * @param color The chess piece color.
- *
- * @return The opposite chess piece color.
- */
-static inline enum chess_piece_color chess_piece_color_opposite(enum chess_piece_color color) {
-	return (enum chess_piece_color)(color ^ 1U);
-}
-
-/**
- * @enum chess_piece
- * @brief Represents a chess piece including type and color.
- */
+#define CHESS_PIECE_NEW(color, type) ((uint8_t)((color) << 3U) | (type))
 enum chess_piece : uint8_t {
-	chess_piece_none,		  ///< No piece
-	chess_piece_white_king,	  ///< White King
-	chess_piece_black_king,	  ///< Black King
-	chess_piece_white_queen,  ///< White Queen
-	chess_piece_black_queen,  ///< Black Queen
-	chess_piece_white_bishop, ///< White Bishop
-	chess_piece_black_bishop, ///< Black Bishop
-	chess_piece_white_knight, ///< White Knight
-	chess_piece_black_knight, ///< Black Knight
-	chess_piece_white_rook,	  ///< White Rook
-	chess_piece_black_rook,	  ///< Black Rook
-	chess_piece_white_pawn,	  ///< White Pawn
-	chess_piece_black_pawn	  ///< Black Pawn
+	CHESS_PIECE_WHITE_PAWN = CHESS_PIECE_NEW(CHESS_COLOR_WHITE, CHESS_PIECE_TYPE_PAWN),
+	CHESS_PIECE_WHITE_KNIGHT = CHESS_PIECE_NEW(CHESS_COLOR_WHITE, CHESS_PIECE_TYPE_KNIGHT),
+	CHESS_PIECE_WHITE_BISHOP = CHESS_PIECE_NEW(CHESS_COLOR_WHITE, CHESS_PIECE_TYPE_BISHOP),
+	CHESS_PIECE_WHITE_ROOK = CHESS_PIECE_NEW(CHESS_COLOR_WHITE, CHESS_PIECE_TYPE_ROOK),
+	CHESS_PIECE_WHITE_QUEEN = CHESS_PIECE_NEW(CHESS_COLOR_WHITE, CHESS_PIECE_TYPE_QUEEN),
+	CHESS_PIECE_WHITE_KING = CHESS_PIECE_NEW(CHESS_COLOR_WHITE, CHESS_PIECE_TYPE_KING),
+
+	CHESS_PIECE_BLACK_PAWN = CHESS_PIECE_NEW(CHESS_COLOR_BLACK, CHESS_PIECE_TYPE_PAWN),
+	CHESS_PIECE_BLACK_KNIGHT = CHESS_PIECE_NEW(CHESS_COLOR_BLACK, CHESS_PIECE_TYPE_KNIGHT),
+	CHESS_PIECE_BLACK_BISHOP = CHESS_PIECE_NEW(CHESS_COLOR_BLACK, CHESS_PIECE_TYPE_BISHOP),
+	CHESS_PIECE_BLACK_ROOK = CHESS_PIECE_NEW(CHESS_COLOR_BLACK, CHESS_PIECE_TYPE_ROOK),
+	CHESS_PIECE_BLACK_QUEEN = CHESS_PIECE_NEW(CHESS_COLOR_BLACK, CHESS_PIECE_TYPE_QUEEN),
+	CHESS_PIECE_BLACK_KING = CHESS_PIECE_NEW(CHESS_COLOR_BLACK, CHESS_PIECE_TYPE_KING),
+};
+enum chess_piece chess_piece_new(enum chess_color color, enum chess_piece_type type);
+enum chess_color chess_piece_color(enum chess_piece piece);
+enum chess_piece_type chess_piece_type(enum chess_piece piece);
+
+enum chess_piece_optional : uint8_t {
+	CHESS_PIECE_OPTIONAL_NONE = 0,
+
+	CHESS_PIECE_OPTIONAL_WHITE_PAWN = CHESS_PIECE_WHITE_PAWN + 1,
+	CHESS_PIECE_OPTIONAL_WHITE_KNIGHT = CHESS_PIECE_WHITE_KNIGHT + 1,
+	CHESS_PIECE_OPTIONAL_WHITE_BISHOP = CHESS_PIECE_WHITE_BISHOP + 1,
+	CHESS_PIECE_OPTIONAL_WHITE_ROOK = CHESS_PIECE_WHITE_ROOK + 1,
+	CHESS_PIECE_OPTIONAL_WHITE_QUEEN = CHESS_PIECE_WHITE_QUEEN + 1,
+	CHESS_PIECE_OPTIONAL_WHITE_KING = CHESS_PIECE_WHITE_KING + 1,
+
+	CHESS_PIECE_OPTIONAL_BLACK_PAWN = CHESS_PIECE_BLACK_PAWN + 1,
+	CHESS_PIECE_OPTIONAL_BLACK_KNIGHT = CHESS_PIECE_BLACK_KNIGHT + 1,
+	CHESS_PIECE_OPTIONAL_BLACK_BISHOP = CHESS_PIECE_BLACK_BISHOP + 1,
+	CHESS_PIECE_OPTIONAL_BLACK_ROOK = CHESS_PIECE_BLACK_ROOK + 1,
+	CHESS_PIECE_OPTIONAL_BLACK_QUEEN = CHESS_PIECE_BLACK_QUEEN + 1,
+	CHESS_PIECE_OPTIONAL_BLACK_KING = CHESS_PIECE_BLACK_KING + 1,
+};
+enum chess_piece_optional chess_piece_optional_wrap(enum chess_piece piece);
+enum chess_piece chess_piece_optional_unwrap(enum chess_piece_optional piece);
+
+enum chess_file : uint8_t {
+	CHESS_FILE_A,
+	CHESS_FILE_B,
+	CHESS_FILE_C,
+	CHESS_FILE_D,
+	CHESS_FILE_E,
+	CHESS_FILE_F,
+	CHESS_FILE_G,
+	CHESS_FILE_H,
 };
 
-/**
- * @brief Creates a new chess piece from type and color.
- *
- * @param type The type of the chess piece.
- * @param color The color of the chess piece.
- *
- * @return The corresponding chess piece.
- */
-static inline enum chess_piece chess_piece_new(
-	enum chess_piece_type type,
-	enum chess_piece_color color
-) {
-	return (enum chess_piece)(((uint8_t)(type << 1U) | color) + 1);
-}
+enum chess_rank : uint8_t {
+	CHESS_RANK_1,
+	CHESS_RANK_2,
+	CHESS_RANK_3,
+	CHESS_RANK_4,
+	CHESS_RANK_5,
+	CHESS_RANK_6,
+	CHESS_RANK_7,
+	CHESS_RANK_8,
+};
 
-/**
- * @brief Retrieves the type of a given chess piece.
- *
- * @param piece The chess piece.
- *
- * @return The type of the chess piece.
- */
-static inline enum chess_piece_type chess_piece_get_type(enum chess_piece piece) {
-	assert(piece != chess_piece_none);
-
-	return (enum chess_piece_type)((uint8_t)(piece - 1) >> 1U);
-}
-
-/**
- * @brief Retrieves the color of a given chess piece.
- *
- * @param piece The chess piece.
- *
- * @return The color of the chess piece.
- */
-static inline enum chess_piece_color chess_piece_get_color(enum chess_piece piece) {
-	assert(piece != chess_piece_none);
-
-	return (enum chess_piece_color)((uint8_t)(piece - 1) & 1U);
-}
-
-/**
- * @enum chess_square
- * @brief Represents a chessboard square.
- */
+#define CHESS_SQUARE_NEW(file, rank) ((uint8_t)((rank) << 4U) | (file))
 enum chess_square : uint8_t {
-	chess_square_a8 = 0x00,
-	chess_square_b8 = 0x01,
-	chess_square_c8 = 0x02,
-	chess_square_d8 = 0x03,
-	chess_square_e8 = 0x04,
-	chess_square_f8 = 0x05,
-	chess_square_g8 = 0x06,
-	chess_square_h8 = 0x07,
+	CHESS_SQUARE_A1 = CHESS_SQUARE_NEW(CHESS_FILE_A, CHESS_RANK_1),
+	CHESS_SQUARE_B1 = CHESS_SQUARE_NEW(CHESS_FILE_B, CHESS_RANK_1),
+	CHESS_SQUARE_C1 = CHESS_SQUARE_NEW(CHESS_FILE_C, CHESS_RANK_1),
+	CHESS_SQUARE_D1 = CHESS_SQUARE_NEW(CHESS_FILE_D, CHESS_RANK_1),
+	CHESS_SQUARE_E1 = CHESS_SQUARE_NEW(CHESS_FILE_E, CHESS_RANK_1),
+	CHESS_SQUARE_F1 = CHESS_SQUARE_NEW(CHESS_FILE_F, CHESS_RANK_1),
+	CHESS_SQUARE_G1 = CHESS_SQUARE_NEW(CHESS_FILE_G, CHESS_RANK_1),
+	CHESS_SQUARE_H1 = CHESS_SQUARE_NEW(CHESS_FILE_H, CHESS_RANK_1),
 
-	chess_square_a7 = 0x10,
-	chess_square_b7 = 0x11,
-	chess_square_c7 = 0x12,
-	chess_square_d7 = 0x13,
-	chess_square_e7 = 0x14,
-	chess_square_f7 = 0x15,
-	chess_square_g7 = 0x16,
-	chess_square_h7 = 0x17,
+	CHESS_SQUARE_A2 = CHESS_SQUARE_NEW(CHESS_FILE_A, CHESS_RANK_2),
+	CHESS_SQUARE_B2 = CHESS_SQUARE_NEW(CHESS_FILE_B, CHESS_RANK_2),
+	CHESS_SQUARE_C2 = CHESS_SQUARE_NEW(CHESS_FILE_C, CHESS_RANK_2),
+	CHESS_SQUARE_D2 = CHESS_SQUARE_NEW(CHESS_FILE_D, CHESS_RANK_2),
+	CHESS_SQUARE_E2 = CHESS_SQUARE_NEW(CHESS_FILE_E, CHESS_RANK_2),
+	CHESS_SQUARE_F2 = CHESS_SQUARE_NEW(CHESS_FILE_F, CHESS_RANK_2),
+	CHESS_SQUARE_G2 = CHESS_SQUARE_NEW(CHESS_FILE_G, CHESS_RANK_2),
+	CHESS_SQUARE_H2 = CHESS_SQUARE_NEW(CHESS_FILE_H, CHESS_RANK_2),
 
-	chess_square_a6 = 0x20,
-	chess_square_b6 = 0x21,
-	chess_square_c6 = 0x22,
-	chess_square_d6 = 0x23,
-	chess_square_e6 = 0x24,
-	chess_square_f6 = 0x25,
-	chess_square_g6 = 0x26,
-	chess_square_h6 = 0x27,
+	CHESS_SQUARE_A3 = CHESS_SQUARE_NEW(CHESS_FILE_A, CHESS_RANK_3),
+	CHESS_SQUARE_B3 = CHESS_SQUARE_NEW(CHESS_FILE_B, CHESS_RANK_3),
+	CHESS_SQUARE_C3 = CHESS_SQUARE_NEW(CHESS_FILE_C, CHESS_RANK_3),
+	CHESS_SQUARE_D3 = CHESS_SQUARE_NEW(CHESS_FILE_D, CHESS_RANK_3),
+	CHESS_SQUARE_E3 = CHESS_SQUARE_NEW(CHESS_FILE_E, CHESS_RANK_3),
+	CHESS_SQUARE_F3 = CHESS_SQUARE_NEW(CHESS_FILE_F, CHESS_RANK_3),
+	CHESS_SQUARE_G3 = CHESS_SQUARE_NEW(CHESS_FILE_G, CHESS_RANK_3),
+	CHESS_SQUARE_H3 = CHESS_SQUARE_NEW(CHESS_FILE_H, CHESS_RANK_3),
 
-	chess_square_a5 = 0x30,
-	chess_square_b5 = 0x31,
-	chess_square_c5 = 0x32,
-	chess_square_d5 = 0x33,
-	chess_square_e5 = 0x34,
-	chess_square_f5 = 0x35,
-	chess_square_g5 = 0x36,
-	chess_square_h5 = 0x37,
+	CHESS_SQUARE_A4 = CHESS_SQUARE_NEW(CHESS_FILE_A, CHESS_RANK_4),
+	CHESS_SQUARE_B4 = CHESS_SQUARE_NEW(CHESS_FILE_B, CHESS_RANK_4),
+	CHESS_SQUARE_C4 = CHESS_SQUARE_NEW(CHESS_FILE_C, CHESS_RANK_4),
+	CHESS_SQUARE_D4 = CHESS_SQUARE_NEW(CHESS_FILE_D, CHESS_RANK_4),
+	CHESS_SQUARE_E4 = CHESS_SQUARE_NEW(CHESS_FILE_E, CHESS_RANK_4),
+	CHESS_SQUARE_F4 = CHESS_SQUARE_NEW(CHESS_FILE_F, CHESS_RANK_4),
+	CHESS_SQUARE_G4 = CHESS_SQUARE_NEW(CHESS_FILE_G, CHESS_RANK_4),
+	CHESS_SQUARE_H4 = CHESS_SQUARE_NEW(CHESS_FILE_H, CHESS_RANK_4),
 
-	chess_square_a4 = 0x40,
-	chess_square_b4 = 0x41,
-	chess_square_c4 = 0x42,
-	chess_square_d4 = 0x43,
-	chess_square_e4 = 0x44,
-	chess_square_f4 = 0x45,
-	chess_square_g4 = 0x46,
-	chess_square_h4 = 0x47,
+	CHESS_SQUARE_A5 = CHESS_SQUARE_NEW(CHESS_FILE_A, CHESS_RANK_5),
+	CHESS_SQUARE_B5 = CHESS_SQUARE_NEW(CHESS_FILE_B, CHESS_RANK_5),
+	CHESS_SQUARE_C5 = CHESS_SQUARE_NEW(CHESS_FILE_C, CHESS_RANK_5),
+	CHESS_SQUARE_D5 = CHESS_SQUARE_NEW(CHESS_FILE_D, CHESS_RANK_5),
+	CHESS_SQUARE_E5 = CHESS_SQUARE_NEW(CHESS_FILE_E, CHESS_RANK_5),
+	CHESS_SQUARE_F5 = CHESS_SQUARE_NEW(CHESS_FILE_F, CHESS_RANK_5),
+	CHESS_SQUARE_G5 = CHESS_SQUARE_NEW(CHESS_FILE_G, CHESS_RANK_5),
+	CHESS_SQUARE_H5 = CHESS_SQUARE_NEW(CHESS_FILE_H, CHESS_RANK_5),
 
-	chess_square_a3 = 0x50,
-	chess_square_b3 = 0x51,
-	chess_square_c3 = 0x52,
-	chess_square_d3 = 0x53,
-	chess_square_e3 = 0x54,
-	chess_square_f3 = 0x55,
-	chess_square_g3 = 0x56,
-	chess_square_h3 = 0x57,
+	CHESS_SQUARE_A6 = CHESS_SQUARE_NEW(CHESS_FILE_A, CHESS_RANK_6),
+	CHESS_SQUARE_B6 = CHESS_SQUARE_NEW(CHESS_FILE_B, CHESS_RANK_6),
+	CHESS_SQUARE_C6 = CHESS_SQUARE_NEW(CHESS_FILE_C, CHESS_RANK_6),
+	CHESS_SQUARE_D6 = CHESS_SQUARE_NEW(CHESS_FILE_D, CHESS_RANK_6),
+	CHESS_SQUARE_E6 = CHESS_SQUARE_NEW(CHESS_FILE_E, CHESS_RANK_6),
+	CHESS_SQUARE_F6 = CHESS_SQUARE_NEW(CHESS_FILE_F, CHESS_RANK_6),
+	CHESS_SQUARE_G6 = CHESS_SQUARE_NEW(CHESS_FILE_G, CHESS_RANK_6),
+	CHESS_SQUARE_H6 = CHESS_SQUARE_NEW(CHESS_FILE_H, CHESS_RANK_6),
 
-	chess_square_a2 = 0x60,
-	chess_square_b2 = 0x61,
-	chess_square_c2 = 0x62,
-	chess_square_d2 = 0x63,
-	chess_square_e2 = 0x64,
-	chess_square_f2 = 0x65,
-	chess_square_g2 = 0x66,
-	chess_square_h2 = 0x67,
+	CHESS_SQUARE_A7 = CHESS_SQUARE_NEW(CHESS_FILE_A, CHESS_RANK_7),
+	CHESS_SQUARE_B7 = CHESS_SQUARE_NEW(CHESS_FILE_B, CHESS_RANK_7),
+	CHESS_SQUARE_C7 = CHESS_SQUARE_NEW(CHESS_FILE_C, CHESS_RANK_7),
+	CHESS_SQUARE_D7 = CHESS_SQUARE_NEW(CHESS_FILE_D, CHESS_RANK_7),
+	CHESS_SQUARE_E7 = CHESS_SQUARE_NEW(CHESS_FILE_E, CHESS_RANK_7),
+	CHESS_SQUARE_F7 = CHESS_SQUARE_NEW(CHESS_FILE_F, CHESS_RANK_7),
+	CHESS_SQUARE_G7 = CHESS_SQUARE_NEW(CHESS_FILE_G, CHESS_RANK_7),
+	CHESS_SQUARE_H7 = CHESS_SQUARE_NEW(CHESS_FILE_H, CHESS_RANK_7),
 
-	chess_square_a1 = 0x70,
-	chess_square_b1 = 0x71,
-	chess_square_c1 = 0x72,
-	chess_square_d1 = 0x73,
-	chess_square_e1 = 0x74,
-	chess_square_f1 = 0x75,
-	chess_square_g1 = 0x76,
-	chess_square_h1 = 0x77,
+	CHESS_SQUARE_A8 = CHESS_SQUARE_NEW(CHESS_FILE_A, CHESS_RANK_8),
+	CHESS_SQUARE_B8 = CHESS_SQUARE_NEW(CHESS_FILE_B, CHESS_RANK_8),
+	CHESS_SQUARE_C8 = CHESS_SQUARE_NEW(CHESS_FILE_C, CHESS_RANK_8),
+	CHESS_SQUARE_D8 = CHESS_SQUARE_NEW(CHESS_FILE_D, CHESS_RANK_8),
+	CHESS_SQUARE_E8 = CHESS_SQUARE_NEW(CHESS_FILE_E, CHESS_RANK_8),
+	CHESS_SQUARE_F8 = CHESS_SQUARE_NEW(CHESS_FILE_F, CHESS_RANK_8),
+	CHESS_SQUARE_G8 = CHESS_SQUARE_NEW(CHESS_FILE_G, CHESS_RANK_8),
+	CHESS_SQUARE_H8 = CHESS_SQUARE_NEW(CHESS_FILE_H, CHESS_RANK_8),
 };
+enum chess_square chess_square_new(enum chess_file file, enum chess_rank rank);
+enum chess_file chess_square_file(enum chess_square square);
+enum chess_rank chess_square_rank(enum chess_square square);
+enum chess_color chess_square_color(enum chess_square square);
 
-/**
- * @brief Creates a new chess square from file and rank.
- *
- * @param file The file (column) of the square (0-7, corresponding to a-h).
- * @param rank The rank (row) of the square (0-7, corresponding to 8-1).
- *
- * @return The corresponding chess square.
- */
-static inline enum chess_square chess_square_new(uint8_t file, uint8_t rank) {
-	assert(file < 8 && rank < 8);
+enum chess_square_optional : uint8_t {
+	CHESS_SQUARE_OPTIONAL_NONE = 0,
 
-	return (enum chess_square)(file | (uint8_t)(rank << 4U));
-}
+	CHESS_SQUARE_OPTIONAL_A1 = CHESS_SQUARE_A1 + 1,
+	CHESS_SQUARE_OPTIONAL_B1 = CHESS_SQUARE_B1 + 1,
+	CHESS_SQUARE_OPTIONAL_C1 = CHESS_SQUARE_C1 + 1,
+	CHESS_SQUARE_OPTIONAL_D1 = CHESS_SQUARE_D1 + 1,
+	CHESS_SQUARE_OPTIONAL_E1 = CHESS_SQUARE_E1 + 1,
+	CHESS_SQUARE_OPTIONAL_F1 = CHESS_SQUARE_F1 + 1,
+	CHESS_SQUARE_OPTIONAL_G1 = CHESS_SQUARE_G1 + 1,
+	CHESS_SQUARE_OPTIONAL_H1 = CHESS_SQUARE_H1 + 1,
 
-/**
- * @brief Retrieves the file (column) from a given chess square.
- *
- * @param square The chess square.
- *
- * @return The file (0-7, corresponding to a-h).
- */
-static inline uint8_t chess_square_get_file(enum chess_square square) {
-	return square & 0x7U;
-}
+	CHESS_SQUARE_OPTIONAL_A2 = CHESS_SQUARE_A2 + 1,
+	CHESS_SQUARE_OPTIONAL_B2 = CHESS_SQUARE_B2 + 1,
+	CHESS_SQUARE_OPTIONAL_C2 = CHESS_SQUARE_C2 + 1,
+	CHESS_SQUARE_OPTIONAL_D2 = CHESS_SQUARE_D2 + 1,
+	CHESS_SQUARE_OPTIONAL_E2 = CHESS_SQUARE_E2 + 1,
+	CHESS_SQUARE_OPTIONAL_F2 = CHESS_SQUARE_F2 + 1,
+	CHESS_SQUARE_OPTIONAL_G2 = CHESS_SQUARE_G2 + 1,
+	CHESS_SQUARE_OPTIONAL_H2 = CHESS_SQUARE_H2 + 1,
 
-/**
- * @brief Retrieves the rank (row) from a given chess square.
- *
- * @param square The chess square.
- *
- * @return The rank (0-7, corresponding to 8-1).
- */
-static inline uint8_t chess_square_get_rank(enum chess_square square) {
-	return square >> 4U;
-}
+	CHESS_SQUARE_OPTIONAL_A3 = CHESS_SQUARE_A3 + 1,
+	CHESS_SQUARE_OPTIONAL_B3 = CHESS_SQUARE_B3 + 1,
+	CHESS_SQUARE_OPTIONAL_C3 = CHESS_SQUARE_C3 + 1,
+	CHESS_SQUARE_OPTIONAL_D3 = CHESS_SQUARE_D3 + 1,
+	CHESS_SQUARE_OPTIONAL_E3 = CHESS_SQUARE_E3 + 1,
+	CHESS_SQUARE_OPTIONAL_F3 = CHESS_SQUARE_F3 + 1,
+	CHESS_SQUARE_OPTIONAL_G3 = CHESS_SQUARE_G3 + 1,
+	CHESS_SQUARE_OPTIONAL_H3 = CHESS_SQUARE_H3 + 1,
 
-/**
- * @var CHESS_SQUARES_MAXIMUM_COUNT
- * @brief The maximum number of squares that can be stored.
- */
-constexpr size_t CHESS_SQUARES_MAXIMUM_COUNT = 64;
+	CHESS_SQUARE_OPTIONAL_A4 = CHESS_SQUARE_A4 + 1,
+	CHESS_SQUARE_OPTIONAL_B4 = CHESS_SQUARE_B4 + 1,
+	CHESS_SQUARE_OPTIONAL_C4 = CHESS_SQUARE_C4 + 1,
+	CHESS_SQUARE_OPTIONAL_D4 = CHESS_SQUARE_D4 + 1,
+	CHESS_SQUARE_OPTIONAL_E4 = CHESS_SQUARE_E4 + 1,
+	CHESS_SQUARE_OPTIONAL_F4 = CHESS_SQUARE_F4 + 1,
+	CHESS_SQUARE_OPTIONAL_G4 = CHESS_SQUARE_G4 + 1,
+	CHESS_SQUARE_OPTIONAL_H4 = CHESS_SQUARE_H4 + 1,
 
-/**
- * @struct chess_squares
- * @brief Represents a list of chess squares.
- */
-struct chess_squares {
-	enum chess_square squares[CHESS_SQUARES_MAXIMUM_COUNT]; ///< The list of squares.
-	size_t count;											///< The number of squares in the list.
+	CHESS_SQUARE_OPTIONAL_A5 = CHESS_SQUARE_A5 + 1,
+	CHESS_SQUARE_OPTIONAL_B5 = CHESS_SQUARE_B5 + 1,
+	CHESS_SQUARE_OPTIONAL_C5 = CHESS_SQUARE_C5 + 1,
+	CHESS_SQUARE_OPTIONAL_D5 = CHESS_SQUARE_D5 + 1,
+	CHESS_SQUARE_OPTIONAL_E5 = CHESS_SQUARE_E5 + 1,
+	CHESS_SQUARE_OPTIONAL_F5 = CHESS_SQUARE_F5 + 1,
+	CHESS_SQUARE_OPTIONAL_G5 = CHESS_SQUARE_G5 + 1,
+	CHESS_SQUARE_OPTIONAL_H5 = CHESS_SQUARE_H5 + 1,
+
+	CHESS_SQUARE_OPTIONAL_A6 = CHESS_SQUARE_A6 + 1,
+	CHESS_SQUARE_OPTIONAL_B6 = CHESS_SQUARE_B6 + 1,
+	CHESS_SQUARE_OPTIONAL_C6 = CHESS_SQUARE_C6 + 1,
+	CHESS_SQUARE_OPTIONAL_D6 = CHESS_SQUARE_D6 + 1,
+	CHESS_SQUARE_OPTIONAL_E6 = CHESS_SQUARE_E6 + 1,
+	CHESS_SQUARE_OPTIONAL_F6 = CHESS_SQUARE_F6 + 1,
+	CHESS_SQUARE_OPTIONAL_G6 = CHESS_SQUARE_G6 + 1,
+	CHESS_SQUARE_OPTIONAL_H6 = CHESS_SQUARE_H6 + 1,
+
+	CHESS_SQUARE_OPTIONAL_A7 = CHESS_SQUARE_A7 + 1,
+	CHESS_SQUARE_OPTIONAL_B7 = CHESS_SQUARE_B7 + 1,
+	CHESS_SQUARE_OPTIONAL_C7 = CHESS_SQUARE_C7 + 1,
+	CHESS_SQUARE_OPTIONAL_D7 = CHESS_SQUARE_D7 + 1,
+	CHESS_SQUARE_OPTIONAL_E7 = CHESS_SQUARE_E7 + 1,
+	CHESS_SQUARE_OPTIONAL_F7 = CHESS_SQUARE_F7 + 1,
+	CHESS_SQUARE_OPTIONAL_G7 = CHESS_SQUARE_G7 + 1,
+	CHESS_SQUARE_OPTIONAL_H7 = CHESS_SQUARE_H7 + 1,
+
+	CHESS_SQUARE_OPTIONAL_A8 = CHESS_SQUARE_A8 + 1,
+	CHESS_SQUARE_OPTIONAL_B8 = CHESS_SQUARE_B8 + 1,
+	CHESS_SQUARE_OPTIONAL_C8 = CHESS_SQUARE_C8 + 1,
+	CHESS_SQUARE_OPTIONAL_D8 = CHESS_SQUARE_D8 + 1,
+	CHESS_SQUARE_OPTIONAL_E8 = CHESS_SQUARE_E8 + 1,
+	CHESS_SQUARE_OPTIONAL_F8 = CHESS_SQUARE_F8 + 1,
+	CHESS_SQUARE_OPTIONAL_G8 = CHESS_SQUARE_G8 + 1,
+	CHESS_SQUARE_OPTIONAL_H8 = CHESS_SQUARE_H8 + 1,
 };
+enum chess_square_optional chess_square_optional_wrap(enum chess_square square);
+enum chess_square chess_square_optional_unwrap(enum chess_square_optional square);
 
-/**
- * @struct chess_move
- * @brief Represents a chess move.
- */
+struct chess_position {
+	enum chess_piece_optional board[128];
+};
+struct chess_position chess_position_new(void);
+
 struct chess_move {
-	enum chess_square from; ///< The starting square of the move.
-	enum chess_square to;	///< The ending square of the move.
+	enum chess_square from;
+	enum chess_square to;
+	enum chess_piece_type_optional promotion_type;
 };
 
-/**
- * @var CHESS_MOVES_MAXIMUM_COUNT
- * @brief The maximum number of moves that can be generated. which must be at least 218.
- *
- * @see https://www.stmintz.com/ccc/index.php?id=424966
- */
 constexpr size_t CHESS_MOVES_MAXIMUM_COUNT = 256;
 
-/**
- * @struct chess_moves
- * @brief Represents a list of chess moves.
- */
 struct chess_moves {
-	struct chess_move moves[CHESS_MOVES_MAXIMUM_COUNT]; ///< The list of moves.
-	size_t count;										///< The number of moves in the list.
+	struct chess_move moves[CHESS_MOVES_MAXIMUM_COUNT];
+	size_t count;
 };
 
-/**
- * @struct chess
- * @brief Represents a chess game.
- */
-struct chess {
-	enum chess_piece board[128]; ///< The chess board.
-	enum chess_piece_color turn; ///< The color of the current player.
+struct chess_moves_filter {
+	enum chess_square_optional from;
+	enum chess_square_optional to;
+	enum chess_color_optional color;
 };
 
-/**
- * @brief Creates a new chess game.
- *
- * Initializes a chess game with the standard starting position and white to play.
- *
- * @return The new chess game.
- */
-static inline struct chess chess_new(void) {
-	return (struct chess){
-		.board = { 
-			[chess_square_a8] = chess_piece_black_rook,
-			[chess_square_b8] = chess_piece_black_knight,
-			[chess_square_c8] = chess_piece_black_bishop,
-			[chess_square_d8] = chess_piece_black_queen,
-			[chess_square_e8] = chess_piece_black_king,
-			[chess_square_f8] = chess_piece_black_bishop,
-			[chess_square_g8] = chess_piece_black_knight,
-			[chess_square_h8] = chess_piece_black_rook,
-
-			[chess_square_a7] = chess_piece_black_pawn,
-			[chess_square_b7] = chess_piece_black_pawn,
-			[chess_square_c7] = chess_piece_black_pawn,
-			[chess_square_d7] = chess_piece_black_pawn,
-			[chess_square_e7] = chess_piece_black_pawn,
-			[chess_square_f7] = chess_piece_black_pawn,
-			[chess_square_g7] = chess_piece_black_pawn,
-			[chess_square_h7] = chess_piece_black_pawn,
-
-			[chess_square_a2] = chess_piece_white_pawn,
-			[chess_square_b2] = chess_piece_white_pawn,
-			[chess_square_c2] = chess_piece_white_pawn,
-			[chess_square_d2] = chess_piece_white_pawn,
-			[chess_square_e2] = chess_piece_white_pawn,
-			[chess_square_f2] = chess_piece_white_pawn,
-			[chess_square_g2] = chess_piece_white_pawn,
-			[chess_square_h2] = chess_piece_white_pawn,
-
-			[chess_square_a1] = chess_piece_white_rook,
-			[chess_square_b1] = chess_piece_white_knight,
-			[chess_square_c1] = chess_piece_white_bishop,
-			[chess_square_d1] = chess_piece_white_queen,
-			[chess_square_e1] = chess_piece_white_king,
-			[chess_square_f1] = chess_piece_white_bishop,
-			[chess_square_g1] = chess_piece_white_knight,
-			[chess_square_h1] = chess_piece_white_rook,
-		},
-		.turn = chess_piece_color_white,
-	};
-}
-
-/**
- * @struct chess_get_attackers_filter
- * @brief Represents a filter for finding attackers.
- */
-struct chess_get_attackers_filter {
-	struct {
-		bool from : 1;	///< Flag indicating whether to filter attackers by square.
-		bool color : 1; ///< Flag indicating whether to filter attackers by chess piece color.
-	} flags;			///< Flags indicating which fields to filter by.
-	enum chess_piece_color color; ///< The color of the attacker.
-	enum chess_square from;		  ///< The square of the attacker.
-};
-
-/**
- * @brief Gathers a list of attackers of a given square.
- *
- * @param chess The chess position to search for attackers.
- * @param to The square to search for attackers of.
- * @param filter A filter to apply to the found attackers. See @ref chess_get_attackers_filter.
- *
- * @return A list of squares that attack the given square.
- *
- * @memberof chess
- */
-struct chess_squares chess_get_attackers(
-	const struct chess *chess,
-	enum chess_square to,
-	struct chess_get_attackers_filter filter
+struct chess_moves chess_moves_new(
+	struct chess_position position,
+	struct chess_moves_filter filter
 );
-
-/**
- * @struct chess_get_moves_filter
- * @brief Represents a filter for chess move generation.
- */
-struct chess_get_moves_filter {
-	struct {
-		bool from : 1;	///< Flag indicating whether to filter moves by starting square.
-		bool to : 1;	///< Flag indicating whether to filter moves by starting and ending square.
-		bool color : 1; ///< Flag indicating whether to filter moves by chess piece color.
-	} flags;			///< Flags indicating which fields to filter by.
-	enum chess_piece_color color; ///< The color of the chess piece to move.
-	enum chess_square from;		  ///< The starting square of the move.
-	enum chess_square to;		  ///< The ending square of the move.
-};
-
-/**
- * @brief Generates a list of legal moves for a given chess position.
- *
- * @param chess The chess position to generate moves for.
- * @param filter A filter to apply to the generated moves. See @ref chess_get_moves_filter.
- *
- * @return A list of legal moves for the given chess position.
- *
- * @memberof chess
- */
-struct chess_moves chess_get_legal_moves(
-	const struct chess *chess,
-	struct chess_get_moves_filter filter
-);
-
-bool chess_is_legal_move(const struct chess *chess, struct chess_move move);
-
-/**
- * @brief Makes a move on the chess board.
- *
- * @param chess The chess position to make a move on.
- * @param move  The move to make.
- *
- * @return True if the move was successful, false otherwise. The move will fail if it
- *         is not a legal move according to the rules of chess.
- *
- * @memberof chess
- */
-bool chess_make_move(struct chess *chess, struct chess_move move);
-
-/**
- * @enum chess_status
- * Represents the status of a chess game.
- */
-enum chess_status {
-	chess_status_ongoing,
-	chess_status_check,
-	chess_status_checkmate,
-};
-
-enum chess_status chess_get_status(const struct chess *chess);
 
 #ifdef __cplusplus
 }
