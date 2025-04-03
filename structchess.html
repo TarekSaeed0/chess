@@ -116,11 +116,11 @@ $(document).ready(function(){initNavTree('structchess.html',''); initResizable()
 <p>Represents a chess game.  
  <a href="structchess.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="chess_8h_source.html">chess.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="__chess_8h_source.html">_chess.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:acda7aee05b1d07a1759ac4114f990f9a" id="r_acda7aee05b1d07a1759ac4114f990f9a"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structchess__squares.html">chess_squares</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structchess.html#acda7aee05b1d07a1759ac4114f990f9a">chess_get_attackers</a> (const struct <a class="el" href="structchess.html">chess</a> *<a class="el" href="structchess.html">chess</a>, enum <a class="el" href="chess_8h.html#a6ae62ea510b6e99876e8b483bb400326">chess_square</a> to, struct <a class="el" href="structchess__get__attackers__filter.html">chess_get_attackers_filter</a> filter)</td></tr>
+<tr class="memitem:acda7aee05b1d07a1759ac4114f990f9a" id="r_acda7aee05b1d07a1759ac4114f990f9a"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structchess__squares.html">chess_squares</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structchess.html#acda7aee05b1d07a1759ac4114f990f9a">chess_get_attackers</a> (const struct <a class="el" href="structchess.html">chess</a> *<a class="el" href="structchess.html">chess</a>, enum chess_square to, struct <a class="el" href="structchess__get__attackers__filter.html">chess_get_attackers_filter</a> filter)</td></tr>
 <tr class="memdesc:acda7aee05b1d07a1759ac4114f990f9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gathers a list of attackers of a given square.  <br /></td></tr>
 <tr class="separator:acda7aee05b1d07a1759ac4114f990f9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a623554b83bbb7cfc1298c7082d8c90b5" id="r_a623554b83bbb7cfc1298c7082d8c90b5"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structchess__moves.html">chess_moves</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structchess.html#a623554b83bbb7cfc1298c7082d8c90b5">chess_get_legal_moves</a> (const struct <a class="el" href="structchess.html">chess</a> *<a class="el" href="structchess.html">chess</a>, struct <a class="el" href="structchess__get__moves__filter.html">chess_get_moves_filter</a> filter)</td></tr>
@@ -133,11 +133,11 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a7cb63b95ca67e979efbb458c475aee37" id="r_a7cb63b95ca67e979efbb458c475aee37"><td class="memItemLeft" align="right" valign="top"><a id="a7cb63b95ca67e979efbb458c475aee37" name="a7cb63b95ca67e979efbb458c475aee37"></a>
-enum <a class="el" href="chess_8h.html#a1a815ea2de41ad0b5e6bfc9f0b5c2fa6">chess_piece</a>&#160;</td><td class="memItemRight" valign="bottom"><b>board</b> [128]</td></tr>
+enum chess_piece&#160;</td><td class="memItemRight" valign="bottom"><b>board</b> [128]</td></tr>
 <tr class="memdesc:a7cb63b95ca67e979efbb458c475aee37"><td class="mdescLeft">&#160;</td><td class="mdescRight">The chess board. <br /></td></tr>
 <tr class="separator:a7cb63b95ca67e979efbb458c475aee37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a90c25afe9e8ef5c1694c48099356b75a" id="r_a90c25afe9e8ef5c1694c48099356b75a"><td class="memItemLeft" align="right" valign="top"><a id="a90c25afe9e8ef5c1694c48099356b75a" name="a90c25afe9e8ef5c1694c48099356b75a"></a>
-enum <a class="el" href="chess_8h.html#a4d2ef8dfa232b9ced3dd5faec4180282">chess_piece_color</a>&#160;</td><td class="memItemRight" valign="bottom"><b>turn</b></td></tr>
+enum chess_piece_color&#160;</td><td class="memItemRight" valign="bottom"><b>turn</b></td></tr>
 <tr class="memdesc:a90c25afe9e8ef5c1694c48099356b75a"><td class="mdescLeft">&#160;</td><td class="mdescRight">The color of the current player. <br /></td></tr>
 <tr class="separator:a90c25afe9e8ef5c1694c48099356b75a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -159,7 +159,7 @@ enum <a class="el" href="chess_8h.html#a4d2ef8dfa232b9ced3dd5faec4180282">chess_
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">enum <a class="el" href="chess_8h.html#a6ae62ea510b6e99876e8b483bb400326">chess_square</a>&#160;</td>
+          <td class="paramtype">enum chess_square&#160;</td>
           <td class="paramname"><em>to</em>, </td>
         </tr>
         <tr>
@@ -266,7 +266,7 @@ enum <a class="el" href="chess_8h.html#a4d2ef8dfa232b9ced3dd5faec4180282">chess_
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>/github/workspace/include/<a class="el" href="chess_8h_source.html">chess.h</a></li>
+<li>/github/workspace/include/<a class="el" href="__chess_8h_source.html">_chess.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
