@@ -265,14 +265,21 @@ enum chess_square chess_square_optional_unwrap(enum chess_square_optional square
 
 struct chess_position {
 	enum chess_piece_optional board[128];
+	enum chess_color side_to_move;
 };
 struct chess_position chess_position_new(void);
+struct chess_position chess_postion_from_fen(const char *fen);
+char *chess_postion_fen(struct chess_position position);
 
 struct chess_move {
 	enum chess_square from;
 	enum chess_square to;
+	enum chess_piece_optional captured_piece;
 	enum chess_piece_type_optional promotion_type;
 };
+bool chess_move_is_legal(struct chess_position position, struct chess_move move);
+void chess_move_do(struct chess_position *position, struct chess_move move);
+void chess_move_undo(struct chess_position *position, struct chess_move move);
 
 constexpr size_t CHESS_MOVES_MAXIMUM_COUNT = 256;
 
@@ -280,14 +287,12 @@ struct chess_moves {
 	struct chess_move moves[CHESS_MOVES_MAXIMUM_COUNT];
 	size_t count;
 };
-
 struct chess_moves_filter {
 	enum chess_square_optional from;
 	enum chess_square_optional to;
 	enum chess_color_optional color;
 };
-
-struct chess_moves chess_moves_new(
+struct chess_moves chess_moves_generate(
 	struct chess_position position,
 	struct chess_moves_filter filter
 );
