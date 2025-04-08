@@ -464,9 +464,24 @@ enum chess_square&#160;</td><td class="memItemRight" valign="bottom"><b>chess_sq
 <tr class="memitem:a1bbb2968b7bfb101ae856a5761136758" id="r_a1bbb2968b7bfb101ae856a5761136758"><td class="memItemLeft" align="right" valign="top"><a id="a1bbb2968b7bfb101ae856a5761136758" name="a1bbb2968b7bfb101ae856a5761136758"></a>
 struct <a class="el" href="structchess__position.html">chess_position</a>&#160;</td><td class="memItemRight" valign="bottom"><b>chess_position_new</b> (void)</td></tr>
 <tr class="separator:a1bbb2968b7bfb101ae856a5761136758"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5c6c308478675f493f25212cdd182974" id="r_a5c6c308478675f493f25212cdd182974"><td class="memItemLeft" align="right" valign="top"><a id="a5c6c308478675f493f25212cdd182974" name="a5c6c308478675f493f25212cdd182974"></a>
-struct <a class="el" href="structchess__moves.html">chess_moves</a>&#160;</td><td class="memItemRight" valign="bottom"><b>chess_moves_new</b> (struct <a class="el" href="structchess__position.html">chess_position</a> position, struct <a class="el" href="structchess__moves__filter.html">chess_moves_filter</a> filter)</td></tr>
-<tr class="separator:a5c6c308478675f493f25212cdd182974"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acfa88f89209415493812bb5d177b8b50" id="r_acfa88f89209415493812bb5d177b8b50"><td class="memItemLeft" align="right" valign="top"><a id="acfa88f89209415493812bb5d177b8b50" name="acfa88f89209415493812bb5d177b8b50"></a>
+struct <a class="el" href="structchess__position.html">chess_position</a>&#160;</td><td class="memItemRight" valign="bottom"><b>chess_postion_from_fen</b> (const char *fen)</td></tr>
+<tr class="separator:acfa88f89209415493812bb5d177b8b50"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38c72f49952213bf2f9d5ac55d57da5d" id="r_a38c72f49952213bf2f9d5ac55d57da5d"><td class="memItemLeft" align="right" valign="top"><a id="a38c72f49952213bf2f9d5ac55d57da5d" name="a38c72f49952213bf2f9d5ac55d57da5d"></a>
+char *&#160;</td><td class="memItemRight" valign="bottom"><b>chess_postion_fen</b> (struct <a class="el" href="structchess__position.html">chess_position</a> position)</td></tr>
+<tr class="separator:a38c72f49952213bf2f9d5ac55d57da5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac01433117d8f5fab2ae879b86b9b5588" id="r_ac01433117d8f5fab2ae879b86b9b5588"><td class="memItemLeft" align="right" valign="top"><a id="ac01433117d8f5fab2ae879b86b9b5588" name="ac01433117d8f5fab2ae879b86b9b5588"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>chess_move_is_legal</b> (struct <a class="el" href="structchess__position.html">chess_position</a> position, struct <a class="el" href="structchess__move.html">chess_move</a> move)</td></tr>
+<tr class="separator:ac01433117d8f5fab2ae879b86b9b5588"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb7ab5a71627bc8d71687695c0891411" id="r_aeb7ab5a71627bc8d71687695c0891411"><td class="memItemLeft" align="right" valign="top"><a id="aeb7ab5a71627bc8d71687695c0891411" name="aeb7ab5a71627bc8d71687695c0891411"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>chess_move_do</b> (struct <a class="el" href="structchess__position.html">chess_position</a> *position, struct <a class="el" href="structchess__move.html">chess_move</a> move)</td></tr>
+<tr class="separator:aeb7ab5a71627bc8d71687695c0891411"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c244146ca0f0d51f443c8b9dbb38b70" id="r_a5c244146ca0f0d51f443c8b9dbb38b70"><td class="memItemLeft" align="right" valign="top"><a id="a5c244146ca0f0d51f443c8b9dbb38b70" name="a5c244146ca0f0d51f443c8b9dbb38b70"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>chess_move_undo</b> (struct <a class="el" href="structchess__position.html">chess_position</a> *position, struct <a class="el" href="structchess__move.html">chess_move</a> move)</td></tr>
+<tr class="separator:a5c244146ca0f0d51f443c8b9dbb38b70"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3aade7f1db857bc4ae333bb8b56e97b1" id="r_a3aade7f1db857bc4ae333bb8b56e97b1"><td class="memItemLeft" align="right" valign="top"><a id="a3aade7f1db857bc4ae333bb8b56e97b1" name="a3aade7f1db857bc4ae333bb8b56e97b1"></a>
+struct <a class="el" href="structchess__moves.html">chess_moves</a>&#160;</td><td class="memItemRight" valign="bottom"><b>chess_moves_generate</b> (struct <a class="el" href="structchess__position.html">chess_position</a> position, struct <a class="el" href="structchess__moves__filter.html">chess_moves_filter</a> filter)</td></tr>
+<tr class="separator:a3aade7f1db857bc4ae333bb8b56e97b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>

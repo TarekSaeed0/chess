@@ -381,45 +381,50 @@ $(document).ready(function(){initNavTree('chess_8h_source.html',''); initResizab
 <div class="foldopen" id="foldopen00266" data-start="{" data-end="};">
 <div class="line"><a id="l00266" name="l00266"></a><span class="lineno"><a class="line" href="structchess__position.html">  266</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structchess__position.html">chess_position</a> {</div>
 <div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>    <span class="keyword">enum</span> chess_piece_optional board[128];</div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>};</div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>    <span class="keyword">enum</span> chess_color side_to_move;</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>};</div>
 </div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span><span class="keyword">struct </span><a class="code hl_struct" href="structchess__position.html">chess_position</a> chess_position_new(void);</div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span> </div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span><span class="keyword">struct </span><a class="code hl_struct" href="structchess__move.html">chess_move</a> {</div>
-<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>    <span class="keyword">enum</span> chess_square <a class="code hl_variable" href="structchess__move.html#af0d2ee159fd5c9c7ab94e080099b5c83">from</a>;</div>
-<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>    <span class="keyword">enum</span> chess_square <a class="code hl_variable" href="structchess__move.html#af3a66a923326f4a763055dbb72bbb52b">to</a>;</div>
-<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>    <span class="keyword">enum</span> chess_piece_type_optional promotion_type;</div>
-<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>};</div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span> </div>
-<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span><span class="keyword">constexpr</span> <span class="keywordtype">size_t</span> CHESS_MOVES_MAXIMUM_COUNT = 256;</div>
-<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span> </div>
-<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span><span class="keyword">struct </span><a class="code hl_struct" href="structchess__moves.html">chess_moves</a> {</div>
-<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>    <span class="keyword">struct </span><a class="code hl_struct" href="structchess__move.html">chess_move</a> <a class="code hl_variable" href="structchess__moves.html#ada971e6a3dce22572d36df29c965905a">moves</a>[CHESS_MOVES_MAXIMUM_COUNT];</div>
-<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>    <span class="keywordtype">size_t</span> <a class="code hl_variable" href="structchess__moves.html#a064bd6a44e64fd533bf486b990f3642d">count</a>;</div>
-<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>};</div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span><span class="keyword">struct </span><a class="code hl_struct" href="structchess__position.html">chess_position</a> chess_position_new(void);</div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span><span class="keyword">struct </span><a class="code hl_struct" href="structchess__position.html">chess_position</a> chess_postion_from_fen(const char *fen);</div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span><span class="keywordtype">char</span> *chess_postion_fen(<span class="keyword">struct</span> <a class="code hl_struct" href="structchess__position.html">chess_position</a> position);</div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span> </div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span><span class="keyword">struct </span><a class="code hl_struct" href="structchess__move.html">chess_move</a> {</div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>    <span class="keyword">enum</span> chess_square <a class="code hl_variable" href="structchess__move.html#af0d2ee159fd5c9c7ab94e080099b5c83">from</a>;</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>    <span class="keyword">enum</span> chess_square <a class="code hl_variable" href="structchess__move.html#af3a66a923326f4a763055dbb72bbb52b">to</a>;</div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>    <span class="keyword">enum</span> chess_piece_optional captured_piece;</div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>    <span class="keyword">enum</span> chess_piece_type_optional promotion_type;</div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>};</div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span><span class="keywordtype">bool</span> chess_move_is_legal(<span class="keyword">struct</span> <a class="code hl_struct" href="structchess__position.html">chess_position</a> position, <span class="keyword">struct</span> <a class="code hl_struct" href="structchess__move.html">chess_move</a> move);</div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span><span class="keywordtype">void</span> chess_move_do(<span class="keyword">struct</span> <a class="code hl_struct" href="structchess__position.html">chess_position</a> *position, <span class="keyword">struct</span> <a class="code hl_struct" href="structchess__move.html">chess_move</a> move);</div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span><span class="keywordtype">void</span> chess_move_undo(<span class="keyword">struct</span> <a class="code hl_struct" href="structchess__position.html">chess_position</a> *position, <span class="keyword">struct</span> <a class="code hl_struct" href="structchess__move.html">chess_move</a> move);</div>
 <div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span> </div>
-<div class="foldopen" id="foldopen00284" data-start="{" data-end="};">
-<div class="line"><a id="l00284" name="l00284"></a><span class="lineno"><a class="line" href="structchess__moves__filter.html">  284</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structchess__moves__filter.html">chess_moves_filter</a> {</div>
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>    <span class="keyword">enum</span> chess_square_optional from;</div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>    <span class="keyword">enum</span> chess_square_optional to;</div>
-<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>    <span class="keyword">enum</span> chess_color_optional color;</div>
-<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>};</div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span><span class="keyword">constexpr</span> <span class="keywordtype">size_t</span> CHESS_MOVES_MAXIMUM_COUNT = 256;</div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span> </div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span><span class="keyword">struct </span><a class="code hl_struct" href="structchess__moves.html">chess_moves</a> {</div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>    <span class="keyword">struct </span><a class="code hl_struct" href="structchess__move.html">chess_move</a> <a class="code hl_variable" href="structchess__moves.html#ada971e6a3dce22572d36df29c965905a">moves</a>[CHESS_MOVES_MAXIMUM_COUNT];</div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>    <span class="keywordtype">size_t</span> <a class="code hl_variable" href="structchess__moves.html#a064bd6a44e64fd533bf486b990f3642d">count</a>;</div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>};</div>
+<div class="foldopen" id="foldopen00290" data-start="{" data-end="};">
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno"><a class="line" href="structchess__moves__filter.html">  290</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structchess__moves__filter.html">chess_moves_filter</a> {</div>
+<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>    <span class="keyword">enum</span> chess_square_optional from;</div>
+<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>    <span class="keyword">enum</span> chess_square_optional to;</div>
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>    <span class="keyword">enum</span> chess_color_optional color;</div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>};</div>
 </div>
-<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span> </div>
-<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span><span class="keyword">struct </span><a class="code hl_struct" href="structchess__moves.html">chess_moves</a> chess_moves_new(</div>
-<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>    struct <a class="code hl_struct" href="structchess__position.html">chess_position</a> position,</div>
-<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>    struct <a class="code hl_struct" href="structchess__moves__filter.html">chess_moves_filter</a> filter</div>
-<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>);</div>
-<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span> </div>
-<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>}</div>
-<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span> </div>
-<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span><span class="preprocessor">#endif </span><span class="comment">// CHESS_H</span></div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span><span class="keyword">struct </span><a class="code hl_struct" href="structchess__moves.html">chess_moves</a> chess_moves_generate(</div>
+<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>    struct <a class="code hl_struct" href="structchess__position.html">chess_position</a> position,</div>
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>    struct <a class="code hl_struct" href="structchess__moves__filter.html">chess_moves_filter</a> filter</div>
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>);</div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span> </div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>}</div>
+<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span> </div>
+<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span><span class="preprocessor">#endif </span><span class="comment">// CHESS_H</span></div>
 <div class="ttc" id="astructchess__move_html"><div class="ttname"><a href="structchess__move.html">chess_move</a></div><div class="ttdoc">Represents a chess move.</div><div class="ttdef"><b>Definition</b> _chess.h:249</div></div>
 <div class="ttc" id="astructchess__move_html_af0d2ee159fd5c9c7ab94e080099b5c83"><div class="ttname"><a href="structchess__move.html#af0d2ee159fd5c9c7ab94e080099b5c83">chess_move::from</a></div><div class="ttdeci">enum chess_square from</div><div class="ttdoc">The starting square of the move.</div><div class="ttdef"><b>Definition</b> _chess.h:250</div></div>
 <div class="ttc" id="astructchess__move_html_af3a66a923326f4a763055dbb72bbb52b"><div class="ttname"><a href="structchess__move.html#af3a66a923326f4a763055dbb72bbb52b">chess_move::to</a></div><div class="ttdeci">enum chess_square to</div><div class="ttdoc">The ending square of the move.</div><div class="ttdef"><b>Definition</b> _chess.h:251</div></div>
-<div class="ttc" id="astructchess__moves__filter_html"><div class="ttname"><a href="structchess__moves__filter.html">chess_moves_filter</a></div><div class="ttdef"><b>Definition</b> chess.h:284</div></div>
+<div class="ttc" id="astructchess__moves__filter_html"><div class="ttname"><a href="structchess__moves__filter.html">chess_moves_filter</a></div><div class="ttdef"><b>Definition</b> chess.h:290</div></div>
 <div class="ttc" id="astructchess__moves_html"><div class="ttname"><a href="structchess__moves.html">chess_moves</a></div><div class="ttdoc">Represents a list of chess moves.</div><div class="ttdef"><b>Definition</b> _chess.h:266</div></div>
 <div class="ttc" id="astructchess__moves_html_a064bd6a44e64fd533bf486b990f3642d"><div class="ttname"><a href="structchess__moves.html#a064bd6a44e64fd533bf486b990f3642d">chess_moves::count</a></div><div class="ttdeci">size_t count</div><div class="ttdoc">The number of moves in the list.</div><div class="ttdef"><b>Definition</b> _chess.h:268</div></div>
 <div class="ttc" id="astructchess__moves_html_ada971e6a3dce22572d36df29c965905a"><div class="ttname"><a href="structchess__moves.html#ada971e6a3dce22572d36df29c965905a">chess_moves::moves</a></div><div class="ttdeci">struct chess_move moves[CHESS_MOVES_MAXIMUM_COUNT]</div><div class="ttdoc">The list of moves.</div><div class="ttdef"><b>Definition</b> _chess.h:267</div></div>
