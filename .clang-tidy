@@ -9,6 +9,7 @@ Checks: >
   -cppcoreguidelines-avoid-magic-numbers,
   -misc-include-cleaner,
   -clang-analyzer-optin.core.EnumCastOutOfRange,
+  -readability-math-missing-parentheses,
 
 CheckOptions:
   readability-identifier-length.IgnoredVariableNames: "^to$"

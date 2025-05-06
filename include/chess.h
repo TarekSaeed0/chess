@@ -1,3 +1,13 @@
+/**
+ * @file chess.h
+ * @brief Chess library using a 0x88-based chess board representation.
+ *
+ * @see https://en.wikipedia.org/wiki/0x88
+ *
+ * @author Tarek Saeed
+ * @date 2025-03-23
+ */
+
 #ifndef CHESS_H
 #define CHESS_H
 
@@ -45,6 +55,8 @@ enum chess_piece_type_optional chess_piece_type_optional_wrap(enum chess_piece_t
 enum chess_piece_type chess_piece_type_optional_unwrap(enum chess_piece_type_optional type);
 
 #define CHESS_PIECE_NEW(color, type) ((uint8_t)((color) << 3U) | (type))
+#define CHESS_PIECE_COLOR(piece) ((uint8_t)((piece) >> 3U))
+#define CHESS_PIECE_TYPE(piece) ((uint8_t)((piece) & 7U))
 enum chess_piece : uint8_t {
 	CHESS_PIECE_WHITE_PAWN = CHESS_PIECE_NEW(CHESS_COLOR_WHITE, CHESS_PIECE_TYPE_PAWN),
 	CHESS_PIECE_WHITE_KNIGHT = CHESS_PIECE_NEW(CHESS_COLOR_WHITE, CHESS_PIECE_TYPE_KNIGHT),
@@ -106,7 +118,9 @@ enum chess_rank : uint8_t {
 	CHESS_RANK_8,
 };
 
-#define CHESS_SQUARE_NEW(file, rank) ((uint8_t)((rank) << 4U) | (file))
+#define CHESS_SQUARE_NEW(file, rank) ((uint8_t)((file) | (uint8_t)((rank) << 4U)))
+#define CHESS_SQUARE_FILE(square) ((uint8_t)((square) & 0x7U))
+#define CHESS_SQUARE_RANK(square) ((uint8_t)((square) >> 4U))
 enum chess_square : uint8_t {
 	CHESS_SQUARE_A1 = CHESS_SQUARE_NEW(CHESS_FILE_A, CHESS_RANK_1),
 	CHESS_SQUARE_B1 = CHESS_SQUARE_NEW(CHESS_FILE_B, CHESS_RANK_1),
