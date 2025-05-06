@@ -140,9 +140,21 @@ Macros</h2></td></tr>
 <tr class="memitem:a71693c588dcf31c247b30805e3b07970" id="r_a71693c588dcf31c247b30805e3b07970"><td class="memItemLeft" align="right" valign="top"><a id="a71693c588dcf31c247b30805e3b07970" name="a71693c588dcf31c247b30805e3b07970"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>CHESS_PIECE_NEW</b>(color,  type)&#160;&#160;&#160;((uint8_t)((color) &lt;&lt; 3U) | (type))</td></tr>
 <tr class="separator:a71693c588dcf31c247b30805e3b07970"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99a816a50b11bf7a79672921c5efb078" id="r_a99a816a50b11bf7a79672921c5efb078"><td class="memItemLeft" align="right" valign="top"><a id="a99a816a50b11bf7a79672921c5efb078" name="a99a816a50b11bf7a79672921c5efb078"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>CHESS_PIECE_COLOR</b>(piece)&#160;&#160;&#160;((uint8_t)((piece) &gt;&gt; 3U))</td></tr>
+<tr class="separator:a99a816a50b11bf7a79672921c5efb078"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8fb3b4b9155ff05b866620e1d970c81" id="r_ad8fb3b4b9155ff05b866620e1d970c81"><td class="memItemLeft" align="right" valign="top"><a id="ad8fb3b4b9155ff05b866620e1d970c81" name="ad8fb3b4b9155ff05b866620e1d970c81"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>CHESS_PIECE_TYPE</b>(piece)&#160;&#160;&#160;((uint8_t)((piece) &amp; 7U))</td></tr>
+<tr class="separator:ad8fb3b4b9155ff05b866620e1d970c81"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a20bf67bd2399308dfddde7dee622e444" id="r_a20bf67bd2399308dfddde7dee622e444"><td class="memItemLeft" align="right" valign="top"><a id="a20bf67bd2399308dfddde7dee622e444" name="a20bf67bd2399308dfddde7dee622e444"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>CHESS_SQUARE_NEW</b>(file,  rank)&#160;&#160;&#160;((uint8_t)((rank) &lt;&lt; 4U) | (file))</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>CHESS_SQUARE_NEW</b>(file,  rank)&#160;&#160;&#160;((uint8_t)((file) | (uint8_t)((rank) &lt;&lt; 4U)))</td></tr>
 <tr class="separator:a20bf67bd2399308dfddde7dee622e444"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b656f3326af5bcc1587fcb93f48f08a" id="r_a1b656f3326af5bcc1587fcb93f48f08a"><td class="memItemLeft" align="right" valign="top"><a id="a1b656f3326af5bcc1587fcb93f48f08a" name="a1b656f3326af5bcc1587fcb93f48f08a"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>CHESS_SQUARE_FILE</b>(square)&#160;&#160;&#160;((uint8_t)((square) &amp; 0x7U))</td></tr>
+<tr class="separator:a1b656f3326af5bcc1587fcb93f48f08a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab995ebac5433b0817f3b106aea2ee462" id="r_ab995ebac5433b0817f3b106aea2ee462"><td class="memItemLeft" align="right" valign="top"><a id="ab995ebac5433b0817f3b106aea2ee462" name="ab995ebac5433b0817f3b106aea2ee462"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>CHESS_SQUARE_RANK</b>(square)&#160;&#160;&#160;((uint8_t)((square) &gt;&gt; 4U))</td></tr>
+<tr class="separator:ab995ebac5433b0817f3b106aea2ee462"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
