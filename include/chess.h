@@ -277,9 +277,20 @@ enum chess_square_optional : uint8_t {
 enum chess_square_optional chess_square_optional_wrap(enum chess_square square);
 enum chess_square chess_square_optional_unwrap(enum chess_square_optional square);
 
+enum chess_castling_rights : uint8_t {
+	CHESS_CASTLING_RIGHTS_WHITE_KING_SIDE = 1U << 0U,
+	CHESS_CASTLING_RIGHTS_WHITE_QUEEN_SIDE = 1U << 1U,
+	CHESS_CASTLING_RIGHTS_BLACK_KING_SIDE = 1U << 2U,
+	CHESS_CASTLING_RIGHTS_BLACK_QUEEN_SIDE = 1U << 3U,
+};
+
 struct chess_position {
 	enum chess_piece_optional board[128];
 	enum chess_color side_to_move;
+	enum chess_castling_rights castling_rights;
+	enum chess_square_optional en_passant_square;
+	unsigned int half_move_clock;
+	unsigned int full_move_number;
 };
 struct chess_position chess_position_new(void);
 struct chess_position chess_postion_from_fen(const char *fen);

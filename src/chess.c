@@ -2,6 +2,10 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <errno.h>
+#include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 enum chess_color chess_color_opposite(enum chess_color color) {
 	return (enum chess_color)(color ^ 1U);
@@ -121,6 +125,8 @@ struct chess_position chess_position_new(void) {
 			[CHESS_SQUARE_H1] = CHESS_PIECE_OPTIONAL_WHITE_ROOK,
 		},
 		.side_to_move = CHESS_COLOR_WHITE,
+		.castling_rights = 0,
+		.en_passant_square = CHESS_SQUARE_OPTIONAL_NONE,
 	};
 }
 struct chess_position chess_postion_from_fen(const char *fen) {
@@ -148,11 +154,13 @@ struct chess_position chess_postion_from_fen(const char *fen) {
 				case 'B': piece = CHESS_PIECE_OPTIONAL_WHITE_BISHOP; break;
 				case 'R': piece = CHESS_PIECE_OPTIONAL_WHITE_ROOK; break;
 				case 'Q': piece = CHESS_PIECE_OPTIONAL_WHITE_QUEEN; break;
+				case 'K': piece = CHESS_PIECE_OPTIONAL_WHITE_KING; break;
 				case 'p': piece = CHESS_PIECE_OPTIONAL_BLACK_PAWN; break;
 				case 'n': piece = CHESS_PIECE_OPTIONAL_BLACK_KNIGHT; break;
 				case 'b': piece = CHESS_PIECE_OPTIONAL_BLACK_BISHOP; break;
 				case 'r': piece = CHESS_PIECE_OPTIONAL_BLACK_ROOK; break;
 				case 'q': piece = CHESS_PIECE_OPTIONAL_BLACK_QUEEN; break;
+				case 'k': piece = CHESS_PIECE_OPTIONAL_BLACK_KING; break;
 				default: assert(false);
 			}
 			position.board[square] = piece;
@@ -166,6 +174,150 @@ struct chess_position chess_postion_from_fen(const char *fen) {
 	}
 
 	position.side_to_move = fen[i] == 'w' ? CHESS_COLOR_WHITE : CHESS_COLOR_BLACK;
+	i++;
+
+	while (isspace(fen[i])) {
+		i++;
+	}
+
+	while (fen[i] != '\0' && fen[i] != ' ') {
+		switch (fen[i]) {
+			case 'K': position.castling_rights |= CHESS_CASTLING_RIGHTS_WHITE_KING_SIDE; break;
+			case 'Q': position.castling_rights |= CHESS_CASTLING_RIGHTS_WHITE_QUEEN_SIDE; break;
+			case 'k': position.castling_rights |= CHESS_CASTLING_RIGHTS_BLACK_KING_SIDE; break;
+			case 'q': position.castling_rights |= CHESS_CASTLING_RIGHTS_BLACK_QUEEN_SIDE; break;
+			case '-': break;
+			default: assert(false);
+		}
+		i++;
+	}
+
+	while (isspace(fen[i])) {
+		i++;
+	}
+
+	if (fen[i] == '-') {
+		i++;
+	} else {
+		assert('a' <= fen[i] && fen[i] <= 'h' && '1' <= fen[i + 1] && fen[i + 1] <= '8');
+		enum chess_file file = (enum chess_file)(fen[i] - 'a');
+		enum chess_rank rank = (enum chess_rank)(fen[i + 1] - '1');
+		position.en_passant_square = chess_square_optional_wrap(chess_square_new(file, rank));
+		i += 2;
+	}
+
+	while (isspace(fen[i])) {
+		i++;
+	}
+
+	errno = 0;
+	char *end = nullptr;
+	unsigned long number = strtoul(fen + i, &end, 10);
+	assert(end != fen + i && errno == 0 && number <= UINT_MAX);
+	position.half_move_clock = (unsigned int)number;
+	i = (size_t)(end - fen);
+
+	while (isspace(fen[i])) {
+		i++;
+	}
+
+	errno = 0;
+	end = nullptr;
+	number = strtoul(fen + i, &end, 10);
+	assert(end != fen + i && errno == 0 && number <= UINT_MAX);
+	position.full_move_number = (unsigned int)number;
+	i = (size_t)(end - fen);
+
+	while (isspace(fen[i])) {
+		i++;
+	}
 
 	return position;
+}
+
+char *chess_postion_fen(struct chess_position position) {
+	char *fen = calloc(1, 128);
+
+	size_t i = 0; // NOLINT(readability-identifier-length)
+
+	for (enum chess_rank rank = CHESS_RANK_1; rank <= CHESS_RANK_8; rank++) {
+		for (enum chess_file file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
+			enum chess_square square = chess_square_new(file, CHESS_RANK_8 - rank);
+			enum chess_piece_optional piece = position.board[square];
+			if (piece == CHESS_PIECE_OPTIONAL_NONE) {
+				unsigned int count = 0;
+				while (file <= CHESS_FILE_H) {
+					square = chess_square_move(square, CHESS_DIRECTION_EAST);
+					piece = position.board[square];
+					if (piece != CHESS_PIECE_OPTIONAL_NONE) {
+						break;
+					}
+					count++;
+					file++;
+				}
+				fen[i++] = (char)('0' + count);
+			} else {
+				switch (chess_piece_optional_unwrap(piece)) {
+					case CHESS_PIECE_WHITE_PAWN: fen[i++] = 'P'; break;
+					case CHESS_PIECE_WHITE_KNIGHT: fen[i++] = 'N'; break;
+					case CHESS_PIECE_WHITE_BISHOP: fen[i++] = 'B'; break;
+					case CHESS_PIECE_WHITE_ROOK: fen[i++] = 'R'; break;
+					case CHESS_PIECE_WHITE_QUEEN: fen[i++] = 'Q'; break;
+					case CHESS_PIECE_WHITE_KING: fen[i++] = 'K'; break;
+					case CHESS_PIECE_BLACK_PAWN: fen[i++] = 'p'; break;
+					case CHESS_PIECE_BLACK_KNIGHT: fen[i++] = 'n'; break;
+					case CHESS_PIECE_BLACK_BISHOP: fen[i++] = 'b'; break;
+					case CHESS_PIECE_BLACK_ROOK: fen[i++] = 'r'; break;
+					case CHESS_PIECE_BLACK_QUEEN: fen[i++] = 'q'; break;
+					case CHESS_PIECE_BLACK_KING: fen[i++] = 'k'; break;
+					default: assert(false);
+				}
+			}
+		}
+		if (rank != CHESS_RANK_8) {
+			fen[i++] = '/';
+		}
+	}
+
+	fen[i++] = ' ';
+
+	fen[i++] = position.side_to_move == CHESS_COLOR_WHITE ? 'w' : 'b';
+
+	fen[i++] = ' ';
+
+	if (position.castling_rights) {
+		if (position.castling_rights & CHESS_CASTLING_RIGHTS_WHITE_KING_SIDE) {
+			fen[i++] = 'K';
+		}
+		if (position.castling_rights & CHESS_CASTLING_RIGHTS_WHITE_QUEEN_SIDE) {
+			fen[i++] = 'Q';
+		}
+		if (position.castling_rights & CHESS_CASTLING_RIGHTS_BLACK_KING_SIDE) {
+			fen[i++] = 'k';
+		}
+		if (position.castling_rights & CHESS_CASTLING_RIGHTS_BLACK_QUEEN_SIDE) {
+			fen[i++] = 'q';
+		}
+	} else {
+		fen[i++] = '-';
+	}
+
+	fen[i++] = ' ';
+
+	if (position.en_passant_square != CHESS_SQUARE_OPTIONAL_NONE) {
+		enum chess_square square = chess_square_optional_unwrap(position.en_passant_square);
+		enum chess_file file = chess_square_file(square);
+		enum chess_rank rank = chess_square_rank(square);
+		fen[i++] = (char)('a' + file);
+		fen[i++] = (char)('1' + rank);
+
+	} else {
+		fen[i++] = '-';
+	}
+
+	fen[i++] = ' ';
+
+	(void)snprintf(&fen[i], 128 - i, "%u %u", position.half_move_clock, position.full_move_number);
+
+	return fen;
 }
