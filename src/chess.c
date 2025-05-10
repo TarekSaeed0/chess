@@ -145,7 +145,10 @@ struct chess_position chess_postion_from_fen(const char *fen) {
 		if (fen[i] == '/') {
 			square = chess_square_move(square, CHESS_DIRECTION_SOUTH + 8 * CHESS_DIRECTION_WEST);
 		} else if ('1' <= fen[i] && fen[i] <= '8') {
-			square = chess_square_move(square, (fen[i] - '0') * CHESS_DIRECTION_EAST);
+			square = chess_square_move(
+				square,
+				(enum chess_direction)((fen[i] - '0') * CHESS_DIRECTION_EAST)
+			);
 		} else {
 			enum chess_piece_optional piece = CHESS_PIECE_OPTIONAL_NONE;
 			switch (fen[i]) {
@@ -169,13 +172,16 @@ struct chess_position chess_postion_from_fen(const char *fen) {
 		i++;
 	}
 
+	assert(isspace(fen[i]));
 	while (isspace(fen[i])) {
 		i++;
 	}
 
+	assert(fen[i] == 'w' || fen[i] == 'b');
 	position.side_to_move = fen[i] == 'w' ? CHESS_COLOR_WHITE : CHESS_COLOR_BLACK;
 	i++;
 
+	assert(isspace(fen[i]));
 	while (isspace(fen[i])) {
 		i++;
 	}
@@ -192,6 +198,7 @@ struct chess_position chess_postion_from_fen(const char *fen) {
 		i++;
 	}
 
+	assert(isspace(fen[i]));
 	while (isspace(fen[i])) {
 		i++;
 	}
@@ -206,6 +213,7 @@ struct chess_position chess_postion_from_fen(const char *fen) {
 		i += 2;
 	}
 
+	assert(isspace(fen[i]));
 	while (isspace(fen[i])) {
 		i++;
 	}
@@ -217,6 +225,7 @@ struct chess_position chess_postion_from_fen(const char *fen) {
 	position.half_move_clock = (unsigned int)number;
 	i = (size_t)(end - fen);
 
+	assert(isspace(fen[i]));
 	while (isspace(fen[i])) {
 		i++;
 	}
@@ -228,15 +237,17 @@ struct chess_position chess_postion_from_fen(const char *fen) {
 	position.full_move_number = (unsigned int)number;
 	i = (size_t)(end - fen);
 
+	assert(isspace(fen[i]));
 	while (isspace(fen[i])) {
 		i++;
 	}
 
 	return position;
 }
-
 char *chess_postion_fen(struct chess_position position) {
-	char *fen = calloc(1, 128);
+	size_t fen_size = 128;
+	char *fen = calloc(1, fen_size);
+	assert(fen != nullptr);
 
 	size_t i = 0; // NOLINT(readability-identifier-length)
 
@@ -317,7 +328,38 @@ char *chess_postion_fen(struct chess_position position) {
 
 	fen[i++] = ' ';
 
-	(void)snprintf(&fen[i], 128 - i, "%u %u", position.half_move_clock, position.full_move_number);
+	(void
+	)snprintf(&fen[i], fen_size - i, "%u %u", position.half_move_clock, position.full_move_number);
 
 	return fen;
 }
+
+void chess_move_do_unchecked(struct chess_position *position, struct chess_move move) {
+	assert(position != nullptr);
+
+	position->board[move.to] = position->board[move.from];
+	position->board[move.from] = CHESS_PIECE_OPTIONAL_NONE;
+
+	if (move.promotion_type != CHESS_PIECE_TYPE_OPTIONAL_NONE) {
+		enum chess_piece_type type = chess_piece_type_optional_unwrap(move.promotion_type);
+		enum chess_piece piece = chess_piece_new(position->side_to_move, type);
+		position->board[move.to] = chess_piece_optional_wrap(piece);
+		return;
+	}
+}
+bool chess_move_do(struct chess_position *position, struct chess_move move) {
+	assert(position != nullptr);
+
+	if (!chess_move_is_legal(*position, move)) {
+		return false;
+	}
+
+	chess_move_do_unchecked(position, move);
+
+	return true;
+}
+
+struct chess_moves chess_moves_generate(
+	struct chess_position position,
+	struct chess_moves_filter filter
+) {}

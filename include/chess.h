@@ -303,8 +303,8 @@ struct chess_move {
 	enum chess_piece_type_optional promotion_type;
 };
 bool chess_move_is_legal(struct chess_position position, struct chess_move move);
-void chess_move_do(struct chess_position *position, struct chess_move move);
-void chess_move_undo(struct chess_position *position, struct chess_move move);
+bool chess_move_do(struct chess_position *position, struct chess_move move);
+bool chess_move_undo(struct chess_position *position, struct chess_move move);
 
 constexpr size_t CHESS_MOVES_MAXIMUM_COUNT = 256;
 
