@@ -346,6 +346,10 @@ void chess_move_do_unchecked(struct chess_position *position, struct chess_move 
 		position->board[move.to] = chess_piece_optional_wrap(piece);
 		return;
 	}
+
+	enum chess_piece piece = chess_piece_optional_unwrap(position->board[move.to]);
+	enum chess_piece_type type = chess_piece_type(piece);
+	if (type == CHESS_PIECE_TYPE_KING) {}
 }
 bool chess_move_do(struct chess_position *position, struct chess_move move) {
 	assert(position != nullptr);
@@ -358,8 +362,3 @@ bool chess_move_do(struct chess_position *position, struct chess_move move) {
 
 	return true;
 }
-
-struct chess_moves chess_moves_generate(
-	struct chess_position position,
-	struct chess_moves_filter filter
-) {}
