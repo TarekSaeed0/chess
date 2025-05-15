@@ -1,4 +1,7 @@
 var searchData=
 [
-  ['board_0',['board',['../structchess.html#a7cb63b95ca67e979efbb458c475aee37',1,'chess']]]
+  ['chess_0',['Chess',['../index.html',1,'']]],
+  ['chess_5fmove_1',['chess_move',['../structchess__move.html',1,'']]],
+  ['chess_5fmoves_2',['chess_moves',['../structchess__moves.html',1,'']]],
+  ['chess_5fposition_3',['chess_position',['../structchess__position.html',1,'']]]
 ];
