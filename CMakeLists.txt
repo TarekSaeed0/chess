@@ -29,6 +29,7 @@ target_compile_options(
 			-Wwrite-strings
 			-Wcast-qual
 			-Wconversion
+			-Wno-enum-enum-conversion
 )
 
 add_executable(main src/main.c)
