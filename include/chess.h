@@ -44,7 +44,10 @@ enum chess_piece : uint8_t {
 	CHESS_PIECE_BLACK_QUEEN  = CHESS_COLOR_BLACK << 3U | CHESS_PIECE_TYPE_QUEEN,
 	CHESS_PIECE_BLACK_KING   = CHESS_COLOR_BLACK << 3U | CHESS_PIECE_TYPE_KING,
 };
-static inline enum chess_piece chess_piece_new(enum chess_color color, enum chess_piece_type type) {
+static inline enum chess_piece chess_piece_new(
+    enum chess_color color,
+    enum chess_piece_type type
+) {
 	return (enum chess_piece)(color << 3U | type);
 }
 static inline enum chess_color chess_piece_color(enum chess_piece piece) {
@@ -53,6 +56,15 @@ static inline enum chess_color chess_piece_color(enum chess_piece piece) {
 static inline enum chess_piece_type chess_piece_type(enum chess_piece piece) {
 	return (enum chess_piece_type)(piece & 0x7U);
 }
+size_t chess_piece_from_algebraic(
+    enum chess_piece *piece,
+    const char *algebraic
+);
+size_t chess_piece_to_algebraic(
+    enum chess_piece piece,
+    char *algebraic,
+    size_t algebraic_size
+);
 
 enum chess_file : uint8_t {
 	CHESS_FILE_NONE = 0U,
@@ -155,7 +167,10 @@ enum chess_square : uint8_t {
 	CHESS_SQUARE_G8   = CHESS_FILE_G | CHESS_RANK_8 << 4U,
 	CHESS_SQUARE_H8   = CHESS_FILE_H | CHESS_RANK_8 << 4U,
 };
-static inline enum chess_square chess_square_new(enum chess_file file, enum chess_rank rank) {
+static inline enum chess_square chess_square_new(
+    enum chess_file file,
+    enum chess_rank rank
+) {
 	return (enum chess_square)(file | rank << 4U);
 }
 static inline enum chess_file chess_square_file(enum chess_square square) {
@@ -164,10 +179,16 @@ static inline enum chess_file chess_square_file(enum chess_square square) {
 static inline enum chess_rank chess_square_rank(enum chess_square square) {
 	return (enum chess_rank)(square >> 4U);
 }
-static inline bool chess_square_is_valid(enum chess_square square) {
-	return (square & 0x88U) == 0U; // NOLINT(readability-implicit-bool-conversion)
-}
 enum chess_color chess_square_color(enum chess_square square);
+size_t chess_square_from_algebraic(
+    enum chess_square *square,
+    const char *algebraic
+);
+size_t chess_square_to_algebraic(
+    enum chess_square square,
+    char *algebraic,
+    size_t algebraic_size
+);
 
 enum chess_castling_rights : uint8_t {
 	CHESS_CASTLING_RIGHTS_NONE             = 0U,
@@ -187,15 +208,25 @@ struct chess_position {
 	unsigned int full_move_number;
 };
 struct chess_position chess_position_new(void);
-bool chess_position_from_fen(struct chess_position *position, const char *fen);
-size_t chess_position_to_fen(const struct chess_position *position, char *fen, size_t fen_size);
+size_t chess_position_from_fen(
+    struct chess_position *position,
+    const char *fen
+);
+size_t chess_position_to_fen(
+    const struct chess_position *position,
+    char *fen,
+    size_t fen_size
+);
 
 struct chess_move {
 	enum chess_square from;
 	enum chess_square to;
 	enum chess_piece_type promotion_type;
 };
-bool chess_move_is_legal(const struct chess_position *position, struct chess_move move);
+bool chess_move_is_legal(
+    const struct chess_position *position,
+    struct chess_move move
+);
 bool chess_move_do(struct chess_position *position, struct chess_move move);
 
 constexpr size_t CHESS_MOVES_MAXIMUM_COUNT = 256;

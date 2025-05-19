@@ -14,7 +14,10 @@ enum chess_square chess_square_scan(void) {
 	char string[2];
 	(void)scanf(" %c%c", &string[0], &string[1]);
 
-	assert('a' <= string[0] && string[0] <= 'h' && '1' <= string[1] && string[1] <= '8');
+	assert(
+	    'a' <= string[0] && string[0] <= 'h' && '1' <= string[1] &&
+	    string[1] <= '8'
+	);
 	enum chess_file file = (enum chess_file)(CHESS_FILE_A + (string[0] - 'a'));
 	enum chess_rank rank = (enum chess_rank)(CHESS_RANK_1 + (string[1] - '1'));
 
@@ -54,7 +57,8 @@ void chess_position_print(const struct chess_position *chess) {
 
 				printf(
 				    " %s ",
-				    chess_symbols[chess_piece_type(piece)][chess_piece_color(piece) == square_color]
+				    chess_symbols[chess_piece_type(piece)]
+				                 [chess_piece_color(piece) == square_color]
 				);
 			}
 		}
@@ -82,8 +86,23 @@ int main(void) {
 
 	chess_position_print(&position);
 	while (true) {
-		struct chess_move move = { .from = chess_square_scan(), .to = chess_square_scan() };
+		printf(
+		    "%s to move.\n",
+		    position.side_to_move == CHESS_COLOR_WHITE ? "White" : "Black"
+		);
+		printf("Available moves: ");
+		struct chess_moves moves = chess_moves_generate(&position);
+		for (size_t i = 0; i < moves.count; i++) {
+			chess_square_print(moves.moves[i].from);
+			chess_square_print(moves.moves[i].to);
+			printf(" ");
+		}
+		printf("\n");
+
+		struct chess_move move = { .from = chess_square_scan(),
+			                         .to   = chess_square_scan() };
 		if (!chess_move_do(&position, move)) {
+			printf("Illegal move.\n");
 			continue;
 		}
 		chess_position_print(&position);
