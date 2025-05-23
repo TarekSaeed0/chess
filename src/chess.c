@@ -343,8 +343,8 @@ bool chess_position_is_valid(const struct chess_position *position) {
 	    (!chess_square_is_valid(position->en_passant_square) ||
 	             position->board[position->en_passant_square] != CHESS_PIECE_NONE ||
 	             position->side_to_move == CHESS_COLOR_WHITE
-	         ? position->board[position->en_passant_square + CHESS_OFFSET_NORTH] != CHESS_PIECE_WHITE_PAWN
-	         : position->board[position->en_passant_square + CHESS_OFFSET_SOUTH] != CHESS_PIECE_BLACK_PAWN)) {
+	         ? position->board[position->en_passant_square + CHESS_OFFSET_SOUTH] != CHESS_PIECE_BLACK_PAWN
+	         : position->board[position->en_passant_square + CHESS_OFFSET_NORTH] != CHESS_PIECE_WHITE_PAWN)) {
 		return false;
 	}
 
@@ -704,8 +704,11 @@ static void chess_moves_add(struct chess_moves *moves, const struct chess_positi
 
 	struct chess_position position_after_move = *position;
 	chess_move_do_unchecked(&position_after_move, move);
-	position_after_move.side_to_move = position->side_to_move;
-	if (!chess_position_is_check(&position_after_move)) {
+	if (!chess_square_is_attacked(
+	        position,
+	        position_after_move.king_squares[position->side_to_move],
+	        chess_color_opposite(position->side_to_move)
+	    )) {
 		moves->moves[moves->count++] = move;
 	}
 }
