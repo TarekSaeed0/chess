@@ -4,20 +4,15 @@
 #include <stdlib.h>
 
 void chess_square_print(enum chess_square square) {
-	printf(
-	    "%c%c",
-	    'a' + (chess_square_file(square) - CHESS_FILE_A),
-	    '1' + (chess_square_rank(square) - CHESS_RANK_1)
-	);
+	char buffer[3];
+	chess_square_to_algebraic(square, buffer, sizeof(buffer));
+	printf("%s", buffer);
 }
 enum chess_square chess_square_scan(void) {
 	char string[2];
 	(void)scanf(" %c%c", &string[0], &string[1]);
 
-	assert(
-	    'a' <= string[0] && string[0] <= 'h' && '1' <= string[1] &&
-	    string[1] <= '8'
-	);
+	assert('a' <= string[0] && string[0] <= 'h' && '1' <= string[1] && string[1] <= '8');
 	enum chess_file file = (enum chess_file)(CHESS_FILE_A + (string[0] - 'a'));
 	enum chess_rank rank = (enum chess_rank)(CHESS_RANK_1 + (string[1] - '1'));
 
@@ -55,11 +50,7 @@ void chess_position_print(const struct chess_position *chess) {
 					[CHESS_PIECE_TYPE_KING] = { [false] = "♚", [true] = "♔", },
 				};
 
-				printf(
-				    " %s ",
-				    chess_symbols[chess_piece_type(piece)]
-				                 [chess_piece_color(piece) == square_color]
-				);
+				printf(" %s ", chess_symbols[chess_piece_type(piece)][chess_piece_color(piece) == square_color]);
 			}
 		}
 		printf("\033[38;5;254;48;5;233m %c ", '1' + (rank - CHESS_RANK_1));
@@ -76,20 +67,24 @@ void chess_position_print(const struct chess_position *chess) {
 
 int main(void) {
 	struct chess_position position = chess_position_new();
-	if (!chess_position_from_fen(
-	        &position,
-	        "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-	    )) {
+	if (!chess_position_from_fen(&position, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")) {
 		(void)fprintf(stderr, "Error: Invalid FEN position\n");
 		return EXIT_FAILURE;
 	}
 
 	chess_position_print(&position);
 	while (true) {
-		printf(
-		    "%s to move.\n",
-		    position.side_to_move == CHESS_COLOR_WHITE ? "White" : "Black"
-		);
+		char fen[128];
+		chess_position_to_fen(&position, fen, sizeof(fen));
+		printf("Position: %s\n", fen);
+		if (chess_position_is_checkmate(&position)) {
+			printf("Checkmate!\n");
+			break;
+		}
+		if (chess_position_is_check(&position)) {
+			printf("Check!\n");
+		}
+		printf("%s to move.\n", position.side_to_move == CHESS_COLOR_WHITE ? "White" : "Black");
 		printf("Available moves: ");
 		struct chess_moves moves = chess_moves_generate(&position);
 		for (size_t i = 0; i < moves.count; i++) {
@@ -99,8 +94,7 @@ int main(void) {
 		}
 		printf("\n");
 
-		struct chess_move move = { .from = chess_square_scan(),
-			                         .to   = chess_square_scan() };
+		struct chess_move move = { .from = chess_square_scan(), .to = chess_square_scan() };
 		if (!chess_move_do(&position, move)) {
 			printf("Illegal move.\n");
 			continue;
