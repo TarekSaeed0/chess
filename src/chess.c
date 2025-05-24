@@ -177,22 +177,22 @@ bool chess_square_is_attacked(const struct chess_position *position, enum chess_
 
 			// clang-format off
 			static const uint8_t attacks[256] = {
-				 40,  0,  0,  0,  0,  0,  0, 48,  0,  0,  0,  0,  0,  0, 40,  0,
-					0, 40,  0,  0,  0,  0,  0, 48,  0,  0,  0,  0,  0, 40,  0,  0,
-					0,  0, 40,  0,  0,  0,  0, 48,  0,  0,  0,  0, 40,  0,  0,  0,
-					0,  0,  0, 40,  0,  0,  0, 48,  0,  0,  0, 40,  0,  0,  0,  0,
-					0,  0,  0,  0, 40,  0,  0, 48,  0,  0, 40,  0,  0,  0,  0,  0,
-					0,  0,  0,  0,  0, 40,  4, 48,  4, 40,  0,  0,  0,  0,  0,  0,
-					0,  0,  0,  0,  0,  4,106,114,106,  4,  0,  0,  0,  0,  0,  0,
-				 48, 48, 48, 48, 48, 48,112,  0,112, 48, 48, 48, 48, 48, 48,  0,
-					0,  0,  0,  0,  0,  4,106,114,106,  4,  0,  0,  0,  0,  0,  0,
-					0,  0,  0,  0,  0, 40,  4, 48,  4, 40,  0,  0,  0,  0,  0,  0,
-					0,  0,  0,  0, 40,  0,  0, 48,  0,  0, 40,  0,  0,  0,  0,  0,
-					0,  0,  0, 40,  0,  0,  0, 48,  0,  0,  0, 40,  0,  0,  0,  0,
-					0,  0, 40,  0,  0,  0,  0, 48,  0,  0,  0,  0, 40,  0,  0,  0,
-					0, 40,  0,  0,  0,  0,  0, 48,  0,  0,  0,  0,  0, 40,  0,  0,
-				 40,  0,  0,  0,  0,  0,  0, 48,  0,  0,  0,  0,  0,  0, 40,  0,
-					0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+			 40,  0,  0,  0,  0,  0,  0, 48,  0,  0,  0,  0,  0,  0, 40,  0,
+				0, 40,  0,  0,  0,  0,  0, 48,  0,  0,  0,  0,  0, 40,  0,  0,
+				0,  0, 40,  0,  0,  0,  0, 48,  0,  0,  0,  0, 40,  0,  0,  0,
+				0,  0,  0, 40,  0,  0,  0, 48,  0,  0,  0, 40,  0,  0,  0,  0,
+				0,  0,  0,  0, 40,  0,  0, 48,  0,  0, 40,  0,  0,  0,  0,  0,
+				0,  0,  0,  0,  0, 40,  4, 48,  4, 40,  0,  0,  0,  0,  0,  0,
+				0,  0,  0,  0,  0,  4,106,112,106,  4,  0,  0,  0,  0,  0,  0,
+			 48, 48, 48, 48, 48, 48,112,  0,112, 48, 48, 48, 48, 48, 48,  0,
+				0,  0,  0,  0,  0,  4,106,112,106,  4,  0,  0,  0,  0,  0,  0,
+				0,  0,  0,  0,  0, 40,  4, 48,  4, 40,  0,  0,  0,  0,  0,  0,
+				0,  0,  0,  0, 40,  0,  0, 48,  0,  0, 40,  0,  0,  0,  0,  0,
+				0,  0,  0, 40,  0,  0,  0, 48,  0,  0,  0, 40,  0,  0,  0,  0,
+				0,  0, 40,  0,  0,  0,  0, 48,  0,  0,  0,  0, 40,  0,  0,  0,
+				0, 40,  0,  0,  0,  0,  0, 48,  0,  0,  0,  0,  0, 40,  0,  0,
+			 40,  0,  0,  0,  0,  0,  0, 48,  0,  0,  0,  0,  0,  0, 40,  0,
+				0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 			};
 			// clang-format on
 
@@ -343,8 +343,10 @@ bool chess_position_is_valid(const struct chess_position *position) {
 	    (!chess_square_is_valid(position->en_passant_square) ||
 	             position->board[position->en_passant_square] != CHESS_PIECE_NONE ||
 	             position->side_to_move == CHESS_COLOR_WHITE
-	         ? position->board[position->en_passant_square + CHESS_OFFSET_SOUTH] != CHESS_PIECE_BLACK_PAWN
-	         : position->board[position->en_passant_square + CHESS_OFFSET_NORTH] != CHESS_PIECE_WHITE_PAWN)) {
+	         ? position->board[position->en_passant_square + CHESS_OFFSET_SOUTH] != CHESS_PIECE_BLACK_PAWN ||
+	               position->board[position->en_passant_square + CHESS_OFFSET_NORTH] != CHESS_PIECE_NONE
+	         : position->board[position->en_passant_square + CHESS_OFFSET_NORTH] != CHESS_PIECE_WHITE_PAWN ||
+	               position->board[position->en_passant_square + CHESS_OFFSET_SOUTH] != CHESS_PIECE_NONE)) {
 		return false;
 	}
 
@@ -488,7 +490,7 @@ size_t chess_position_from_fen(struct chess_position *position, const char *fen)
 	return total_read;
 }
 size_t chess_position_to_fen(const struct chess_position *position, char *fen, size_t fen_size) {
-	assert(position != nullptr);
+	assert(chess_position_is_valid(position));
 
 	size_t total_written = 0;
 #define APPEND_TO_FEN(...)                                                                                             \
@@ -795,13 +797,14 @@ static void chess_moves_generate_pawn(
 	};
 	for (size_t i = 0; i < ARRAY_LENGTH(offsets); i++) {
 		to = (enum chess_square)(from + direction + offsets[i]);
-		if (chess_square_is_valid(to) && chess_piece_color(position->board[to]) != position->side_to_move) {
-			if (position->board[to] != CHESS_PIECE_NONE || to == position->en_passant_square) {
-				if (chess_square_rank(to) == promotion_rank) {
-					chess_moves_generate_pawn_promotions(moves, position, from, to);
-				} else {
-					chess_moves_add(moves, position, (struct chess_move){ .from = from, .to = to });
-				}
+		if (to == position->en_passant_square) {
+			chess_moves_add(moves, position, (struct chess_move){ .from = from, .to = to });
+		} else if (chess_square_is_valid(to) &&
+		           chess_piece_color(position->board[to]) == chess_color_opposite(position->side_to_move)) {
+			if (chess_square_rank(to) == promotion_rank) {
+				chess_moves_generate_pawn_promotions(moves, position, from, to);
+			} else {
+				chess_moves_add(moves, position, (struct chess_move){ .from = from, .to = to });
 			}
 		}
 	}
@@ -866,9 +869,9 @@ static void chess_moves_generate_king_castlings(struct chess_moves *moves, const
 
 	if (position->castling_rights & king_side_castling_right) {
 		if (position->board[from + CHESS_OFFSET_EAST] == CHESS_PIECE_NONE &&
-		    chess_square_is_attacked(position, (enum chess_square)(from + CHESS_OFFSET_EAST), other_side) &&
+		    !chess_square_is_attacked(position, (enum chess_square)(from + CHESS_OFFSET_EAST), other_side) &&
 		    position->board[from + 2 * CHESS_OFFSET_EAST] == CHESS_PIECE_NONE &&
-		    chess_square_is_attacked(position, (enum chess_square)(from + 2 * CHESS_OFFSET_EAST), other_side)) {
+		    !chess_square_is_attacked(position, (enum chess_square)(from + 2 * CHESS_OFFSET_EAST), other_side)) {
 			chess_moves_add(
 			    moves,
 			    position,
@@ -878,13 +881,14 @@ static void chess_moves_generate_king_castlings(struct chess_moves *moves, const
 			    }
 			);
 		}
-	} else if (position->castling_rights & queen_side_castling_right) {
+	}
+	if (position->castling_rights & queen_side_castling_right) {
 		if (position->board[from + CHESS_OFFSET_WEST] == CHESS_PIECE_NONE &&
-		    chess_square_is_attacked(position, (enum chess_square)(from + CHESS_OFFSET_WEST), other_side) &&
+		    !chess_square_is_attacked(position, (enum chess_square)(from + CHESS_OFFSET_WEST), other_side) &&
 		    position->board[from + 2 * CHESS_OFFSET_WEST] == CHESS_PIECE_NONE &&
-		    chess_square_is_attacked(position, (enum chess_square)(from + 2 * CHESS_OFFSET_WEST), other_side) &&
+		    !chess_square_is_attacked(position, (enum chess_square)(from + 2 * CHESS_OFFSET_WEST), other_side) &&
 		    position->board[from + 3 * CHESS_OFFSET_WEST] == CHESS_PIECE_NONE &&
-		    chess_square_is_attacked(position, (enum chess_square)(from + 3 * CHESS_OFFSET_WEST), other_side)) {
+		    !chess_square_is_attacked(position, (enum chess_square)(from + 3 * CHESS_OFFSET_WEST), other_side)) {
 			chess_moves_add(
 			    moves,
 			    position,
@@ -984,6 +988,6 @@ unsigned long chess_perft_recursive(const struct chess_position *position, unsig
 	return count;
 }
 unsigned long chess_perft(unsigned int depth) {
-	struct chess_position initial_position = chess_position_new();
-	return chess_perft_recursive(&initial_position, depth);
+	struct chess_position position = chess_position_new();
+	return chess_perft_recursive(&position, depth);
 }

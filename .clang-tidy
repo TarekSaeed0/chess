@@ -12,6 +12,7 @@ Checks: >
   -readability-math-missing-parentheses,
   -hicpp-signed-bitwise,
   -readability-implicit-bool-conversion,
+  -misc-no-recursion,
 
 CheckOptions:
   readability-identifier-length.IgnoredVariableNames: "^to$"
