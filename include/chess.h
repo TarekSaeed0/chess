@@ -216,11 +216,16 @@ size_t chess_position_to_fen(const struct chess_position *position, char *fen, s
 bool chess_position_is_check(const struct chess_position *position);
 bool chess_position_is_checkmate(const struct chess_position *position);
 bool chess_position_is_stalemate(const struct chess_position *position);
+bool chess_position_is_fifty_move_rule(const struct chess_position *position);
+bool chess_position_is_threefold_repetition(const struct chess_position *position);
+bool chess_position_is_insufficient_material(const struct chess_position *position);
 
 bool chess_move_is_legal(const struct chess_position *position, struct chess_move move);
 bool chess_move_do(struct chess_position *position, struct chess_move move);
 
 struct chess_moves chess_moves_generate(const struct chess_position *position);
+
+unsigned long chess_perft(unsigned int depth);
 
 #ifdef __cplusplus
 }

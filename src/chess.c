@@ -583,21 +583,47 @@ size_t chess_position_to_fen(const struct chess_position *position, char *fen, s
 	return total_written;
 #undef APPEND_TO_FEN
 }
+bool chess_position_is_king_attacked(const struct chess_position *position, enum chess_color color) {
+	assert(chess_position_is_valid(position));
+
+	return chess_square_is_attacked(position, position->king_squares[color], chess_color_opposite(color));
+}
 bool chess_position_is_check(const struct chess_position *position) {
-	return chess_square_is_attacked(
-	    position,
-	    position->king_squares[position->side_to_move],
-	    chess_color_opposite(position->side_to_move)
-	);
+	return chess_position_is_king_attacked(position, position->side_to_move);
 }
 bool chess_position_is_checkmate(const struct chess_position *position) {
+	assert(chess_position_is_valid(position));
+
 	return chess_position_is_check(position) && chess_moves_generate(position).count == 0;
 }
 bool chess_position_is_stalemate(const struct chess_position *position) {
+	assert(chess_position_is_valid(position));
+
 	return !chess_position_is_check(position) && chess_moves_generate(position).count == 0;
+}
+bool chess_position_is_fifty_move_rule(const struct chess_position *position) {
+	assert(chess_position_is_valid(position));
+
+	return position->half_move_clock >= 100 && !chess_position_is_checkmate(position);
+}
+bool chess_position_is_threefold_repetition(const struct chess_position *position) {
+	assert(chess_position_is_valid(position));
+
+	// TODO: implement threefold repetition detection
+
+	return false;
+}
+bool chess_position_is_insufficient_material(const struct chess_position *position) {
+	assert(chess_position_is_valid(position));
+
+	// TODO: implement insufficient material detection
+
+	return false;
 }
 
 bool chess_move_is_legal(const struct chess_position *position, struct chess_move move) {
+	assert(chess_position_is_valid(position));
+
 	// TODO: implement actual move legality checking
 	struct chess_moves moves = chess_moves_generate(position);
 	for (size_t i = 0; i < moves.count; i++) {
@@ -686,7 +712,7 @@ static void chess_move_do_unchecked(struct chess_position *position, struct ches
 	}
 }
 bool chess_move_do(struct chess_position *position, struct chess_move move) {
-	assert(position != nullptr);
+	assert(chess_position_is_valid(position));
 
 	if (!chess_move_is_legal(position, move)) {
 		return false;
@@ -704,11 +730,8 @@ static void chess_moves_add(struct chess_moves *moves, const struct chess_positi
 
 	struct chess_position position_after_move = *position;
 	chess_move_do_unchecked(&position_after_move, move);
-	if (!chess_square_is_attacked(
-	        position,
-	        position_after_move.king_squares[position->side_to_move],
-	        chess_color_opposite(position->side_to_move)
-	    )) {
+	if (!chess_position_is_king_attacked(&position_after_move, position->side_to_move)) {
+		assert(moves->count < CHESS_MOVES_MAXIMUM_COUNT);
 		moves->moves[moves->count++] = move;
 	}
 }
@@ -943,4 +966,24 @@ struct chess_moves chess_moves_generate(const struct chess_position *position) {
 	chess_moves_generate_king_castlings(&moves, position);
 
 	return moves;
+}
+
+unsigned long chess_perft_recursive(const struct chess_position *position, unsigned int depth) {
+	struct chess_moves moves = chess_moves_generate(position);
+	if (depth == 1) {
+		return moves.count;
+	}
+
+	unsigned long count = 0;
+	for (size_t i = 0; i < moves.count; i++) {
+		struct chess_position position_after_move = *position;
+		chess_move_do_unchecked(&position_after_move, moves.moves[i]);
+		count += chess_perft_recursive(&position_after_move, depth - 1);
+	}
+
+	return count;
+}
+unsigned long chess_perft(unsigned int depth) {
+	struct chess_position initial_position = chess_position_new();
+	return chess_perft_recursive(&initial_position, depth);
 }
