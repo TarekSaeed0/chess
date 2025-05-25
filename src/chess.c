@@ -202,10 +202,8 @@ bool chess_square_is_attacked(const struct chess_position *position, enum chess_
 			enum chess_piece_type attacker_type = chess_piece_type(attacker);
 			if (attacks[index] & (1U << attacker_type)) {
 				switch (attacker_type) {
-
 					case CHESS_PIECE_TYPE_PAWN: {
-						if ((difference > 0 && attacker_color == CHESS_COLOR_WHITE) ||
-						    (difference < 0 && attacker_color == CHESS_COLOR_BLACK)) {
+						if (attacker_color == CHESS_COLOR_WHITE ? difference > 0 : difference < 0) {
 							return true;
 						}
 					} break;
@@ -637,6 +635,25 @@ bool chess_move_is_legal(const struct chess_position *position, struct chess_mov
 
 	return false;
 }
+bool chess_move_is_promotion(const struct chess_position *position, struct chess_move move) {
+	(void)position;
+	return move.promotion_type != CHESS_PIECE_TYPE_NONE;
+}
+bool chess_move_is_en_passant(const struct chess_position *position, struct chess_move move) {
+	return chess_piece_type(position->board[move.from]) == CHESS_PIECE_TYPE_PAWN &&
+	       move.to == position->en_passant_square;
+}
+bool chess_move_is_capture(const struct chess_position *position, struct chess_move move) {
+	if (position->board[move.to] != CHESS_PIECE_NONE) {
+		return true;
+	}
+
+	return chess_move_is_en_passant(position, move);
+}
+bool chess_move_is_castling(const struct chess_position *position, struct chess_move move) {
+	return chess_piece_type(position->board[move.from]) == CHESS_PIECE_TYPE_KING &&
+	       (move.to - move.from == 2 * CHESS_OFFSET_EAST || move.to - move.from == 2 * CHESS_OFFSET_WEST);
+}
 static void chess_move_do_unchecked(struct chess_position *position, struct chess_move move) {
 	assert(chess_position_is_valid(position));
 
@@ -645,11 +662,14 @@ static void chess_move_do_unchecked(struct chess_position *position, struct ches
 	enum chess_piece captured_piece     = position->board[move.to];
 	enum chess_piece_type captured_type = chess_piece_type(captured_piece);
 	enum chess_color side_to_move       = position->side_to_move;
+	enum chess_square en_passant_square = position->en_passant_square;
 
 	position->board[move.to]            = piece;
 	position->board[move.from]          = CHESS_PIECE_NONE;
 
 	position->side_to_move              = chess_color_opposite(side_to_move);
+
+	position->en_passant_square         = CHESS_SQUARE_NONE;
 
 	if (captured_type != CHESS_PIECE_TYPE_NONE) {
 		position->half_move_clock = 0;
@@ -662,17 +682,16 @@ static void chess_move_do_unchecked(struct chess_position *position, struct ches
 	}
 
 	if (move.promotion_type != CHESS_PIECE_TYPE_NONE) {
-		position->board[move.to] = chess_piece_new(position->side_to_move, move.promotion_type);
+		position->board[move.to] = chess_piece_new(side_to_move, move.promotion_type);
 	}
 
-	position->en_passant_square = CHESS_SQUARE_NONE;
 	if (type == CHESS_PIECE_TYPE_PAWN) {
 		position->half_move_clock   = 0;
 
 		enum chess_offset direction = side_to_move == CHESS_COLOR_WHITE ? CHESS_OFFSET_NORTH : CHESS_OFFSET_SOUTH;
 		if (move.to - move.from == 2 * direction) {
 			position->en_passant_square = (enum chess_square)(move.from + direction);
-		} else if (move.to == position->en_passant_square) {
+		} else if (move.to == en_passant_square) {
 			position->board[move.to - direction] = CHESS_PIECE_NONE;
 		}
 	}
@@ -869,8 +888,9 @@ static void chess_moves_generate_king_castlings(struct chess_moves *moves, const
 
 	if (position->castling_rights & king_side_castling_right) {
 		if (position->board[from + CHESS_OFFSET_EAST] == CHESS_PIECE_NONE &&
-		    !chess_square_is_attacked(position, (enum chess_square)(from + CHESS_OFFSET_EAST), other_side) &&
 		    position->board[from + 2 * CHESS_OFFSET_EAST] == CHESS_PIECE_NONE &&
+		    !chess_square_is_attacked(position, from, other_side) &&
+		    !chess_square_is_attacked(position, (enum chess_square)(from + CHESS_OFFSET_EAST), other_side) &&
 		    !chess_square_is_attacked(position, (enum chess_square)(from + 2 * CHESS_OFFSET_EAST), other_side)) {
 			chess_moves_add(
 			    moves,
@@ -884,11 +904,11 @@ static void chess_moves_generate_king_castlings(struct chess_moves *moves, const
 	}
 	if (position->castling_rights & queen_side_castling_right) {
 		if (position->board[from + CHESS_OFFSET_WEST] == CHESS_PIECE_NONE &&
-		    !chess_square_is_attacked(position, (enum chess_square)(from + CHESS_OFFSET_WEST), other_side) &&
 		    position->board[from + 2 * CHESS_OFFSET_WEST] == CHESS_PIECE_NONE &&
-		    !chess_square_is_attacked(position, (enum chess_square)(from + 2 * CHESS_OFFSET_WEST), other_side) &&
 		    position->board[from + 3 * CHESS_OFFSET_WEST] == CHESS_PIECE_NONE &&
-		    !chess_square_is_attacked(position, (enum chess_square)(from + 3 * CHESS_OFFSET_WEST), other_side)) {
+		    !chess_square_is_attacked(position, from, other_side) &&
+		    !chess_square_is_attacked(position, (enum chess_square)(from + CHESS_OFFSET_WEST), other_side) &&
+		    !chess_square_is_attacked(position, (enum chess_square)(from + 2 * CHESS_OFFSET_WEST), other_side)) {
 			chess_moves_add(
 			    moves,
 			    position,
