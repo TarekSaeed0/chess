@@ -11,6 +11,44 @@
 
 #define ARRAY_LENGTH(array) (sizeof(array) / sizeof((array)[0]))
 
+#define WRITE(function, ...)                                     \
+	do {                                                           \
+		size_t written = function(__VA_ARGS__, string, string_size); \
+		if (written < string_size) {                                 \
+			if (string != nullptr) {                                   \
+				string += written;                                       \
+			}                                                          \
+			string_size -= written;                                    \
+		} else {                                                     \
+			string_size = 0;                                           \
+		}                                                            \
+		total_written += written;                                    \
+	} while (false)
+#define WRITE_FORMATTED(...)                                  \
+	do {                                                        \
+		int written = snprintf(string, string_size, __VA_ARGS__); \
+		assert(written >= 0);                                     \
+		if ((size_t)written < string_size) {                      \
+			if (string != nullptr) {                                \
+				string += (size_t)written;                            \
+			}                                                       \
+			string_size -= (size_t)written;                         \
+		} else {                                                  \
+			string_size = 0;                                        \
+		}                                                         \
+		total_written += (size_t)written;                         \
+	} while (false)
+
+#define READ(function, ...)                      \
+	do {                                           \
+		size_t read = function(__VA_ARGS__, string); \
+		if (read == 0) {                             \
+			return 0;                                  \
+		}                                            \
+		string += read;                              \
+		total_read += read;                          \
+	} while (false);
+
 bool chess_color_is_valid(enum chess_color color) {
 	switch (color) {
 		case CHESS_COLOR_WHITE:
@@ -25,6 +63,51 @@ enum chess_color chess_color_opposite(enum chess_color color) {
 		case CHESS_COLOR_BLACK: return CHESS_COLOR_WHITE;
 		default: assert(false);
 	}
+}
+
+bool chess_piece_type_is_valid(enum chess_piece_type type) {
+	switch (type) {
+		case CHESS_PIECE_TYPE_PAWN:
+		case CHESS_PIECE_TYPE_KNIGHT:
+		case CHESS_PIECE_TYPE_BISHOP:
+		case CHESS_PIECE_TYPE_ROOK:
+		case CHESS_PIECE_TYPE_QUEEN:
+		case CHESS_PIECE_TYPE_KING: return true;
+		default: return false;
+	}
+}
+size_t chess_piece_type_from_algebraic(enum chess_piece_type *type, const char *string) {
+	assert(type != nullptr && string != nullptr);
+
+	switch (string[0]) {
+		case 'P': *type = CHESS_PIECE_TYPE_PAWN; break;
+		case 'N': *type = CHESS_PIECE_TYPE_KNIGHT; break;
+		case 'B': *type = CHESS_PIECE_TYPE_BISHOP; break;
+		case 'R': *type = CHESS_PIECE_TYPE_ROOK; break;
+		case 'Q': *type = CHESS_PIECE_TYPE_QUEEN; break;
+		case 'K': *type = CHESS_PIECE_TYPE_KING; break;
+		default: return 0;
+	}
+
+	return 1;
+}
+size_t chess_piece_type_to_algebraic(enum chess_piece_type type, char *string, size_t string_size) {
+	assert(chess_piece_type_is_valid(type) && (string != nullptr || string_size == 0));
+
+	if (string != nullptr && string_size >= 2) {
+		switch (type) {
+			case CHESS_PIECE_TYPE_PAWN: string[0] = 'P'; break;
+			case CHESS_PIECE_TYPE_KNIGHT: string[0] = 'N'; break;
+			case CHESS_PIECE_TYPE_BISHOP: string[0] = 'B'; break;
+			case CHESS_PIECE_TYPE_ROOK: string[0] = 'R'; break;
+			case CHESS_PIECE_TYPE_QUEEN: string[0] = 'Q'; break;
+			case CHESS_PIECE_TYPE_KING: string[0] = 'K'; break;
+			default: assert(false);
+		}
+		string[1] = '\0';
+	}
+
+	return 1;
 }
 
 bool chess_piece_is_valid(enum chess_piece piece) {
@@ -44,10 +127,10 @@ bool chess_piece_is_valid(enum chess_piece piece) {
 		default: return false;
 	}
 }
-size_t chess_piece_from_algebraic(enum chess_piece *piece, const char *algebraic) {
-	assert(piece != nullptr && algebraic != nullptr);
+size_t chess_piece_from_algebraic(enum chess_piece *piece, const char *string) {
+	assert(piece != nullptr && string != nullptr);
 
-	switch (algebraic[0]) {
+	switch (string[0]) {
 		case 'P': *piece = CHESS_PIECE_WHITE_PAWN; break;
 		case 'N': *piece = CHESS_PIECE_WHITE_KNIGHT; break;
 		case 'B': *piece = CHESS_PIECE_WHITE_BISHOP; break;
@@ -65,41 +148,83 @@ size_t chess_piece_from_algebraic(enum chess_piece *piece, const char *algebraic
 
 	return 1;
 }
-size_t chess_piece_to_algebraic(enum chess_piece piece, char *algebraic, size_t algebraic_size) {
-	size_t total_written = 0;
-#define APPEND_TO_ALGEBRAIC(...)                                                                                       \
-	do {                                                                                                                 \
-		int written = snprintf(algebraic, algebraic_size, __VA_ARGS__);                                                    \
-		assert(written >= 0);                                                                                              \
-		if ((size_t)written < algebraic_size) {                                                                            \
-			if (algebraic != NULL) {                                                                                         \
-				algebraic += written;                                                                                          \
-			}                                                                                                                \
-			algebraic_size -= (size_t)written;                                                                               \
-		} else {                                                                                                           \
-			algebraic_size = 0;                                                                                              \
-		}                                                                                                                  \
-		total_written += (size_t)written;                                                                                  \
-	} while (0)
+size_t chess_piece_to_algebraic(enum chess_piece piece, char *string, size_t string_size) {
+	assert(chess_piece_is_valid(piece) && (string != nullptr || string_size == 0));
 
-	switch (piece) {
-		case CHESS_PIECE_WHITE_PAWN: APPEND_TO_ALGEBRAIC("P"); break;
-		case CHESS_PIECE_WHITE_KNIGHT: APPEND_TO_ALGEBRAIC("N"); break;
-		case CHESS_PIECE_WHITE_BISHOP: APPEND_TO_ALGEBRAIC("B"); break;
-		case CHESS_PIECE_WHITE_ROOK: APPEND_TO_ALGEBRAIC("R"); break;
-		case CHESS_PIECE_WHITE_QUEEN: APPEND_TO_ALGEBRAIC("Q"); break;
-		case CHESS_PIECE_WHITE_KING: APPEND_TO_ALGEBRAIC("K"); break;
-		case CHESS_PIECE_BLACK_PAWN: APPEND_TO_ALGEBRAIC("p"); break;
-		case CHESS_PIECE_BLACK_KNIGHT: APPEND_TO_ALGEBRAIC("n"); break;
-		case CHESS_PIECE_BLACK_BISHOP: APPEND_TO_ALGEBRAIC("b"); break;
-		case CHESS_PIECE_BLACK_ROOK: APPEND_TO_ALGEBRAIC("r"); break;
-		case CHESS_PIECE_BLACK_QUEEN: APPEND_TO_ALGEBRAIC("q"); break;
-		case CHESS_PIECE_BLACK_KING: APPEND_TO_ALGEBRAIC("k"); break;
-		default: assert(false);
+	if (string != nullptr && string_size >= 2) {
+		switch (piece) {
+			case CHESS_PIECE_WHITE_PAWN: string[0] = 'P'; break;
+			case CHESS_PIECE_WHITE_KNIGHT: string[0] = 'N'; break;
+			case CHESS_PIECE_WHITE_BISHOP: string[0] = 'B'; break;
+			case CHESS_PIECE_WHITE_ROOK: string[0] = 'R'; break;
+			case CHESS_PIECE_WHITE_QUEEN: string[0] = 'Q'; break;
+			case CHESS_PIECE_WHITE_KING: string[0] = 'K'; break;
+			case CHESS_PIECE_BLACK_PAWN: string[0] = 'p'; break;
+			case CHESS_PIECE_BLACK_KNIGHT: string[0] = 'n'; break;
+			case CHESS_PIECE_BLACK_BISHOP: string[0] = 'b'; break;
+			case CHESS_PIECE_BLACK_ROOK: string[0] = 'r'; break;
+			case CHESS_PIECE_BLACK_QUEEN: string[0] = 'q'; break;
+			case CHESS_PIECE_BLACK_KING: string[0] = 'k'; break;
+			default: assert(false);
+		}
+		string[1] = '\0';
 	}
 
-	return total_written;
-#undef APPEND_TO_ALGEBRAIC
+	return 1;
+}
+
+bool chess_file_is_valid(enum chess_file file) {
+	return (file & 0x8U) == 0x8U;
+}
+size_t chess_file_from_algebraic(enum chess_file *file, const char *string) {
+	assert(file != nullptr && string != nullptr);
+
+	if (string[0] < 'a' || 'h' < string[0]) {
+		return 0;
+	}
+
+	*file = (enum chess_file)(CHESS_FILE_A + (string[0] - 'a'));
+
+	assert(chess_file_is_valid(*file));
+
+	return 1;
+}
+size_t chess_file_to_algebraic(enum chess_file file, char *string, size_t string_size) {
+	assert(chess_file_is_valid(file) && (string != nullptr || string_size == 0));
+
+	if (string != nullptr && string_size >= 2) {
+		string[0] = (char)('a' + (file - CHESS_FILE_A));
+		string[1] = '\0';
+	}
+
+	return 1;
+}
+
+bool chess_rank_is_valid(enum chess_rank rank) {
+	return (rank & 0x8U) == 0x8U;
+}
+size_t chess_rank_from_algebraic(enum chess_rank *rank, const char *string) {
+	assert(rank != nullptr && string != nullptr);
+
+	if (string[0] < 'a' || 'h' < string[0]) {
+		return 0;
+	}
+
+	*rank = (enum chess_rank)(CHESS_RANK_1 + (string[0] - '1'));
+
+	assert(chess_rank_is_valid(*rank));
+
+	return 1;
+}
+size_t chess_rank_to_algebraic(enum chess_rank rank, char *string, size_t string_size) {
+	assert(chess_rank_is_valid(rank) && (string != nullptr || string_size == 0));
+
+	if (string != nullptr && string_size >= 2) {
+		string[0] = (char)('1' + (rank - CHESS_RANK_1));
+		string[1] = '\0';
+	}
+
+	return 1;
 }
 
 enum chess_offset : int8_t {
@@ -120,47 +245,32 @@ enum chess_color chess_square_color(enum chess_square square) {
 bool chess_square_is_valid(enum chess_square square) {
 	return (square & 0x88U) == 0x88U;
 }
-size_t chess_square_from_algebraic(enum chess_square *square, const char *algebraic) {
-	assert(square != nullptr && algebraic != nullptr);
+size_t chess_square_from_algebraic(enum chess_square *square, const char *string) {
+	assert(square != nullptr && string != nullptr);
 
-	if (algebraic[0] < 'a' || 'h' < algebraic[0] || algebraic[1] < '1' || '8' < algebraic[1]) {
-		return 0;
-	}
+	size_t total_read    = 0; // NOLINT(readability-identifier-length)
 
-	enum chess_file file = (enum chess_file)(CHESS_FILE_A + (algebraic[0] - 'a'));
-	enum chess_rank rank = (enum chess_rank)(CHESS_RANK_1 + (algebraic[1] - '1'));
-	*square              = chess_square_new(file, rank);
+	enum chess_file file = CHESS_FILE_NONE;
+	READ(chess_file_from_algebraic, &file);
+
+	enum chess_rank rank = CHESS_RANK_NONE;
+	READ(chess_rank_from_algebraic, &rank);
+
+	*square = chess_square_new(file, rank);
 
 	assert(chess_square_is_valid(*square));
 
-	return 2;
+	return total_read;
 }
-size_t chess_square_to_algebraic(enum chess_square square, char *algebraic, size_t algebraic_size) {
+size_t chess_square_to_algebraic(enum chess_square square, char *string, size_t string_size) {
 	assert(chess_square_is_valid(square));
 
 	size_t total_written = 0;
-#define APPEND_TO_ALGEBRAIC(...)                                                                                       \
-	do {                                                                                                                 \
-		int written = snprintf(algebraic, algebraic_size, __VA_ARGS__);                                                    \
-		assert(written >= 0);                                                                                              \
-		if ((size_t)written < algebraic_size) {                                                                            \
-			if (algebraic != NULL) {                                                                                         \
-				algebraic += written;                                                                                          \
-			}                                                                                                                \
-			algebraic_size -= (size_t)written;                                                                               \
-		} else {                                                                                                           \
-			algebraic_size = 0;                                                                                              \
-		}                                                                                                                  \
-		total_written += (size_t)written;                                                                                  \
-	} while (0)
 
-	enum chess_file file = chess_square_file(square);
-	enum chess_rank rank = chess_square_rank(square);
-	APPEND_TO_ALGEBRAIC("%c", (char)('a' + (file - CHESS_FILE_A)));
-	APPEND_TO_ALGEBRAIC("%c", (char)('1' + (rank - CHESS_RANK_1)));
+	WRITE(chess_file_to_algebraic, chess_square_file(square));
+	WRITE(chess_rank_to_algebraic, chess_square_rank(square));
 
 	return total_written;
-#undef APPEND_TO_ALGEBRAIC
 }
 bool chess_square_is_attacked(const struct chess_position *position, enum chess_square square, enum chess_color color) {
 	assert(chess_position_is_valid(position) && chess_square_is_valid(square));
@@ -257,53 +367,53 @@ bool chess_square_is_attacked(const struct chess_position *position, enum chess_
 }
 
 struct chess_position chess_position_new(void) {
-	return (struct chess_position) {
-		.board = { 
-			[CHESS_SQUARE_A8] = CHESS_PIECE_BLACK_ROOK,
-			[CHESS_SQUARE_B8] = CHESS_PIECE_BLACK_KNIGHT,
-			[CHESS_SQUARE_C8] = CHESS_PIECE_BLACK_BISHOP,
-			[CHESS_SQUARE_D8] = CHESS_PIECE_BLACK_QUEEN,
-			[CHESS_SQUARE_E8] = CHESS_PIECE_BLACK_KING,
-			[CHESS_SQUARE_F8] = CHESS_PIECE_BLACK_BISHOP,
-			[CHESS_SQUARE_G8] = CHESS_PIECE_BLACK_KNIGHT,
-			[CHESS_SQUARE_H8] = CHESS_PIECE_BLACK_ROOK,
+	return (struct chess_position){
+		.board = {
+		    [CHESS_SQUARE_A8] = CHESS_PIECE_BLACK_ROOK,
+		    [CHESS_SQUARE_B8] = CHESS_PIECE_BLACK_KNIGHT,
+		    [CHESS_SQUARE_C8] = CHESS_PIECE_BLACK_BISHOP,
+		    [CHESS_SQUARE_D8] = CHESS_PIECE_BLACK_QUEEN,
+		    [CHESS_SQUARE_E8] = CHESS_PIECE_BLACK_KING,
+		    [CHESS_SQUARE_F8] = CHESS_PIECE_BLACK_BISHOP,
+		    [CHESS_SQUARE_G8] = CHESS_PIECE_BLACK_KNIGHT,
+		    [CHESS_SQUARE_H8] = CHESS_PIECE_BLACK_ROOK,
 
-			[CHESS_SQUARE_A7] = CHESS_PIECE_BLACK_PAWN,
-			[CHESS_SQUARE_B7] = CHESS_PIECE_BLACK_PAWN,
-			[CHESS_SQUARE_C7] = CHESS_PIECE_BLACK_PAWN,
-			[CHESS_SQUARE_D7] = CHESS_PIECE_BLACK_PAWN,
-			[CHESS_SQUARE_E7] = CHESS_PIECE_BLACK_PAWN,
-			[CHESS_SQUARE_F7] = CHESS_PIECE_BLACK_PAWN,
-			[CHESS_SQUARE_G7] = CHESS_PIECE_BLACK_PAWN,
-			[CHESS_SQUARE_H7] = CHESS_PIECE_BLACK_PAWN,
+		    [CHESS_SQUARE_A7] = CHESS_PIECE_BLACK_PAWN,
+		    [CHESS_SQUARE_B7] = CHESS_PIECE_BLACK_PAWN,
+		    [CHESS_SQUARE_C7] = CHESS_PIECE_BLACK_PAWN,
+		    [CHESS_SQUARE_D7] = CHESS_PIECE_BLACK_PAWN,
+		    [CHESS_SQUARE_E7] = CHESS_PIECE_BLACK_PAWN,
+		    [CHESS_SQUARE_F7] = CHESS_PIECE_BLACK_PAWN,
+		    [CHESS_SQUARE_G7] = CHESS_PIECE_BLACK_PAWN,
+		    [CHESS_SQUARE_H7] = CHESS_PIECE_BLACK_PAWN,
 
-			[CHESS_SQUARE_A2] = CHESS_PIECE_WHITE_PAWN,
-			[CHESS_SQUARE_B2] = CHESS_PIECE_WHITE_PAWN,
-			[CHESS_SQUARE_C2] = CHESS_PIECE_WHITE_PAWN,
-			[CHESS_SQUARE_D2] = CHESS_PIECE_WHITE_PAWN,
-			[CHESS_SQUARE_E2] = CHESS_PIECE_WHITE_PAWN,
-			[CHESS_SQUARE_F2] = CHESS_PIECE_WHITE_PAWN,
-			[CHESS_SQUARE_G2] = CHESS_PIECE_WHITE_PAWN,
-			[CHESS_SQUARE_H2] = CHESS_PIECE_WHITE_PAWN,
+		    [CHESS_SQUARE_A2] = CHESS_PIECE_WHITE_PAWN,
+		    [CHESS_SQUARE_B2] = CHESS_PIECE_WHITE_PAWN,
+		    [CHESS_SQUARE_C2] = CHESS_PIECE_WHITE_PAWN,
+		    [CHESS_SQUARE_D2] = CHESS_PIECE_WHITE_PAWN,
+		    [CHESS_SQUARE_E2] = CHESS_PIECE_WHITE_PAWN,
+		    [CHESS_SQUARE_F2] = CHESS_PIECE_WHITE_PAWN,
+		    [CHESS_SQUARE_G2] = CHESS_PIECE_WHITE_PAWN,
+		    [CHESS_SQUARE_H2] = CHESS_PIECE_WHITE_PAWN,
 
-			[CHESS_SQUARE_A1] = CHESS_PIECE_WHITE_ROOK,
-			[CHESS_SQUARE_B1] = CHESS_PIECE_WHITE_KNIGHT,
-			[CHESS_SQUARE_C1] = CHESS_PIECE_WHITE_BISHOP,
-			[CHESS_SQUARE_D1] = CHESS_PIECE_WHITE_QUEEN,
-			[CHESS_SQUARE_E1] = CHESS_PIECE_WHITE_KING,
-			[CHESS_SQUARE_F1] = CHESS_PIECE_WHITE_BISHOP,
-			[CHESS_SQUARE_G1] = CHESS_PIECE_WHITE_KNIGHT,
-			[CHESS_SQUARE_H1] = CHESS_PIECE_WHITE_ROOK,
+		    [CHESS_SQUARE_A1] = CHESS_PIECE_WHITE_ROOK,
+		    [CHESS_SQUARE_B1] = CHESS_PIECE_WHITE_KNIGHT,
+		    [CHESS_SQUARE_C1] = CHESS_PIECE_WHITE_BISHOP,
+		    [CHESS_SQUARE_D1] = CHESS_PIECE_WHITE_QUEEN,
+		    [CHESS_SQUARE_E1] = CHESS_PIECE_WHITE_KING,
+		    [CHESS_SQUARE_F1] = CHESS_PIECE_WHITE_BISHOP,
+		    [CHESS_SQUARE_G1] = CHESS_PIECE_WHITE_KNIGHT,
+		    [CHESS_SQUARE_H1] = CHESS_PIECE_WHITE_ROOK,
 		},
-		.side_to_move = CHESS_COLOR_WHITE,
-		.castling_rights = CHESS_CASTLING_RIGHTS_WHITE_KING_SIDE | CHESS_CASTLING_RIGHTS_WHITE_QUEEN_SIDE | CHESS_CASTLING_RIGHTS_BLACK_KING_SIDE | CHESS_CASTLING_RIGHTS_BLACK_QUEEN_SIDE,
+		.side_to_move      = CHESS_COLOR_WHITE,
+		.castling_rights   = CHESS_CASTLING_RIGHTS_WHITE_KINGSIDE | CHESS_CASTLING_RIGHTS_WHITE_QUEENSIDE | CHESS_CASTLING_RIGHTS_BLACK_KINGSIDE | CHESS_CASTLING_RIGHTS_BLACK_QUEENSIDE,
 		.en_passant_square = CHESS_SQUARE_NONE,
-		.half_move_clock = 0,
-		.full_move_number = 1,
-		.king_squares = {
-			[CHESS_COLOR_WHITE] = CHESS_SQUARE_E1,
-			[CHESS_COLOR_BLACK] = CHESS_SQUARE_E8,
-		}
+		.half_move_clock   = 0,
+		.full_move_number  = 1,
+		.king_squares      = {
+        [CHESS_COLOR_WHITE] = CHESS_SQUARE_E1,
+        [CHESS_COLOR_BLACK] = CHESS_SQUARE_E8,
+    }
 	};
 }
 bool chess_position_is_valid(const struct chess_position *position) {
@@ -322,16 +432,16 @@ bool chess_position_is_valid(const struct chess_position *position) {
 		return false;
 	}
 
-	if (((position->castling_rights & CHESS_CASTLING_RIGHTS_WHITE_KING_SIDE) &&
+	if (((position->castling_rights & CHESS_CASTLING_RIGHTS_WHITE_KINGSIDE) &&
 	     (position->board[CHESS_SQUARE_E1] != CHESS_PIECE_WHITE_KING ||
 	      position->board[CHESS_SQUARE_H1] != CHESS_PIECE_WHITE_ROOK)) ||
-	    ((position->castling_rights & CHESS_CASTLING_RIGHTS_WHITE_QUEEN_SIDE) &&
+	    ((position->castling_rights & CHESS_CASTLING_RIGHTS_WHITE_QUEENSIDE) &&
 	     (position->board[CHESS_SQUARE_E1] != CHESS_PIECE_WHITE_KING ||
 	      position->board[CHESS_SQUARE_A1] != CHESS_PIECE_WHITE_ROOK)) ||
-	    ((position->castling_rights & CHESS_CASTLING_RIGHTS_BLACK_KING_SIDE) &&
+	    ((position->castling_rights & CHESS_CASTLING_RIGHTS_BLACK_KINGSIDE) &&
 	     (position->board[CHESS_SQUARE_E8] != CHESS_PIECE_BLACK_KING ||
 	      position->board[CHESS_SQUARE_H8] != CHESS_PIECE_BLACK_ROOK)) ||
-	    ((position->castling_rights & CHESS_CASTLING_RIGHTS_BLACK_QUEEN_SIDE) &&
+	    ((position->castling_rights & CHESS_CASTLING_RIGHTS_BLACK_QUEENSIDE) &&
 	     (position->board[CHESS_SQUARE_E8] != CHESS_PIECE_BLACK_KING ||
 	      position->board[CHESS_SQUARE_A8] != CHESS_PIECE_BLACK_ROOK))) {
 		return false;
@@ -355,17 +465,23 @@ bool chess_position_is_valid(const struct chess_position *position) {
 			if (piece != CHESS_PIECE_NONE && !chess_piece_is_valid(piece)) {
 				return false;
 			}
+
+			enum chess_color color     = chess_piece_color(piece);
+			enum chess_piece_type type = chess_piece_type(piece);
+			if (type == CHESS_PIECE_TYPE_KING && square != position->king_squares[color]) {
+				return false;
+			}
 		}
 	}
 
 	return true;
 }
-size_t chess_position_from_fen(struct chess_position *position, const char *fen) {
-	assert(fen != NULL);
+size_t chess_position_from_fen(struct chess_position *position, const char *string) {
+	assert(position != nullptr && string != nullptr);
 
 	size_t total_read = 0; // NOLINT(readability-identifier-length)
 
-	while (isspace(fen[total_read])) {
+	while (isspace(string[total_read])) {
 		total_read++;
 	}
 
@@ -373,14 +489,14 @@ size_t chess_position_from_fen(struct chess_position *position, const char *fen)
 	for (enum chess_rank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
 		for (enum chess_file file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
 			enum chess_square square = chess_square_new(file, rank);
-			if ('1' <= fen[total_read] && fen[total_read] <= '8') {
-				if (fen[total_read] > CHESS_FILE_H - file + '1') {
+			if ('1' <= string[total_read] && string[total_read] <= '8') {
+				if (string[total_read] > CHESS_FILE_H - file + '1') {
 					return 0;
 				}
-				file += (fen[total_read] - '1');
+				file += (string[total_read] - '1');
 				total_read++;
 			} else {
-				size_t read = chess_piece_from_algebraic(&position->board[square], &fen[total_read]);
+				size_t read = chess_piece_from_algebraic(&position->board[square], &string[total_read]);
 				if (read == 0) {
 					return 0;
 				}
@@ -392,119 +508,105 @@ size_t chess_position_from_fen(struct chess_position *position, const char *fen)
 			}
 		}
 		if (rank != CHESS_RANK_1) {
-			if (fen[total_read] != '/') {
+			if (string[total_read] != '/') {
 				return 0;
 			}
 			total_read++;
 		}
 	}
 
-	if (!isspace(fen[total_read])) {
+	if (!isspace(string[total_read])) {
 		return 0;
 	}
-	while (isspace(fen[total_read])) {
+	while (isspace(string[total_read])) {
 		total_read++;
 	}
 
-	if (fen[total_read] == 'w') {
+	if (string[total_read] == 'w') {
 		position->side_to_move = CHESS_COLOR_WHITE;
-	} else if (fen[total_read] == 'b') {
+	} else if (string[total_read] == 'b') {
 		position->side_to_move = CHESS_COLOR_BLACK;
 	} else {
 		return 0;
 	}
 	total_read++;
 
-	if (!isspace(fen[total_read])) {
+	if (!isspace(string[total_read])) {
 		return 0;
 	}
-	while (isspace(fen[total_read])) {
+	while (isspace(string[total_read])) {
 		total_read++;
 	}
 
 	position->castling_rights = CHESS_CASTLING_RIGHTS_NONE;
-	while (fen[total_read] != '\0' && fen[total_read] != ' ') {
-		switch (fen[total_read]) {
-			case 'K': position->castling_rights |= CHESS_CASTLING_RIGHTS_WHITE_KING_SIDE; break;
-			case 'Q': position->castling_rights |= CHESS_CASTLING_RIGHTS_WHITE_QUEEN_SIDE; break;
-			case 'k': position->castling_rights |= CHESS_CASTLING_RIGHTS_BLACK_KING_SIDE; break;
-			case 'q': position->castling_rights |= CHESS_CASTLING_RIGHTS_BLACK_QUEEN_SIDE; break;
+	while (string[total_read] != '\0' && string[total_read] != ' ') {
+		switch (string[total_read]) {
+			case 'K': position->castling_rights |= CHESS_CASTLING_RIGHTS_WHITE_KINGSIDE; break;
+			case 'Q': position->castling_rights |= CHESS_CASTLING_RIGHTS_WHITE_QUEENSIDE; break;
+			case 'k': position->castling_rights |= CHESS_CASTLING_RIGHTS_BLACK_KINGSIDE; break;
+			case 'q': position->castling_rights |= CHESS_CASTLING_RIGHTS_BLACK_QUEENSIDE; break;
 			case '-': break;
 			default: return 0;
 		}
 		total_read++;
 	}
 
-	if (!isspace(fen[total_read])) {
+	if (!isspace(string[total_read])) {
 		return 0;
 	}
-	while (isspace(fen[total_read])) {
+	while (isspace(string[total_read])) {
 		total_read++;
 	}
 
-	if (fen[total_read] == '-') {
+	if (string[total_read] == '-') {
 		position->en_passant_square = CHESS_SQUARE_NONE;
 		total_read++;
 	} else {
-		size_t read = chess_square_from_algebraic(&position->en_passant_square, &fen[total_read]);
+		size_t read = chess_square_from_algebraic(&position->en_passant_square, &string[total_read]);
 		if (read == 0) {
 			return 0;
 		}
 		total_read += read;
 	}
 
-	if (!isspace(fen[total_read])) {
+	if (!isspace(string[total_read])) {
 		return 0;
 	}
-	while (isspace(fen[total_read])) {
+	while (isspace(string[total_read])) {
 		total_read++;
 	}
 
 	errno                = 0;
 	char *end            = nullptr;
-	unsigned long number = strtoul(fen + total_read, &end, 10);
-	if (end == fen + total_read || errno != 0 || number > UINT_MAX) {
+	unsigned long number = strtoul(string + total_read, &end, 10);
+	if (end == string + total_read || errno != 0 || number > UINT_MAX) {
 		return 0;
 	}
 	position->half_move_clock = (unsigned int)number;
-	total_read                = (size_t)(end - fen);
+	total_read                = (size_t)(end - string);
 
-	if (!isspace(fen[total_read])) {
+	if (!isspace(string[total_read])) {
 		return 0;
 	}
-	while (isspace(fen[total_read])) {
+	while (isspace(string[total_read])) {
 		total_read++;
 	}
 
 	errno  = 0;
 	end    = nullptr;
-	number = strtoul(fen + total_read, &end, 10);
-	if (end == fen + total_read || errno != 0 || number > UINT_MAX) {
+	number = strtoul(string + total_read, &end, 10);
+	if (end == string + total_read || errno != 0 || number > UINT_MAX) {
 		return 0;
 	}
 	position->full_move_number = (unsigned int)number;
-	total_read                 = (size_t)(end - fen);
+	total_read                 = (size_t)(end - string);
 
 	return total_read;
 }
-size_t chess_position_to_fen(const struct chess_position *position, char *fen, size_t fen_size) {
+size_t chess_position_to_fen(const struct chess_position *position, char *string, size_t string_size) {
 	assert(chess_position_is_valid(position));
 
 	size_t total_written = 0;
-#define APPEND_TO_FEN(...)                                                                                             \
-	do {                                                                                                                 \
-		int written = snprintf(fen, fen_size, __VA_ARGS__);                                                                \
-		assert(written >= 0);                                                                                              \
-		if ((size_t)written < fen_size) {                                                                                  \
-			if (fen != NULL) {                                                                                               \
-				fen += written;                                                                                                \
-			}                                                                                                                \
-			fen_size -= (size_t)written;                                                                                     \
-		} else {                                                                                                           \
-			fen_size = 0;                                                                                                    \
-		}                                                                                                                  \
-		total_written += (size_t)written;                                                                                  \
-	} while (0)
 
 	for (enum chess_rank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
 		for (enum chess_file file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
@@ -519,69 +621,52 @@ size_t chess_position_to_fen(const struct chess_position *position, char *fen, s
 					count++;
 					file++;
 				}
-				APPEND_TO_FEN("%c", (char)('0' + count));
+				WRITE_FORMATTED("%c", (char)('0' + count));
 			} else {
-				size_t written = chess_piece_to_algebraic(piece, fen, fen_size);
-				if (written < fen_size) {
-					if (fen != NULL) {
-						fen += written;
-					}
-					fen_size -= written;
-				} else {
-					fen_size = 0;
-				}
+				WRITE(chess_piece_to_algebraic, piece);
 			}
 		}
 		if (rank != CHESS_RANK_1) {
-			APPEND_TO_FEN("/");
+			WRITE_FORMATTED("/");
 		}
 	}
 
-	APPEND_TO_FEN(" ");
+	WRITE_FORMATTED(" ");
 
-	APPEND_TO_FEN("%c", position->side_to_move == CHESS_COLOR_WHITE ? 'w' : 'b');
+	WRITE_FORMATTED("%c", position->side_to_move == CHESS_COLOR_WHITE ? 'w' : 'b');
 
-	APPEND_TO_FEN(" ");
+	WRITE_FORMATTED(" ");
 
 	if (position->castling_rights) {
-		if (position->castling_rights & CHESS_CASTLING_RIGHTS_WHITE_KING_SIDE) {
-			APPEND_TO_FEN("K");
+		if (position->castling_rights & CHESS_CASTLING_RIGHTS_WHITE_KINGSIDE) {
+			WRITE_FORMATTED("K");
 		}
-		if (position->castling_rights & CHESS_CASTLING_RIGHTS_WHITE_QUEEN_SIDE) {
-			APPEND_TO_FEN("Q");
+		if (position->castling_rights & CHESS_CASTLING_RIGHTS_WHITE_QUEENSIDE) {
+			WRITE_FORMATTED("Q");
 		}
-		if (position->castling_rights & CHESS_CASTLING_RIGHTS_BLACK_KING_SIDE) {
-			APPEND_TO_FEN("k");
+		if (position->castling_rights & CHESS_CASTLING_RIGHTS_BLACK_KINGSIDE) {
+			WRITE_FORMATTED("k");
 		}
-		if (position->castling_rights & CHESS_CASTLING_RIGHTS_BLACK_QUEEN_SIDE) {
-			APPEND_TO_FEN("q");
+		if (position->castling_rights & CHESS_CASTLING_RIGHTS_BLACK_QUEENSIDE) {
+			WRITE_FORMATTED("q");
 		}
 	} else {
-		APPEND_TO_FEN("-");
+		WRITE_FORMATTED("-");
 	}
 
-	APPEND_TO_FEN(" ");
+	WRITE_FORMATTED(" ");
 
 	if (position->en_passant_square != CHESS_SQUARE_NONE) {
-		size_t written = chess_square_to_algebraic(position->en_passant_square, fen, fen_size);
-		if (written < fen_size) {
-			if (fen != NULL) {
-				fen += written;
-			}
-			fen_size -= written;
-		} else {
-			fen_size = 0;
-		}
+		WRITE(chess_square_to_algebraic, position->en_passant_square);
 	} else {
-		APPEND_TO_FEN("-");
+		WRITE_FORMATTED("-");
 	}
 
-	APPEND_TO_FEN(" ");
+	WRITE_FORMATTED(" ");
 
-	APPEND_TO_FEN("%u %u", position->half_move_clock, position->full_move_number);
+	WRITE_FORMATTED("%u %u", position->half_move_clock, position->full_move_number);
 
 	return total_written;
-#undef APPEND_TO_FEN
 }
 bool chess_position_is_king_attacked(const struct chess_position *position, enum chess_color color) {
 	assert(chess_position_is_valid(position));
@@ -589,6 +674,8 @@ bool chess_position_is_king_attacked(const struct chess_position *position, enum
 	return chess_square_is_attacked(position, position->king_squares[color], chess_color_opposite(color));
 }
 bool chess_position_is_check(const struct chess_position *position) {
+	assert(chess_position_is_valid(position));
+
 	return chess_position_is_king_attacked(position, position->side_to_move);
 }
 bool chess_position_is_checkmate(const struct chess_position *position) {
@@ -621,8 +708,115 @@ bool chess_position_is_insufficient_material(const struct chess_position *positi
 	return false;
 }
 
+bool chess_move_is_valid(struct chess_move move) {
+	if (!chess_square_is_valid(move.from) || !chess_square_is_valid(move.to)) {
+		return false;
+	}
+
+	switch (move.promotion_type) {
+		case CHESS_PIECE_TYPE_NONE:
+		case CHESS_PIECE_TYPE_KNIGHT:
+		case CHESS_PIECE_TYPE_BISHOP:
+		case CHESS_PIECE_TYPE_ROOK:
+		case CHESS_PIECE_TYPE_QUEEN: return true;
+		default: return false;
+	}
+}
+size_t chess_move_from_algebraic(const struct chess_position *position, struct chess_move *move, const char *string) {
+	assert(chess_position_is_valid(position) && move != nullptr && string != nullptr);
+
+	// TODO: implement parsing a move from string notation
+
+	return 0;
+}
+size_t chess_move_to_algebraic(const struct chess_position *position, struct chess_move move, char *string, size_t string_size) {
+	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
+
+	size_t total_written = 0;
+
+	if (chess_move_is_kingside_castling(position, move)) {
+		WRITE_FORMATTED("O-O");
+		return total_written;
+	}
+	if (chess_move_is_queenside_castling(position, move)) {
+		WRITE_FORMATTED("O-O-O");
+		return total_written;
+	}
+
+	enum chess_piece piece     = position->board[move.from];
+	enum chess_piece_type type = chess_piece_type(piece);
+	enum chess_file file       = chess_square_file(move.from);
+	if (type != CHESS_PIECE_TYPE_PAWN) {
+		enum chess_rank rank     = chess_square_rank(move.from);
+
+		bool is_ambiguous        = false;
+		bool is_type_ambiguous   = false;
+		bool is_file_ambiguous   = false;
+		bool is_rank_ambiguous   = false;
+
+		struct chess_moves moves = chess_moves_generate(position);
+		for (size_t i = 0; i < moves.count; i++) {
+			if (moves.moves[i].to != move.to || moves.moves[i].from == move.from) {
+				continue;
+			}
+
+			is_ambiguous = true;
+
+			if (position->board[moves.moves[i].from] == piece) {
+				is_type_ambiguous = true;
+
+				if (chess_square_file(moves.moves[i].from) == file) {
+					is_file_ambiguous = true;
+					break;
+				}
+				if (chess_square_rank(moves.moves[i].from) == rank) {
+					is_rank_ambiguous = true;
+					break;
+				}
+			}
+		}
+
+		if (is_ambiguous) {
+			WRITE(chess_piece_type_to_algebraic, type);
+			if (is_type_ambiguous) {
+				if (!is_file_ambiguous) {
+					WRITE(chess_file_to_algebraic, file);
+				} else if (!is_rank_ambiguous) {
+					WRITE(chess_file_to_algebraic, file);
+				}
+			}
+		}
+	}
+
+	if (chess_move_is_capture(position, move)) {
+		if (type == CHESS_PIECE_TYPE_PAWN) {
+			WRITE(chess_file_to_algebraic, file);
+		}
+		WRITE_FORMATTED("x");
+	}
+
+	WRITE(chess_square_to_algebraic, move.to);
+
+	if (chess_move_is_promotion(position, move)) {
+		WRITE_FORMATTED("=");
+		WRITE(chess_piece_type_to_algebraic, move.promotion_type);
+	}
+
+	struct chess_position position_after_move = *position;
+	if (chess_move_do(&position_after_move, move)) {
+		if (chess_position_is_check(&position_after_move)) {
+			if (chess_position_is_checkmate(&position_after_move)) {
+				WRITE_FORMATTED("#");
+			} else {
+				WRITE_FORMATTED("+");
+			}
+		}
+	}
+
+	return total_written;
+}
 bool chess_move_is_legal(const struct chess_position *position, struct chess_move move) {
-	assert(chess_position_is_valid(position));
+	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
 
 	// TODO: implement actual move legality checking
 	struct chess_moves moves = chess_moves_generate(position);
@@ -636,26 +830,38 @@ bool chess_move_is_legal(const struct chess_position *position, struct chess_mov
 	return false;
 }
 bool chess_move_is_promotion(const struct chess_position *position, struct chess_move move) {
-	(void)position;
+	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
+
 	return move.promotion_type != CHESS_PIECE_TYPE_NONE;
 }
 bool chess_move_is_en_passant(const struct chess_position *position, struct chess_move move) {
+	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
+
 	return chess_piece_type(position->board[move.from]) == CHESS_PIECE_TYPE_PAWN &&
 	       move.to == position->en_passant_square;
 }
 bool chess_move_is_capture(const struct chess_position *position, struct chess_move move) {
+	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
+
 	if (position->board[move.to] != CHESS_PIECE_NONE) {
 		return true;
 	}
 
 	return chess_move_is_en_passant(position, move);
 }
-bool chess_move_is_castling(const struct chess_position *position, struct chess_move move) {
+bool chess_move_is_kingside_castling(const struct chess_position *position, struct chess_move move) {
+	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
+
 	return chess_piece_type(position->board[move.from]) == CHESS_PIECE_TYPE_KING &&
-	       (move.to - move.from == 2 * CHESS_OFFSET_EAST || move.to - move.from == 2 * CHESS_OFFSET_WEST);
+	       move.to - move.from == 2 * CHESS_OFFSET_EAST;
+}
+bool chess_move_is_queenside_castling(const struct chess_position *position, struct chess_move move) {
+	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
+
+	return chess_piece_type(position->board[move.from]) == CHESS_PIECE_TYPE_KING && move.to - move.from == 2 * CHESS_OFFSET_WEST;
 }
 static void chess_move_do_unchecked(struct chess_position *position, struct chess_move move) {
-	assert(chess_position_is_valid(position));
+	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
 
 	enum chess_piece piece              = position->board[move.from];
 	enum chess_piece_type type          = chess_piece_type(piece);
@@ -709,31 +915,31 @@ static void chess_move_do_unchecked(struct chess_position *position, struct ches
 
 		position->castling_rights &=
 		    ~(side_to_move == CHESS_COLOR_WHITE
-		          ? CHESS_CASTLING_RIGHTS_WHITE_KING_SIDE | CHESS_CASTLING_RIGHTS_WHITE_QUEEN_SIDE
-		          : CHESS_CASTLING_RIGHTS_BLACK_KING_SIDE | CHESS_CASTLING_RIGHTS_BLACK_QUEEN_SIDE);
+		          ? CHESS_CASTLING_RIGHTS_WHITE_KINGSIDE | CHESS_CASTLING_RIGHTS_WHITE_QUEENSIDE
+		          : CHESS_CASTLING_RIGHTS_BLACK_KINGSIDE | CHESS_CASTLING_RIGHTS_BLACK_QUEENSIDE);
 	}
 
 	if (type == CHESS_PIECE_TYPE_ROOK) {
 		switch (move.from) {
-			case CHESS_SQUARE_H1: position->castling_rights &= ~(CHESS_CASTLING_RIGHTS_WHITE_KING_SIDE); break;
-			case CHESS_SQUARE_A1: position->castling_rights &= ~(CHESS_CASTLING_RIGHTS_WHITE_QUEEN_SIDE); break;
-			case CHESS_SQUARE_H8: position->castling_rights &= ~(CHESS_CASTLING_RIGHTS_BLACK_KING_SIDE); break;
-			case CHESS_SQUARE_A8: position->castling_rights &= ~(CHESS_CASTLING_RIGHTS_BLACK_QUEEN_SIDE); break;
+			case CHESS_SQUARE_H1: position->castling_rights &= ~(CHESS_CASTLING_RIGHTS_WHITE_KINGSIDE); break;
+			case CHESS_SQUARE_A1: position->castling_rights &= ~(CHESS_CASTLING_RIGHTS_WHITE_QUEENSIDE); break;
+			case CHESS_SQUARE_H8: position->castling_rights &= ~(CHESS_CASTLING_RIGHTS_BLACK_KINGSIDE); break;
+			case CHESS_SQUARE_A8: position->castling_rights &= ~(CHESS_CASTLING_RIGHTS_BLACK_QUEENSIDE); break;
 			default:;
 		}
 	}
 	if (captured_type == CHESS_PIECE_TYPE_ROOK) {
 		switch (move.to) {
-			case CHESS_SQUARE_H1: position->castling_rights &= ~(CHESS_CASTLING_RIGHTS_WHITE_KING_SIDE); break;
-			case CHESS_SQUARE_A1: position->castling_rights &= ~(CHESS_CASTLING_RIGHTS_WHITE_QUEEN_SIDE); break;
-			case CHESS_SQUARE_H8: position->castling_rights &= ~(CHESS_CASTLING_RIGHTS_BLACK_KING_SIDE); break;
-			case CHESS_SQUARE_A8: position->castling_rights &= ~(CHESS_CASTLING_RIGHTS_BLACK_QUEEN_SIDE); break;
+			case CHESS_SQUARE_H1: position->castling_rights &= ~(CHESS_CASTLING_RIGHTS_WHITE_KINGSIDE); break;
+			case CHESS_SQUARE_A1: position->castling_rights &= ~(CHESS_CASTLING_RIGHTS_WHITE_QUEENSIDE); break;
+			case CHESS_SQUARE_H8: position->castling_rights &= ~(CHESS_CASTLING_RIGHTS_BLACK_KINGSIDE); break;
+			case CHESS_SQUARE_A8: position->castling_rights &= ~(CHESS_CASTLING_RIGHTS_BLACK_QUEENSIDE); break;
 			default:;
 		}
 	}
 }
 bool chess_move_do(struct chess_position *position, struct chess_move move) {
-	assert(chess_position_is_valid(position));
+	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
 
 	if (!chess_move_is_legal(position, move)) {
 		return false;
@@ -747,7 +953,7 @@ bool chess_move_do(struct chess_position *position, struct chess_move move) {
 }
 
 static void chess_moves_add(struct chess_moves *moves, const struct chess_position *position, struct chess_move move) {
-	assert(moves != nullptr && position != nullptr);
+	assert(moves != nullptr && chess_position_is_valid(position) && chess_move_is_valid(move));
 
 	struct chess_position position_after_move = *position;
 	chess_move_do_unchecked(&position_after_move, move);
@@ -762,7 +968,7 @@ static void chess_moves_generate_pawn_promotions(
     enum chess_square from,
     enum chess_square to
 ) {
-	assert(moves != nullptr && position != nullptr);
+	assert(moves != nullptr && chess_position_is_valid(position) && chess_square_is_valid(from) && chess_square_is_valid(to));
 
 	static const enum chess_piece_type promotion_types[] = {
 		CHESS_PIECE_TYPE_KNIGHT,
@@ -787,9 +993,9 @@ static void chess_moves_generate_pawn(
     const struct chess_position *position,
     enum chess_square from
 ) {
-	assert(moves != nullptr && position != nullptr);
+	assert(moves != nullptr && chess_position_is_valid(position) && chess_square_is_valid(from));
 
-	enum chess_offset direction = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_OFFSET_NORTH : CHESS_OFFSET_SOUTH;
+	enum chess_offset direction    = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_OFFSET_NORTH : CHESS_OFFSET_SOUTH;
 
 	enum chess_rank promotion_rank = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_RANK_8 : CHESS_RANK_1;
 
@@ -835,7 +1041,7 @@ static void chess_moves_generate_directions(
     const enum chess_offset *directions,
     size_t direction_count
 ) {
-	assert(moves != nullptr && position != nullptr);
+	assert(moves != nullptr && chess_position_is_valid(position) && (directions != nullptr || direction_count == 0));
 
 	for (size_t i = 0; i < direction_count; i++) {
 		enum chess_offset direction = directions[i];
@@ -864,7 +1070,7 @@ static void chess_moves_generate_offsets(
     const enum chess_offset *offsets,
     size_t offset_count
 ) {
-	assert(moves != nullptr && position != nullptr);
+	assert(moves != nullptr && chess_position_is_valid(position) && (offsets != nullptr || offset_count == 0));
 
 	for (size_t i = 0; i < offset_count; i++) {
 		enum chess_square to = (enum chess_square)(from + offsets[i]);
@@ -873,16 +1079,16 @@ static void chess_moves_generate_offsets(
 		}
 	}
 }
-static void chess_moves_generate_king_castlings(struct chess_moves *moves, const struct chess_position *position) {
-	assert(moves != nullptr && position != nullptr);
+static void chess_moves_generate_castlings(struct chess_moves *moves, const struct chess_position *position) {
+	assert(moves != nullptr && chess_position_is_valid(position));
 
-	enum chess_square from = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_SQUARE_E1 : CHESS_SQUARE_E8;
+	enum chess_square from                               = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_SQUARE_E1 : CHESS_SQUARE_E8;
 	enum chess_castling_rights king_side_castling_right  = position->side_to_move == CHESS_COLOR_WHITE
-	                                                           ? CHESS_CASTLING_RIGHTS_WHITE_KING_SIDE
-	                                                           : CHESS_CASTLING_RIGHTS_BLACK_KING_SIDE;
+	                                                           ? CHESS_CASTLING_RIGHTS_WHITE_KINGSIDE
+	                                                           : CHESS_CASTLING_RIGHTS_BLACK_KINGSIDE;
 	enum chess_castling_rights queen_side_castling_right = position->side_to_move == CHESS_COLOR_WHITE
-	                                                           ? CHESS_CASTLING_RIGHTS_WHITE_QUEEN_SIDE
-	                                                           : CHESS_CASTLING_RIGHTS_BLACK_QUEEN_SIDE;
+	                                                           ? CHESS_CASTLING_RIGHTS_WHITE_QUEENSIDE
+	                                                           : CHESS_CASTLING_RIGHTS_BLACK_QUEENSIDE;
 
 	enum chess_color other_side                          = chess_color_opposite(position->side_to_move);
 
@@ -943,10 +1149,14 @@ struct chess_moves chess_moves_generate(const struct chess_position *position) {
 				} break;
 				case CHESS_PIECE_TYPE_KNIGHT: {
 					static const enum chess_offset offsets[] = {
-						2 * CHESS_OFFSET_NORTH + CHESS_OFFSET_EAST, 2 * CHESS_OFFSET_NORTH + CHESS_OFFSET_WEST,
-						2 * CHESS_OFFSET_EAST + CHESS_OFFSET_NORTH, 2 * CHESS_OFFSET_EAST + CHESS_OFFSET_SOUTH,
-						2 * CHESS_OFFSET_SOUTH + CHESS_OFFSET_EAST, 2 * CHESS_OFFSET_SOUTH + CHESS_OFFSET_WEST,
-						2 * CHESS_OFFSET_WEST + CHESS_OFFSET_NORTH, 2 * CHESS_OFFSET_WEST + CHESS_OFFSET_SOUTH,
+						2 * CHESS_OFFSET_NORTH + CHESS_OFFSET_EAST,
+						2 * CHESS_OFFSET_NORTH + CHESS_OFFSET_WEST,
+						2 * CHESS_OFFSET_EAST + CHESS_OFFSET_NORTH,
+						2 * CHESS_OFFSET_EAST + CHESS_OFFSET_SOUTH,
+						2 * CHESS_OFFSET_SOUTH + CHESS_OFFSET_EAST,
+						2 * CHESS_OFFSET_SOUTH + CHESS_OFFSET_WEST,
+						2 * CHESS_OFFSET_WEST + CHESS_OFFSET_NORTH,
+						2 * CHESS_OFFSET_WEST + CHESS_OFFSET_SOUTH,
 					};
 					chess_moves_generate_offsets(&moves, position, from, offsets, ARRAY_LENGTH(offsets));
 				} break;
@@ -970,15 +1180,27 @@ struct chess_moves chess_moves_generate(const struct chess_position *position) {
 				} break;
 				case CHESS_PIECE_TYPE_QUEEN: {
 					static const enum chess_offset directions[] = {
-						CHESS_OFFSET_NORTH,      CHESS_OFFSET_EAST,       CHESS_OFFSET_SOUTH,      CHESS_OFFSET_WEST,
-						CHESS_OFFSET_NORTH_EAST, CHESS_OFFSET_SOUTH_EAST, CHESS_OFFSET_SOUTH_WEST, CHESS_OFFSET_NORTH_WEST,
+						CHESS_OFFSET_NORTH,
+						CHESS_OFFSET_EAST,
+						CHESS_OFFSET_SOUTH,
+						CHESS_OFFSET_WEST,
+						CHESS_OFFSET_NORTH_EAST,
+						CHESS_OFFSET_SOUTH_EAST,
+						CHESS_OFFSET_SOUTH_WEST,
+						CHESS_OFFSET_NORTH_WEST,
 					};
 					chess_moves_generate_directions(&moves, position, from, directions, ARRAY_LENGTH(directions));
 				} break;
 				case CHESS_PIECE_TYPE_KING: {
 					static const enum chess_offset offsets[] = {
-						CHESS_OFFSET_NORTH,      CHESS_OFFSET_EAST,       CHESS_OFFSET_SOUTH,      CHESS_OFFSET_WEST,
-						CHESS_OFFSET_NORTH_EAST, CHESS_OFFSET_SOUTH_EAST, CHESS_OFFSET_SOUTH_WEST, CHESS_OFFSET_NORTH_WEST,
+						CHESS_OFFSET_NORTH,
+						CHESS_OFFSET_EAST,
+						CHESS_OFFSET_SOUTH,
+						CHESS_OFFSET_WEST,
+						CHESS_OFFSET_NORTH_EAST,
+						CHESS_OFFSET_SOUTH_EAST,
+						CHESS_OFFSET_SOUTH_WEST,
+						CHESS_OFFSET_NORTH_WEST,
 					};
 					chess_moves_generate_offsets(&moves, position, from, offsets, ARRAY_LENGTH(offsets));
 				} break;
@@ -987,12 +1209,16 @@ struct chess_moves chess_moves_generate(const struct chess_position *position) {
 		}
 	}
 
-	chess_moves_generate_king_castlings(&moves, position);
+	chess_moves_generate_castlings(&moves, position);
 
 	return moves;
 }
 
 unsigned long chess_perft_recursive(const struct chess_position *position, unsigned int depth) {
+	if (depth == 0) {
+		return 1;
+	}
+
 	struct chess_moves moves = chess_moves_generate(position);
 	if (depth == 1) {
 		return moves.count;

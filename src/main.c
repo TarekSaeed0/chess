@@ -4,9 +4,9 @@
 #include <stdlib.h>
 
 void chess_square_print(enum chess_square square) {
-	char buffer[3];
-	chess_square_to_algebraic(square, buffer, sizeof(buffer));
-	printf("%s", buffer);
+	char algebraic[3];
+	chess_square_to_algebraic(square, algebraic, sizeof(algebraic));
+	printf("%s", algebraic);
 }
 enum chess_square chess_square_scan(void) {
 	char string[2];
@@ -42,12 +42,30 @@ void chess_position_print(const struct chess_position *chess) {
 				printf("   ");
 			} else {
 				static const char *chess_symbols[][2] = {
-					[CHESS_PIECE_TYPE_PAWN] = { [false] = "♟", [true] = "♙", },
-					[CHESS_PIECE_TYPE_KNIGHT] = { [false] = "♞", [true] = "♘", },
-					[CHESS_PIECE_TYPE_BISHOP] = { [false] = "♝", [true] = "♗", },
-					[CHESS_PIECE_TYPE_ROOK] = { [false] = "♜", [true] = "♖", },
-					[CHESS_PIECE_TYPE_QUEEN] = { [false] = "♛", [true] = "♕", },
-					[CHESS_PIECE_TYPE_KING] = { [false] = "♚", [true] = "♔", },
+					[CHESS_PIECE_TYPE_PAWN] = {
+					    [false] = "♟",
+					    [true]  = "♙",
+					},
+					[CHESS_PIECE_TYPE_KNIGHT] = {
+					    [false] = "♞",
+					    [true]  = "♘",
+					},
+					[CHESS_PIECE_TYPE_BISHOP] = {
+					    [false] = "♝",
+					    [true]  = "♗",
+					},
+					[CHESS_PIECE_TYPE_ROOK] = {
+					    [false] = "♜",
+					    [true]  = "♖",
+					},
+					[CHESS_PIECE_TYPE_QUEEN] = {
+					    [false] = "♛",
+					    [true]  = "♕",
+					},
+					[CHESS_PIECE_TYPE_KING] = {
+					    [false] = "♚",
+					    [true]  = "♔",
+					},
 				};
 
 				printf(" %s ", chess_symbols[chess_piece_type(piece)][chess_piece_color(piece) == square_color]);
@@ -88,9 +106,9 @@ int main(void) {
 		printf("Available moves: ");
 		struct chess_moves moves = chess_moves_generate(&position);
 		for (size_t i = 0; i < moves.count; i++) {
-			chess_square_print(moves.moves[i].from);
-			chess_square_print(moves.moves[i].to);
-			printf(" ");
+			char algebraic[8];
+			chess_move_to_algebraic(&position, moves.moves[i], algebraic, sizeof(algebraic));
+			printf("%s ", algebraic);
 		}
 		printf("\n");
 
