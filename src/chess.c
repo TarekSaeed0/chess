@@ -206,7 +206,7 @@ bool chess_rank_is_valid(enum chess_rank rank) {
 size_t chess_rank_from_algebraic(enum chess_rank *rank, const char *string) {
 	assert(rank != nullptr && string != nullptr);
 
-	if (string[0] < 'a' || 'h' < string[0]) {
+	if (string[0] < '1' || '8' < string[0]) {
 		return 0;
 	}
 
@@ -286,7 +286,7 @@ bool chess_square_is_attacked(const struct chess_position *position, enum chess_
 			}
 
 			// clang-format off
-			static const uint8_t attacks[256] = {
+			static constexpr uint8_t attacks[256] = {
 			 40,  0,  0,  0,  0,  0,  0, 48,  0,  0,  0,  0,  0,  0, 40,  0,
 				0, 40,  0,  0,  0,  0,  0, 48,  0,  0,  0,  0,  0, 40,  0,  0,
 				0,  0, 40,  0,  0,  0,  0, 48,  0,  0,  0,  0, 40,  0,  0,  0,
@@ -325,7 +325,7 @@ bool chess_square_is_attacked(const struct chess_position *position, enum chess_
 					case CHESS_PIECE_TYPE_BISHOP:
 					case CHESS_PIECE_TYPE_QUEEN: {
 						// clang-format off
-						static const enum chess_offset directions[256] = {
+						static constexpr enum chess_offset directions[256] = {
 							-17,  0,  0,  0,  0,  0,  0,-16,  0,  0,  0,  0,  0,  0,-15,  0,
 								0,-17,  0,  0,  0,  0,  0,-16,  0,  0,  0,  0,  0,-15,  0,  0,
 								0,  0,-17,  0,  0,  0,  0,-16,  0,  0,  0,  0,-15,  0,  0,  0,
@@ -970,7 +970,7 @@ static void chess_moves_generate_pawn_promotions(
 ) {
 	assert(moves != nullptr && chess_position_is_valid(position) && chess_square_is_valid(from) && chess_square_is_valid(to));
 
-	static const enum chess_piece_type promotion_types[] = {
+	static constexpr enum chess_piece_type promotion_types[] = {
 		CHESS_PIECE_TYPE_KNIGHT,
 		CHESS_PIECE_TYPE_BISHOP,
 		CHESS_PIECE_TYPE_ROOK,
@@ -1016,7 +1016,7 @@ static void chess_moves_generate_pawn(
 		}
 	}
 
-	static const enum chess_offset offsets[] = {
+	static constexpr enum chess_offset offsets[] = {
 		CHESS_OFFSET_EAST,
 		CHESS_OFFSET_WEST,
 	};
@@ -1148,7 +1148,7 @@ struct chess_moves chess_moves_generate(const struct chess_position *position) {
 					chess_moves_generate_pawn(&moves, position, from);
 				} break;
 				case CHESS_PIECE_TYPE_KNIGHT: {
-					static const enum chess_offset offsets[] = {
+					static constexpr enum chess_offset offsets[] = {
 						2 * CHESS_OFFSET_NORTH + CHESS_OFFSET_EAST,
 						2 * CHESS_OFFSET_NORTH + CHESS_OFFSET_WEST,
 						2 * CHESS_OFFSET_EAST + CHESS_OFFSET_NORTH,
@@ -1161,7 +1161,7 @@ struct chess_moves chess_moves_generate(const struct chess_position *position) {
 					chess_moves_generate_offsets(&moves, position, from, offsets, ARRAY_LENGTH(offsets));
 				} break;
 				case CHESS_PIECE_TYPE_BISHOP: {
-					static const enum chess_offset directions[] = {
+					static constexpr enum chess_offset directions[] = {
 						CHESS_OFFSET_NORTH_EAST,
 						CHESS_OFFSET_SOUTH_EAST,
 						CHESS_OFFSET_SOUTH_WEST,
@@ -1170,7 +1170,7 @@ struct chess_moves chess_moves_generate(const struct chess_position *position) {
 					chess_moves_generate_directions(&moves, position, from, directions, ARRAY_LENGTH(directions));
 				} break;
 				case CHESS_PIECE_TYPE_ROOK: {
-					static const enum chess_offset directions[] = {
+					static constexpr enum chess_offset directions[] = {
 						CHESS_OFFSET_NORTH,
 						CHESS_OFFSET_EAST,
 						CHESS_OFFSET_SOUTH,
@@ -1179,7 +1179,7 @@ struct chess_moves chess_moves_generate(const struct chess_position *position) {
 					chess_moves_generate_directions(&moves, position, from, directions, ARRAY_LENGTH(directions));
 				} break;
 				case CHESS_PIECE_TYPE_QUEEN: {
-					static const enum chess_offset directions[] = {
+					static constexpr enum chess_offset directions[] = {
 						CHESS_OFFSET_NORTH,
 						CHESS_OFFSET_EAST,
 						CHESS_OFFSET_SOUTH,
@@ -1192,7 +1192,7 @@ struct chess_moves chess_moves_generate(const struct chess_position *position) {
 					chess_moves_generate_directions(&moves, position, from, directions, ARRAY_LENGTH(directions));
 				} break;
 				case CHESS_PIECE_TYPE_KING: {
-					static const enum chess_offset offsets[] = {
+					static constexpr enum chess_offset offsets[] = {
 						CHESS_OFFSET_NORTH,
 						CHESS_OFFSET_EAST,
 						CHESS_OFFSET_SOUTH,
