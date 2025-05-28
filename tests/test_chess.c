@@ -74,7 +74,141 @@ static void test_chess_piece_type_is_valid(void **state) {
 		}
 	}
 }
+static void test_chess_piece_type_from_algebraic(void **state) {
+	(void)state;
 
+	static const struct {
+		const char *string;
+		enum chess_piece_type type;
+		size_t read;
+	} test_cases[] = {
+		{ .string = "P", .type = CHESS_PIECE_TYPE_PAWN, .read = 1 },
+		{ .string = "N", .type = CHESS_PIECE_TYPE_KNIGHT, .read = 1 },
+		{ .string = "B", .type = CHESS_PIECE_TYPE_BISHOP, .read = 1 },
+		{ .string = "R", .type = CHESS_PIECE_TYPE_ROOK, .read = 1 },
+		{ .string = "Q", .type = CHESS_PIECE_TYPE_QUEEN, .read = 1 },
+		{ .string = "K", .type = CHESS_PIECE_TYPE_KING, .read = 1 },
+	};
+
+	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+		enum chess_piece_type type = CHESS_PIECE_TYPE_NONE;
+		size_t read                = chess_piece_type_from_algebraic(&type, test_cases[i].string);
+		assert_int_equal(type, test_cases[i].type);
+		assert_int_equal(read, test_cases[i].read);
+	}
+}
+static void test_chess_piece_type_to_algebraic(void **state) {
+	(void)state;
+
+	static const struct {
+		enum chess_piece_type type;
+		const char *string;
+		size_t written;
+	} test_cases[] = {
+		{ .type = CHESS_PIECE_TYPE_PAWN, .string = "P", .written = 1 },
+		{ .type = CHESS_PIECE_TYPE_KNIGHT, .string = "N", .written = 1 },
+		{ .type = CHESS_PIECE_TYPE_BISHOP, .string = "B", .written = 1 },
+		{ .type = CHESS_PIECE_TYPE_ROOK, .string = "R", .written = 1 },
+		{ .type = CHESS_PIECE_TYPE_QUEEN, .string = "Q", .written = 1 },
+		{ .type = CHESS_PIECE_TYPE_KING, .string = "K", .written = 1 },
+	};
+
+	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+		char string[2] = { 0 };
+		size_t written = chess_piece_type_to_algebraic(test_cases[i].type, string, sizeof(string));
+		assert_string_equal(string, test_cases[i].string);
+		assert_int_equal(written, test_cases[i].written);
+	}
+}
+
+static void test_chess_piece_new(void **state) {
+	(void)state;
+
+	static constexpr struct {
+		enum chess_color color;
+		enum chess_piece_type type;
+		enum chess_piece piece;
+	} test_cases[] = {
+		{ .color = CHESS_COLOR_NONE, .type = CHESS_PIECE_TYPE_NONE, .piece = CHESS_PIECE_NONE },
+
+		{ .color = CHESS_COLOR_WHITE, .type = CHESS_PIECE_TYPE_PAWN, .piece = CHESS_PIECE_WHITE_PAWN },
+		{ .color = CHESS_COLOR_WHITE, .type = CHESS_PIECE_TYPE_KNIGHT, .piece = CHESS_PIECE_WHITE_KNIGHT },
+		{ .color = CHESS_COLOR_WHITE, .type = CHESS_PIECE_TYPE_BISHOP, .piece = CHESS_PIECE_WHITE_BISHOP },
+		{ .color = CHESS_COLOR_WHITE, .type = CHESS_PIECE_TYPE_ROOK, .piece = CHESS_PIECE_WHITE_ROOK },
+		{ .color = CHESS_COLOR_WHITE, .type = CHESS_PIECE_TYPE_QUEEN, .piece = CHESS_PIECE_WHITE_QUEEN },
+		{ .color = CHESS_COLOR_WHITE, .type = CHESS_PIECE_TYPE_KING, .piece = CHESS_PIECE_WHITE_KING },
+
+		{ .color = CHESS_COLOR_BLACK, .type = CHESS_PIECE_TYPE_PAWN, .piece = CHESS_PIECE_BLACK_PAWN },
+		{ .color = CHESS_COLOR_BLACK, .type = CHESS_PIECE_TYPE_KNIGHT, .piece = CHESS_PIECE_BLACK_KNIGHT },
+		{ .color = CHESS_COLOR_BLACK, .type = CHESS_PIECE_TYPE_BISHOP, .piece = CHESS_PIECE_BLACK_BISHOP },
+		{ .color = CHESS_COLOR_BLACK, .type = CHESS_PIECE_TYPE_ROOK, .piece = CHESS_PIECE_BLACK_ROOK },
+		{ .color = CHESS_COLOR_BLACK, .type = CHESS_PIECE_TYPE_QUEEN, .piece = CHESS_PIECE_BLACK_QUEEN },
+		{ .color = CHESS_COLOR_BLACK, .type = CHESS_PIECE_TYPE_KING, .piece = CHESS_PIECE_BLACK_KING },
+	};
+
+	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+		enum chess_piece piece = chess_piece_new(test_cases[i].color, test_cases[i].type);
+		assert_int_equal(piece, test_cases[i].piece);
+	}
+}
+static void test_chess_piece_color(void **state) {
+	(void)state;
+
+	static constexpr struct {
+		enum chess_piece piece;
+		enum chess_color color;
+	} test_cases[] = {
+		{ .piece = CHESS_PIECE_NONE, .color = CHESS_COLOR_NONE },
+
+		{ .piece = CHESS_PIECE_WHITE_PAWN, .color = CHESS_COLOR_WHITE },
+		{ .piece = CHESS_PIECE_WHITE_KNIGHT, .color = CHESS_COLOR_WHITE },
+		{ .piece = CHESS_PIECE_WHITE_BISHOP, .color = CHESS_COLOR_WHITE },
+		{ .piece = CHESS_PIECE_WHITE_ROOK, .color = CHESS_COLOR_WHITE },
+		{ .piece = CHESS_PIECE_WHITE_QUEEN, .color = CHESS_COLOR_WHITE },
+		{ .piece = CHESS_PIECE_WHITE_KING, .color = CHESS_COLOR_WHITE },
+
+		{ .piece = CHESS_PIECE_BLACK_PAWN, .color = CHESS_COLOR_BLACK },
+		{ .piece = CHESS_PIECE_BLACK_KNIGHT, .color = CHESS_COLOR_BLACK },
+		{ .piece = CHESS_PIECE_BLACK_BISHOP, .color = CHESS_COLOR_BLACK },
+		{ .piece = CHESS_PIECE_BLACK_ROOK, .color = CHESS_COLOR_BLACK },
+		{ .piece = CHESS_PIECE_BLACK_QUEEN, .color = CHESS_COLOR_BLACK },
+		{ .piece = CHESS_PIECE_BLACK_KING, .color = CHESS_COLOR_BLACK },
+	};
+
+	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+		enum chess_color color = chess_piece_color(test_cases[i].piece);
+		assert_int_equal(color, test_cases[i].color);
+	}
+}
+static void test_chess_piece_type(void **state) {
+	(void)state;
+
+	static constexpr struct {
+		enum chess_piece piece;
+		enum chess_piece_type type;
+	} test_cases[] = {
+		{ .piece = CHESS_PIECE_NONE, .type = CHESS_PIECE_TYPE_NONE },
+
+		{ .piece = CHESS_PIECE_WHITE_PAWN, .type = CHESS_PIECE_TYPE_PAWN },
+		{ .piece = CHESS_PIECE_WHITE_KNIGHT, .type = CHESS_PIECE_TYPE_KNIGHT },
+		{ .piece = CHESS_PIECE_WHITE_BISHOP, .type = CHESS_PIECE_TYPE_BISHOP },
+		{ .piece = CHESS_PIECE_WHITE_ROOK, .type = CHESS_PIECE_TYPE_ROOK },
+		{ .piece = CHESS_PIECE_WHITE_QUEEN, .type = CHESS_PIECE_TYPE_QUEEN },
+		{ .piece = CHESS_PIECE_WHITE_KING, .type = CHESS_PIECE_TYPE_KING },
+
+		{ .piece = CHESS_PIECE_BLACK_PAWN, .type = CHESS_PIECE_TYPE_PAWN },
+		{ .piece = CHESS_PIECE_BLACK_KNIGHT, .type = CHESS_PIECE_TYPE_KNIGHT },
+		{ .piece = CHESS_PIECE_BLACK_BISHOP, .type = CHESS_PIECE_TYPE_BISHOP },
+		{ .piece = CHESS_PIECE_BLACK_ROOK, .type = CHESS_PIECE_TYPE_ROOK },
+		{ .piece = CHESS_PIECE_BLACK_QUEEN, .type = CHESS_PIECE_TYPE_QUEEN },
+		{ .piece = CHESS_PIECE_BLACK_KING, .type = CHESS_PIECE_TYPE_KING },
+	};
+
+	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+		enum chess_piece_type type = chess_piece_type(test_cases[i].piece);
+		assert_int_equal(type, test_cases[i].type);
+	}
+}
 static void test_chess_piece_is_valid(void **state) {
 	(void)state;
 
@@ -108,6 +242,66 @@ static void test_chess_piece_is_valid(void **state) {
 		}
 	}
 }
+static void test_chess_piece_from_algebraic(void **state) {
+	(void)state;
+
+	static const struct {
+		const char *string;
+		enum chess_piece piece;
+		size_t read;
+	} test_cases[] = {
+		{ .string = "P", .piece = CHESS_PIECE_WHITE_PAWN, .read = 1 },
+		{ .string = "N", .piece = CHESS_PIECE_WHITE_KNIGHT, .read = 1 },
+		{ .string = "B", .piece = CHESS_PIECE_WHITE_BISHOP, .read = 1 },
+		{ .string = "R", .piece = CHESS_PIECE_WHITE_ROOK, .read = 1 },
+		{ .string = "Q", .piece = CHESS_PIECE_WHITE_QUEEN, .read = 1 },
+		{ .string = "K", .piece = CHESS_PIECE_WHITE_KING, .read = 1 },
+
+		{ .string = "p", .piece = CHESS_PIECE_BLACK_PAWN, .read = 1 },
+		{ .string = "n", .piece = CHESS_PIECE_BLACK_KNIGHT, .read = 1 },
+		{ .string = "b", .piece = CHESS_PIECE_BLACK_BISHOP, .read = 1 },
+		{ .string = "r", .piece = CHESS_PIECE_BLACK_ROOK, .read = 1 },
+		{ .string = "q", .piece = CHESS_PIECE_BLACK_QUEEN, .read = 1 },
+		{ .string = "k", .piece = CHESS_PIECE_BLACK_KING, .read = 1 },
+	};
+
+	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+		enum chess_piece piece = CHESS_PIECE_NONE;
+		size_t read            = chess_piece_from_algebraic(&piece, test_cases[i].string);
+		assert_int_equal(piece, test_cases[i].piece);
+		assert_int_equal(read, test_cases[i].read);
+	}
+}
+static void test_chess_piece_to_algebraic(void **state) {
+	(void)state;
+
+	static const struct {
+		enum chess_piece piece;
+		const char *string;
+		size_t written;
+	} test_cases[] = {
+		{ .piece = CHESS_PIECE_WHITE_PAWN, .string = "P", .written = 1 },
+		{ .piece = CHESS_PIECE_WHITE_KNIGHT, .string = "N", .written = 1 },
+		{ .piece = CHESS_PIECE_WHITE_BISHOP, .string = "B", .written = 1 },
+		{ .piece = CHESS_PIECE_WHITE_ROOK, .string = "R", .written = 1 },
+		{ .piece = CHESS_PIECE_WHITE_QUEEN, .string = "Q", .written = 1 },
+		{ .piece = CHESS_PIECE_WHITE_KING, .string = "K", .written = 1 },
+
+		{ .piece = CHESS_PIECE_BLACK_PAWN, .string = "p", .written = 1 },
+		{ .piece = CHESS_PIECE_BLACK_KNIGHT, .string = "n", .written = 1 },
+		{ .piece = CHESS_PIECE_BLACK_BISHOP, .string = "b", .written = 1 },
+		{ .piece = CHESS_PIECE_BLACK_ROOK, .string = "r", .written = 1 },
+		{ .piece = CHESS_PIECE_BLACK_QUEEN, .string = "q", .written = 1 },
+		{ .piece = CHESS_PIECE_BLACK_KING, .string = "k", .written = 1 },
+	};
+
+	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+		char string[2] = { 0 };
+		size_t written = chess_piece_to_algebraic(test_cases[i].piece, string, sizeof(string));
+		assert_string_equal(string, test_cases[i].string);
+		assert_int_equal(written, test_cases[i].written);
+	}
+}
 
 static void test_chess_file_is_valid(void **state) {
 	(void)state;
@@ -137,6 +331,56 @@ static void test_chess_file_is_valid(void **state) {
 		}
 	}
 }
+static void test_chess_file_from_algebraic(void **state) {
+	(void)state;
+
+	static const struct {
+		const char *string;
+		enum chess_file file;
+		size_t read;
+	} test_cases[] = {
+		{ .string = "a", .file = CHESS_FILE_A, .read = 1 },
+		{ .string = "b", .file = CHESS_FILE_B, .read = 1 },
+		{ .string = "c", .file = CHESS_FILE_C, .read = 1 },
+		{ .string = "d", .file = CHESS_FILE_D, .read = 1 },
+		{ .string = "e", .file = CHESS_FILE_E, .read = 1 },
+		{ .string = "f", .file = CHESS_FILE_F, .read = 1 },
+		{ .string = "g", .file = CHESS_FILE_G, .read = 1 },
+		{ .string = "h", .file = CHESS_FILE_H, .read = 1 },
+	};
+
+	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+		enum chess_file file = CHESS_FILE_NONE;
+		size_t read          = chess_file_from_algebraic(&file, test_cases[i].string);
+		assert_int_equal(file, test_cases[i].file);
+		assert_int_equal(read, test_cases[i].read);
+	}
+}
+static void test_chess_file_to_algebraic(void **state) {
+	(void)state;
+
+	static const struct {
+		enum chess_file file;
+		const char *string;
+		size_t written;
+	} test_cases[] = {
+		{ .file = CHESS_FILE_A, .string = "a", .written = 1 },
+		{ .file = CHESS_FILE_B, .string = "b", .written = 1 },
+		{ .file = CHESS_FILE_C, .string = "c", .written = 1 },
+		{ .file = CHESS_FILE_D, .string = "d", .written = 1 },
+		{ .file = CHESS_FILE_E, .string = "e", .written = 1 },
+		{ .file = CHESS_FILE_F, .string = "f", .written = 1 },
+		{ .file = CHESS_FILE_G, .string = "g", .written = 1 },
+		{ .file = CHESS_FILE_H, .string = "h", .written = 1 },
+	};
+
+	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+		char string[2] = { 0 };
+		size_t written = chess_file_to_algebraic(test_cases[i].file, string, sizeof(string));
+		assert_string_equal(string, test_cases[i].string);
+		assert_int_equal(written, test_cases[i].written);
+	}
+}
 
 static void test_chess_rank_is_valid(void **state) {
 	(void)state;
@@ -164,6 +408,56 @@ static void test_chess_rank_is_valid(void **state) {
 		} else {
 			assert_false(is_valid);
 		}
+	}
+}
+static void test_chess_rank_from_algebraic(void **state) {
+	(void)state;
+
+	static const struct {
+		const char *string;
+		enum chess_rank rank;
+		size_t read;
+	} test_cases[] = {
+		{ .string = "1", .rank = CHESS_RANK_1, .read = 1 },
+		{ .string = "2", .rank = CHESS_RANK_2, .read = 1 },
+		{ .string = "3", .rank = CHESS_RANK_3, .read = 1 },
+		{ .string = "4", .rank = CHESS_RANK_4, .read = 1 },
+		{ .string = "5", .rank = CHESS_RANK_5, .read = 1 },
+		{ .string = "6", .rank = CHESS_RANK_6, .read = 1 },
+		{ .string = "7", .rank = CHESS_RANK_7, .read = 1 },
+		{ .string = "8", .rank = CHESS_RANK_8, .read = 1 },
+	};
+
+	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+		enum chess_rank rank = CHESS_RANK_NONE;
+		size_t read          = chess_rank_from_algebraic(&rank, test_cases[i].string);
+		assert_int_equal(rank, test_cases[i].rank);
+		assert_int_equal(read, test_cases[i].read);
+	}
+}
+static void test_chess_rank_to_algebraic(void **state) {
+	(void)state;
+
+	static const struct {
+		enum chess_rank rank;
+		const char *string;
+		size_t written;
+	} test_cases[] = {
+		{ .rank = CHESS_RANK_1, .string = "1", .written = 1 },
+		{ .rank = CHESS_RANK_2, .string = "2", .written = 1 },
+		{ .rank = CHESS_RANK_3, .string = "3", .written = 1 },
+		{ .rank = CHESS_RANK_4, .string = "4", .written = 1 },
+		{ .rank = CHESS_RANK_5, .string = "5", .written = 1 },
+		{ .rank = CHESS_RANK_6, .string = "6", .written = 1 },
+		{ .rank = CHESS_RANK_7, .string = "7", .written = 1 },
+		{ .rank = CHESS_RANK_8, .string = "8", .written = 1 },
+	};
+
+	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+		char string[2] = { 0 };
+		size_t written = chess_rank_to_algebraic(test_cases[i].rank, string, sizeof(string));
+		assert_string_equal(string, test_cases[i].string);
+		assert_int_equal(written, test_cases[i].written);
 	}
 }
 
@@ -514,6 +808,182 @@ static void test_chess_square_is_valid(void **state) {
 		}
 	}
 }
+static void test_chess_square_from_algebraic(void **state) {
+	(void)state;
+
+	static const struct {
+		const char *string;
+		enum chess_square square;
+		size_t read;
+	} test_cases[] = {
+		{ .string = "a1", .square = CHESS_SQUARE_A1, .read = 2 },
+		{ .string = "b1", .square = CHESS_SQUARE_B1, .read = 2 },
+		{ .string = "c1", .square = CHESS_SQUARE_C1, .read = 2 },
+		{ .string = "d1", .square = CHESS_SQUARE_D1, .read = 2 },
+		{ .string = "e1", .square = CHESS_SQUARE_E1, .read = 2 },
+		{ .string = "f1", .square = CHESS_SQUARE_F1, .read = 2 },
+		{ .string = "g1", .square = CHESS_SQUARE_G1, .read = 2 },
+		{ .string = "h1", .square = CHESS_SQUARE_H1, .read = 2 },
+
+		{ .string = "a2", .square = CHESS_SQUARE_A2, .read = 2 },
+		{ .string = "b2", .square = CHESS_SQUARE_B2, .read = 2 },
+		{ .string = "c2", .square = CHESS_SQUARE_C2, .read = 2 },
+		{ .string = "d2", .square = CHESS_SQUARE_D2, .read = 2 },
+		{ .string = "e2", .square = CHESS_SQUARE_E2, .read = 2 },
+		{ .string = "f2", .square = CHESS_SQUARE_F2, .read = 2 },
+		{ .string = "g2", .square = CHESS_SQUARE_G2, .read = 2 },
+		{ .string = "h2", .square = CHESS_SQUARE_H2, .read = 2 },
+
+		{ .string = "a3", .square = CHESS_SQUARE_A3, .read = 2 },
+		{ .string = "b3", .square = CHESS_SQUARE_B3, .read = 2 },
+		{ .string = "c3", .square = CHESS_SQUARE_C3, .read = 2 },
+		{ .string = "d3", .square = CHESS_SQUARE_D3, .read = 2 },
+		{ .string = "e3", .square = CHESS_SQUARE_E3, .read = 2 },
+		{ .string = "f3", .square = CHESS_SQUARE_F3, .read = 2 },
+		{ .string = "g3", .square = CHESS_SQUARE_G3, .read = 2 },
+		{ .string = "h3", .square = CHESS_SQUARE_H3, .read = 2 },
+
+		{ .string = "a4", .square = CHESS_SQUARE_A4, .read = 2 },
+		{ .string = "b4", .square = CHESS_SQUARE_B4, .read = 2 },
+		{ .string = "c4", .square = CHESS_SQUARE_C4, .read = 2 },
+		{ .string = "d4", .square = CHESS_SQUARE_D4, .read = 2 },
+		{ .string = "e4", .square = CHESS_SQUARE_E4, .read = 2 },
+		{ .string = "f4", .square = CHESS_SQUARE_F4, .read = 2 },
+		{ .string = "g4", .square = CHESS_SQUARE_G4, .read = 2 },
+		{ .string = "h4", .square = CHESS_SQUARE_H4, .read = 2 },
+
+		{ .string = "a5", .square = CHESS_SQUARE_A5, .read = 2 },
+		{ .string = "b5", .square = CHESS_SQUARE_B5, .read = 2 },
+		{ .string = "c5", .square = CHESS_SQUARE_C5, .read = 2 },
+		{ .string = "d5", .square = CHESS_SQUARE_D5, .read = 2 },
+		{ .string = "e5", .square = CHESS_SQUARE_E5, .read = 2 },
+		{ .string = "f5", .square = CHESS_SQUARE_F5, .read = 2 },
+		{ .string = "g5", .square = CHESS_SQUARE_G5, .read = 2 },
+		{ .string = "h5", .square = CHESS_SQUARE_H5, .read = 2 },
+
+		{ .string = "a6", .square = CHESS_SQUARE_A6, .read = 2 },
+		{ .string = "b6", .square = CHESS_SQUARE_B6, .read = 2 },
+		{ .string = "c6", .square = CHESS_SQUARE_C6, .read = 2 },
+		{ .string = "d6", .square = CHESS_SQUARE_D6, .read = 2 },
+		{ .string = "e6", .square = CHESS_SQUARE_E6, .read = 2 },
+		{ .string = "f6", .square = CHESS_SQUARE_F6, .read = 2 },
+		{ .string = "g6", .square = CHESS_SQUARE_G6, .read = 2 },
+		{ .string = "h6", .square = CHESS_SQUARE_H6, .read = 2 },
+
+		{ .string = "a7", .square = CHESS_SQUARE_A7, .read = 2 },
+		{ .string = "b7", .square = CHESS_SQUARE_B7, .read = 2 },
+		{ .string = "c7", .square = CHESS_SQUARE_C7, .read = 2 },
+		{ .string = "d7", .square = CHESS_SQUARE_D7, .read = 2 },
+		{ .string = "e7", .square = CHESS_SQUARE_E7, .read = 2 },
+		{ .string = "f7", .square = CHESS_SQUARE_F7, .read = 2 },
+		{ .string = "g7", .square = CHESS_SQUARE_G7, .read = 2 },
+		{ .string = "h7", .square = CHESS_SQUARE_H7, .read = 2 },
+
+		{ .string = "a8", .square = CHESS_SQUARE_A8, .read = 2 },
+		{ .string = "b8", .square = CHESS_SQUARE_B8, .read = 2 },
+		{ .string = "c8", .square = CHESS_SQUARE_C8, .read = 2 },
+		{ .string = "d8", .square = CHESS_SQUARE_D8, .read = 2 },
+		{ .string = "e8", .square = CHESS_SQUARE_E8, .read = 2 },
+		{ .string = "f8", .square = CHESS_SQUARE_F8, .read = 2 },
+		{ .string = "g8", .square = CHESS_SQUARE_G8, .read = 2 },
+		{ .string = "h8", .square = CHESS_SQUARE_H8, .read = 2 },
+	};
+
+	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+		enum chess_square square = CHESS_SQUARE_NONE;
+		size_t read              = chess_square_from_algebraic(&square, test_cases[i].string);
+		assert_int_equal(square, test_cases[i].square);
+		assert_int_equal(read, test_cases[i].read);
+	}
+}
+static void test_chess_square_to_algebraic(void **state) {
+	(void)state;
+
+	static const struct {
+		enum chess_square square;
+		const char *string;
+		size_t written;
+	} test_cases[] = {
+		{ .square = CHESS_SQUARE_A1, .string = "a1", .written = 2 },
+		{ .square = CHESS_SQUARE_B1, .string = "b1", .written = 2 },
+		{ .square = CHESS_SQUARE_C1, .string = "c1", .written = 2 },
+		{ .square = CHESS_SQUARE_D1, .string = "d1", .written = 2 },
+		{ .square = CHESS_SQUARE_E1, .string = "e1", .written = 2 },
+		{ .square = CHESS_SQUARE_F1, .string = "f1", .written = 2 },
+		{ .square = CHESS_SQUARE_G1, .string = "g1", .written = 2 },
+		{ .square = CHESS_SQUARE_H1, .string = "h1", .written = 2 },
+
+		{ .square = CHESS_SQUARE_A2, .string = "a2", .written = 2 },
+		{ .square = CHESS_SQUARE_B2, .string = "b2", .written = 2 },
+		{ .square = CHESS_SQUARE_C2, .string = "c2", .written = 2 },
+		{ .square = CHESS_SQUARE_D2, .string = "d2", .written = 2 },
+		{ .square = CHESS_SQUARE_E2, .string = "e2", .written = 2 },
+		{ .square = CHESS_SQUARE_F2, .string = "f2", .written = 2 },
+		{ .square = CHESS_SQUARE_G2, .string = "g2", .written = 2 },
+		{ .square = CHESS_SQUARE_H2, .string = "h2", .written = 2 },
+
+		{ .square = CHESS_SQUARE_A3, .string = "a3", .written = 2 },
+		{ .square = CHESS_SQUARE_B3, .string = "b3", .written = 2 },
+		{ .square = CHESS_SQUARE_C3, .string = "c3", .written = 2 },
+		{ .square = CHESS_SQUARE_D3, .string = "d3", .written = 2 },
+		{ .square = CHESS_SQUARE_E3, .string = "e3", .written = 2 },
+		{ .square = CHESS_SQUARE_F3, .string = "f3", .written = 2 },
+		{ .square = CHESS_SQUARE_G3, .string = "g3", .written = 2 },
+		{ .square = CHESS_SQUARE_H3, .string = "h3", .written = 2 },
+
+		{ .square = CHESS_SQUARE_A4, .string = "a4", .written = 2 },
+		{ .square = CHESS_SQUARE_B4, .string = "b4", .written = 2 },
+		{ .square = CHESS_SQUARE_C4, .string = "c4", .written = 2 },
+		{ .square = CHESS_SQUARE_D4, .string = "d4", .written = 2 },
+		{ .square = CHESS_SQUARE_E4, .string = "e4", .written = 2 },
+		{ .square = CHESS_SQUARE_F4, .string = "f4", .written = 2 },
+		{ .square = CHESS_SQUARE_G4, .string = "g4", .written = 2 },
+		{ .square = CHESS_SQUARE_H4, .string = "h4", .written = 2 },
+
+		{ .square = CHESS_SQUARE_A5, .string = "a5", .written = 2 },
+		{ .square = CHESS_SQUARE_B5, .string = "b5", .written = 2 },
+		{ .square = CHESS_SQUARE_C5, .string = "c5", .written = 2 },
+		{ .square = CHESS_SQUARE_D5, .string = "d5", .written = 2 },
+		{ .square = CHESS_SQUARE_E5, .string = "e5", .written = 2 },
+		{ .square = CHESS_SQUARE_F5, .string = "f5", .written = 2 },
+		{ .square = CHESS_SQUARE_G5, .string = "g5", .written = 2 },
+		{ .square = CHESS_SQUARE_H5, .string = "h5", .written = 2 },
+
+		{ .square = CHESS_SQUARE_A6, .string = "a6", .written = 2 },
+		{ .square = CHESS_SQUARE_B6, .string = "b6", .written = 2 },
+		{ .square = CHESS_SQUARE_C6, .string = "c6", .written = 2 },
+		{ .square = CHESS_SQUARE_D6, .string = "d6", .written = 2 },
+		{ .square = CHESS_SQUARE_E6, .string = "e6", .written = 2 },
+		{ .square = CHESS_SQUARE_F6, .string = "f6", .written = 2 },
+		{ .square = CHESS_SQUARE_G6, .string = "g6", .written = 2 },
+		{ .square = CHESS_SQUARE_H6, .string = "h6", .written = 2 },
+
+		{ .square = CHESS_SQUARE_A7, .string = "a7", .written = 2 },
+		{ .square = CHESS_SQUARE_B7, .string = "b7", .written = 2 },
+		{ .square = CHESS_SQUARE_C7, .string = "c7", .written = 2 },
+		{ .square = CHESS_SQUARE_D7, .string = "d7", .written = 2 },
+		{ .square = CHESS_SQUARE_E7, .string = "e7", .written = 2 },
+		{ .square = CHESS_SQUARE_F7, .string = "f7", .written = 2 },
+		{ .square = CHESS_SQUARE_G7, .string = "g7", .written = 2 },
+		{ .square = CHESS_SQUARE_H7, .string = "h7", .written = 2 },
+
+		{ .square = CHESS_SQUARE_A8, .string = "a8", .written = 2 },
+		{ .square = CHESS_SQUARE_B8, .string = "b8", .written = 2 },
+		{ .square = CHESS_SQUARE_C8, .string = "c8", .written = 2 },
+		{ .square = CHESS_SQUARE_D8, .string = "d8", .written = 2 },
+		{ .square = CHESS_SQUARE_E8, .string = "e8", .written = 2 },
+		{ .square = CHESS_SQUARE_F8, .string = "f8", .written = 2 },
+		{ .square = CHESS_SQUARE_G8, .string = "g8", .written = 2 },
+		{ .square = CHESS_SQUARE_H8, .string = "h8", .written = 2 },
+	};
+
+	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+		char string[3] = { 0 };
+		size_t written = chess_square_to_algebraic(test_cases[i].square, string, sizeof(string));
+		assert_string_equal(string, test_cases[i].string);
+		assert_int_equal(written, test_cases[i].written);
+	}
+}
 
 static void test_chess_preft(void **state) {
 	(void)state;
@@ -537,20 +1007,33 @@ int main(void) {
 		cmocka_unit_test(test_chess_color_opposite),
 
 		cmocka_unit_test(test_chess_piece_type_is_valid),
+		cmocka_unit_test(test_chess_piece_type_from_algebraic),
+		cmocka_unit_test(test_chess_piece_type_to_algebraic),
 
+		cmocka_unit_test(test_chess_piece_new),
 		cmocka_unit_test(test_chess_piece_is_valid),
+		cmocka_unit_test(test_chess_piece_color),
+		cmocka_unit_test(test_chess_piece_type),
+		cmocka_unit_test(test_chess_piece_from_algebraic),
+		cmocka_unit_test(test_chess_piece_to_algebraic),
 
 		cmocka_unit_test(test_chess_file_is_valid),
+		cmocka_unit_test(test_chess_file_from_algebraic),
+		cmocka_unit_test(test_chess_file_to_algebraic),
 
 		cmocka_unit_test(test_chess_rank_is_valid),
+		cmocka_unit_test(test_chess_rank_from_algebraic),
+		cmocka_unit_test(test_chess_rank_to_algebraic),
 
 		cmocka_unit_test(test_chess_square_new),
 		cmocka_unit_test(test_chess_square_file),
 		cmocka_unit_test(test_chess_square_rank),
 		cmocka_unit_test(test_chess_square_is_valid),
+		cmocka_unit_test(test_chess_square_from_algebraic),
+		cmocka_unit_test(test_chess_square_to_algebraic),
 
 		cmocka_unit_test(test_chess_preft),
 	};
 
-	return cmocka_run_group_tests(tests, NULL, NULL);
+	return cmocka_run_group_tests(tests, nullptr, nullptr);
 }
