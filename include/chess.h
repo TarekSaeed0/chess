@@ -185,6 +185,7 @@ bool chess_piece_type_is_valid(enum chess_piece_type type);
 size_t chess_piece_type_from_algebraic(enum chess_piece_type *type, const char *string);
 size_t chess_piece_type_to_algebraic(enum chess_piece_type type, char *string, size_t string_size);
 
+bool chess_piece_is_valid(enum chess_piece piece);
 static inline enum chess_piece chess_piece_new(enum chess_color color, enum chess_piece_type type) {
 	return (enum chess_piece)(color << 3U | type);
 }
@@ -194,7 +195,6 @@ static inline enum chess_color chess_piece_color(enum chess_piece piece) {
 static inline enum chess_piece_type chess_piece_type(enum chess_piece piece) {
 	return (enum chess_piece_type)(piece & 0x7U);
 }
-bool chess_piece_is_valid(enum chess_piece piece);
 size_t chess_piece_from_algebraic(enum chess_piece *piece, const char *string);
 size_t chess_piece_to_algebraic(enum chess_piece piece, char *string, size_t string_size);
 
@@ -206,6 +206,7 @@ bool chess_rank_is_valid(enum chess_rank rank);
 size_t chess_rank_from_algebraic(enum chess_rank *rank, const char *string);
 size_t chess_rank_to_algebraic(enum chess_rank rank, char *string, size_t string_size);
 
+bool chess_square_is_valid(enum chess_square square);
 static inline enum chess_square chess_square_new(enum chess_file file, enum chess_rank rank) {
 	return (enum chess_square)(file | rank << 4U);
 }
@@ -216,13 +217,12 @@ static inline enum chess_rank chess_square_rank(enum chess_square square) {
 	return (enum chess_rank)(square >> 4U);
 }
 enum chess_color chess_square_color(enum chess_square square);
-bool chess_square_is_valid(enum chess_square square);
 size_t chess_square_from_algebraic(enum chess_square *square, const char *string);
 size_t chess_square_to_algebraic(enum chess_square square, char *string, size_t string_size);
 bool chess_square_is_attacked(const struct chess_position *position, enum chess_square square, enum chess_color color);
 
-struct chess_position chess_position_new(void);
 bool chess_position_is_valid(const struct chess_position *position);
+struct chess_position chess_position_new(void);
 size_t chess_position_from_fen(struct chess_position *position, const char *string);
 size_t chess_position_to_fen(const struct chess_position *position, char *string, size_t string_size);
 bool chess_position_is_check(const struct chess_position *position);

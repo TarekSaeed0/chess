@@ -11,43 +11,42 @@
 
 #define ARRAY_LENGTH(array) (sizeof(array) / sizeof((array)[0]))
 
-#define WRITE(function, ...)                                     \
-	do {                                                           \
-		size_t written = function(__VA_ARGS__, string, string_size); \
-		if (written < string_size) {                                 \
-			if (string != nullptr) {                                   \
-				string += written;                                       \
-			}                                                          \
-			string_size -= written;                                    \
-		} else {                                                     \
-			string_size = 0;                                           \
-		}                                                            \
-		total_written += written;                                    \
+#define WRITE(function, ...)                                      \
+	do {                                                            \
+		size_t _written = function(__VA_ARGS__, string, string_size); \
+		if (_written < string_size) {                                 \
+			if (string != nullptr) {                                    \
+				string += _written;                                       \
+			}                                                           \
+			string_size -= _written;                                    \
+		} else {                                                      \
+			string_size = 0;                                            \
+		}                                                             \
+		total_written += _written;                                    \
 	} while (false)
-#define WRITE_FORMATTED(...)                                  \
-	do {                                                        \
-		int written = snprintf(string, string_size, __VA_ARGS__); \
-		assert(written >= 0);                                     \
-		if ((size_t)written < string_size) {                      \
-			if (string != nullptr) {                                \
-				string += (size_t)written;                            \
-			}                                                       \
-			string_size -= (size_t)written;                         \
-		} else {                                                  \
-			string_size = 0;                                        \
-		}                                                         \
-		total_written += (size_t)written;                         \
+#define WRITE_FORMATTED(...)                                   \
+	do {                                                         \
+		int _written = snprintf(string, string_size, __VA_ARGS__); \
+		assert(_written >= 0);                                     \
+		if ((size_t)_written < string_size) {                      \
+			if (string != nullptr) {                                 \
+				string += (size_t)_written;                            \
+			}                                                        \
+			string_size -= (size_t)_written;                         \
+		} else {                                                   \
+			string_size = 0;                                         \
+		}                                                          \
+		total_written += (size_t)_written;                         \
 	} while (false)
 
-#define READ(function, ...)                      \
-	do {                                           \
-		size_t read = function(__VA_ARGS__, string); \
-		if (read == 0) {                             \
-			return 0;                                  \
-		}                                            \
-		string += read;                              \
-		total_read += read;                          \
-	} while (false);
+#define READ(function, ...)                                    \
+	do {                                                         \
+		size_t _read = function(__VA_ARGS__, &string[total_read]); \
+		if (_read == 0) {                                          \
+			return 0;                                                \
+		}                                                          \
+		total_read += _read;                                       \
+	} while (false)
 
 bool chess_color_is_valid(enum chess_color color) {
 	switch (color) {
@@ -239,16 +238,16 @@ enum chess_offset : int8_t {
 	CHESS_OFFSET_NORTH_WEST = CHESS_OFFSET_NORTH + CHESS_OFFSET_WEST,
 };
 
-enum chess_color chess_square_color(enum chess_square square) {
-	return (chess_square_file(square) + chess_square_rank(square)) % 2U ? CHESS_COLOR_BLACK : CHESS_COLOR_WHITE;
-}
 bool chess_square_is_valid(enum chess_square square) {
 	return (square & 0x88U) == 0x88U;
+}
+enum chess_color chess_square_color(enum chess_square square) {
+	return (chess_square_file(square) + chess_square_rank(square)) % 2U ? CHESS_COLOR_BLACK : CHESS_COLOR_WHITE;
 }
 size_t chess_square_from_algebraic(enum chess_square *square, const char *string) {
 	assert(square != nullptr && string != nullptr);
 
-	size_t total_read    = 0; // NOLINT(readability-identifier-length)
+	size_t total_read    = 0;
 
 	enum chess_file file = CHESS_FILE_NONE;
 	READ(chess_file_from_algebraic, &file);
@@ -366,56 +365,6 @@ bool chess_square_is_attacked(const struct chess_position *position, enum chess_
 	return false;
 }
 
-struct chess_position chess_position_new(void) {
-	return (struct chess_position){
-		.board = {
-		    [CHESS_SQUARE_A8] = CHESS_PIECE_BLACK_ROOK,
-		    [CHESS_SQUARE_B8] = CHESS_PIECE_BLACK_KNIGHT,
-		    [CHESS_SQUARE_C8] = CHESS_PIECE_BLACK_BISHOP,
-		    [CHESS_SQUARE_D8] = CHESS_PIECE_BLACK_QUEEN,
-		    [CHESS_SQUARE_E8] = CHESS_PIECE_BLACK_KING,
-		    [CHESS_SQUARE_F8] = CHESS_PIECE_BLACK_BISHOP,
-		    [CHESS_SQUARE_G8] = CHESS_PIECE_BLACK_KNIGHT,
-		    [CHESS_SQUARE_H8] = CHESS_PIECE_BLACK_ROOK,
-
-		    [CHESS_SQUARE_A7] = CHESS_PIECE_BLACK_PAWN,
-		    [CHESS_SQUARE_B7] = CHESS_PIECE_BLACK_PAWN,
-		    [CHESS_SQUARE_C7] = CHESS_PIECE_BLACK_PAWN,
-		    [CHESS_SQUARE_D7] = CHESS_PIECE_BLACK_PAWN,
-		    [CHESS_SQUARE_E7] = CHESS_PIECE_BLACK_PAWN,
-		    [CHESS_SQUARE_F7] = CHESS_PIECE_BLACK_PAWN,
-		    [CHESS_SQUARE_G7] = CHESS_PIECE_BLACK_PAWN,
-		    [CHESS_SQUARE_H7] = CHESS_PIECE_BLACK_PAWN,
-
-		    [CHESS_SQUARE_A2] = CHESS_PIECE_WHITE_PAWN,
-		    [CHESS_SQUARE_B2] = CHESS_PIECE_WHITE_PAWN,
-		    [CHESS_SQUARE_C2] = CHESS_PIECE_WHITE_PAWN,
-		    [CHESS_SQUARE_D2] = CHESS_PIECE_WHITE_PAWN,
-		    [CHESS_SQUARE_E2] = CHESS_PIECE_WHITE_PAWN,
-		    [CHESS_SQUARE_F2] = CHESS_PIECE_WHITE_PAWN,
-		    [CHESS_SQUARE_G2] = CHESS_PIECE_WHITE_PAWN,
-		    [CHESS_SQUARE_H2] = CHESS_PIECE_WHITE_PAWN,
-
-		    [CHESS_SQUARE_A1] = CHESS_PIECE_WHITE_ROOK,
-		    [CHESS_SQUARE_B1] = CHESS_PIECE_WHITE_KNIGHT,
-		    [CHESS_SQUARE_C1] = CHESS_PIECE_WHITE_BISHOP,
-		    [CHESS_SQUARE_D1] = CHESS_PIECE_WHITE_QUEEN,
-		    [CHESS_SQUARE_E1] = CHESS_PIECE_WHITE_KING,
-		    [CHESS_SQUARE_F1] = CHESS_PIECE_WHITE_BISHOP,
-		    [CHESS_SQUARE_G1] = CHESS_PIECE_WHITE_KNIGHT,
-		    [CHESS_SQUARE_H1] = CHESS_PIECE_WHITE_ROOK,
-		},
-		.side_to_move      = CHESS_COLOR_WHITE,
-		.castling_rights   = CHESS_CASTLING_RIGHTS_WHITE_KINGSIDE | CHESS_CASTLING_RIGHTS_WHITE_QUEENSIDE | CHESS_CASTLING_RIGHTS_BLACK_KINGSIDE | CHESS_CASTLING_RIGHTS_BLACK_QUEENSIDE,
-		.en_passant_square = CHESS_SQUARE_NONE,
-		.half_move_clock   = 0,
-		.full_move_number  = 1,
-		.king_squares      = {
-        [CHESS_COLOR_WHITE] = CHESS_SQUARE_E1,
-        [CHESS_COLOR_BLACK] = CHESS_SQUARE_E8,
-    }
-	};
-}
 bool chess_position_is_valid(const struct chess_position *position) {
 	if (position == nullptr) {
 		return false;
@@ -476,10 +425,60 @@ bool chess_position_is_valid(const struct chess_position *position) {
 
 	return true;
 }
+struct chess_position chess_position_new(void) {
+	return (struct chess_position){
+		.board = {
+		    [CHESS_SQUARE_A8] = CHESS_PIECE_BLACK_ROOK,
+		    [CHESS_SQUARE_B8] = CHESS_PIECE_BLACK_KNIGHT,
+		    [CHESS_SQUARE_C8] = CHESS_PIECE_BLACK_BISHOP,
+		    [CHESS_SQUARE_D8] = CHESS_PIECE_BLACK_QUEEN,
+		    [CHESS_SQUARE_E8] = CHESS_PIECE_BLACK_KING,
+		    [CHESS_SQUARE_F8] = CHESS_PIECE_BLACK_BISHOP,
+		    [CHESS_SQUARE_G8] = CHESS_PIECE_BLACK_KNIGHT,
+		    [CHESS_SQUARE_H8] = CHESS_PIECE_BLACK_ROOK,
+
+		    [CHESS_SQUARE_A7] = CHESS_PIECE_BLACK_PAWN,
+		    [CHESS_SQUARE_B7] = CHESS_PIECE_BLACK_PAWN,
+		    [CHESS_SQUARE_C7] = CHESS_PIECE_BLACK_PAWN,
+		    [CHESS_SQUARE_D7] = CHESS_PIECE_BLACK_PAWN,
+		    [CHESS_SQUARE_E7] = CHESS_PIECE_BLACK_PAWN,
+		    [CHESS_SQUARE_F7] = CHESS_PIECE_BLACK_PAWN,
+		    [CHESS_SQUARE_G7] = CHESS_PIECE_BLACK_PAWN,
+		    [CHESS_SQUARE_H7] = CHESS_PIECE_BLACK_PAWN,
+
+		    [CHESS_SQUARE_A2] = CHESS_PIECE_WHITE_PAWN,
+		    [CHESS_SQUARE_B2] = CHESS_PIECE_WHITE_PAWN,
+		    [CHESS_SQUARE_C2] = CHESS_PIECE_WHITE_PAWN,
+		    [CHESS_SQUARE_D2] = CHESS_PIECE_WHITE_PAWN,
+		    [CHESS_SQUARE_E2] = CHESS_PIECE_WHITE_PAWN,
+		    [CHESS_SQUARE_F2] = CHESS_PIECE_WHITE_PAWN,
+		    [CHESS_SQUARE_G2] = CHESS_PIECE_WHITE_PAWN,
+		    [CHESS_SQUARE_H2] = CHESS_PIECE_WHITE_PAWN,
+
+		    [CHESS_SQUARE_A1] = CHESS_PIECE_WHITE_ROOK,
+		    [CHESS_SQUARE_B1] = CHESS_PIECE_WHITE_KNIGHT,
+		    [CHESS_SQUARE_C1] = CHESS_PIECE_WHITE_BISHOP,
+		    [CHESS_SQUARE_D1] = CHESS_PIECE_WHITE_QUEEN,
+		    [CHESS_SQUARE_E1] = CHESS_PIECE_WHITE_KING,
+		    [CHESS_SQUARE_F1] = CHESS_PIECE_WHITE_BISHOP,
+		    [CHESS_SQUARE_G1] = CHESS_PIECE_WHITE_KNIGHT,
+		    [CHESS_SQUARE_H1] = CHESS_PIECE_WHITE_ROOK,
+		},
+		.side_to_move      = CHESS_COLOR_WHITE,
+		.castling_rights   = CHESS_CASTLING_RIGHTS_WHITE_KINGSIDE | CHESS_CASTLING_RIGHTS_WHITE_QUEENSIDE | CHESS_CASTLING_RIGHTS_BLACK_KINGSIDE | CHESS_CASTLING_RIGHTS_BLACK_QUEENSIDE,
+		.en_passant_square = CHESS_SQUARE_NONE,
+		.half_move_clock   = 0,
+		.full_move_number  = 1,
+		.king_squares      = {
+        [CHESS_COLOR_WHITE] = CHESS_SQUARE_E1,
+        [CHESS_COLOR_BLACK] = CHESS_SQUARE_E8,
+    }
+	};
+}
 size_t chess_position_from_fen(struct chess_position *position, const char *string) {
 	assert(position != nullptr && string != nullptr);
 
-	size_t total_read = 0; // NOLINT(readability-identifier-length)
+	size_t total_read = 0;
 
 	while (isspace(string[total_read])) {
 		total_read++;
@@ -496,11 +495,7 @@ size_t chess_position_from_fen(struct chess_position *position, const char *stri
 				file += (string[total_read] - '1');
 				total_read++;
 			} else {
-				size_t read = chess_piece_from_algebraic(&position->board[square], &string[total_read]);
-				if (read == 0) {
-					return 0;
-				}
-				total_read += read;
+				READ(chess_piece_from_algebraic, &position->board[square]);
 
 				if (chess_piece_type(position->board[square]) == CHESS_PIECE_TYPE_KING) {
 					position->king_squares[chess_piece_color(position->board[square])] = square;
@@ -562,11 +557,7 @@ size_t chess_position_from_fen(struct chess_position *position, const char *stri
 		position->en_passant_square = CHESS_SQUARE_NONE;
 		total_read++;
 	} else {
-		size_t read = chess_square_from_algebraic(&position->en_passant_square, &string[total_read]);
-		if (read == 0) {
-			return 0;
-		}
-		total_read += read;
+		READ(chess_square_from_algebraic, &position->en_passant_square);
 	}
 
 	if (!isspace(string[total_read])) {
@@ -1004,13 +995,29 @@ static void chess_moves_generate_pawn(
 		if (chess_square_rank(to) == promotion_rank) {
 			chess_moves_generate_pawn_promotions(moves, position, from, to);
 		} else {
-			chess_moves_add(moves, position, (struct chess_move){ .from = from, .to = to });
+			chess_moves_add(
+			    moves,
+			    position,
+			    (struct chess_move){
+			        .from           = from,
+			        .to             = to,
+			        .promotion_type = CHESS_PIECE_TYPE_NONE,
+			    }
+			);
 
 			enum chess_rank start_rank = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_RANK_2 : CHESS_RANK_7;
 			if (chess_square_rank(from) == start_rank) {
 				to = (enum chess_square)(from + 2 * direction);
 				if (position->board[to] == CHESS_PIECE_NONE) {
-					chess_moves_add(moves, position, (struct chess_move){ .from = from, .to = to });
+					chess_moves_add(
+					    moves,
+					    position,
+					    (struct chess_move){
+					        .from           = from,
+					        .to             = to,
+					        .promotion_type = CHESS_PIECE_TYPE_NONE,
+					    }
+					);
 				}
 			}
 		}
@@ -1023,13 +1030,29 @@ static void chess_moves_generate_pawn(
 	for (size_t i = 0; i < ARRAY_LENGTH(offsets); i++) {
 		to = (enum chess_square)(from + direction + offsets[i]);
 		if (to == position->en_passant_square) {
-			chess_moves_add(moves, position, (struct chess_move){ .from = from, .to = to });
+			chess_moves_add(
+			    moves,
+			    position,
+			    (struct chess_move){
+			        .from           = from,
+			        .to             = to,
+			        .promotion_type = CHESS_PIECE_TYPE_NONE,
+			    }
+			);
 		} else if (chess_square_is_valid(to) &&
 		           chess_piece_color(position->board[to]) == chess_color_opposite(position->side_to_move)) {
 			if (chess_square_rank(to) == promotion_rank) {
 				chess_moves_generate_pawn_promotions(moves, position, from, to);
 			} else {
-				chess_moves_add(moves, position, (struct chess_move){ .from = from, .to = to });
+				chess_moves_add(
+				    moves,
+				    position,
+				    (struct chess_move){
+				        .from           = from,
+				        .to             = to,
+				        .promotion_type = CHESS_PIECE_TYPE_NONE,
+				    }
+				);
 			}
 		}
 	}
@@ -1056,7 +1079,15 @@ static void chess_moves_generate_directions(
 				chess_moves_add(moves, position, (struct chess_move){ .from = from, .to = to });
 			} else {
 				if (chess_piece_color(position->board[to]) != position->side_to_move) {
-					chess_moves_add(moves, position, (struct chess_move){ .from = from, .to = to });
+					chess_moves_add(
+					    moves,
+					    position,
+					    (struct chess_move){
+					        .from           = from,
+					        .to             = to,
+					        .promotion_type = CHESS_PIECE_TYPE_NONE,
+					    }
+					);
 				}
 				break;
 			}
@@ -1075,7 +1106,15 @@ static void chess_moves_generate_offsets(
 	for (size_t i = 0; i < offset_count; i++) {
 		enum chess_square to = (enum chess_square)(from + offsets[i]);
 		if (chess_square_is_valid(to) && chess_piece_color(position->board[to]) != position->side_to_move) {
-			chess_moves_add(moves, position, (struct chess_move){ .from = from, .to = to });
+			chess_moves_add(
+			    moves,
+			    position,
+			    (struct chess_move){
+			        .from           = from,
+			        .to             = to,
+			        .promotion_type = CHESS_PIECE_TYPE_NONE,
+			    }
+			);
 		}
 	}
 }
@@ -1102,8 +1141,9 @@ static void chess_moves_generate_castlings(struct chess_moves *moves, const stru
 			    moves,
 			    position,
 			    (struct chess_move){
-			        .from = from,
-			        .to   = (enum chess_square)(from + 2 * CHESS_OFFSET_EAST),
+			        .from           = from,
+			        .to             = (enum chess_square)(from + 2 * CHESS_OFFSET_EAST),
+			        .promotion_type = CHESS_PIECE_TYPE_NONE,
 			    }
 			);
 		}
@@ -1119,8 +1159,9 @@ static void chess_moves_generate_castlings(struct chess_moves *moves, const stru
 			    moves,
 			    position,
 			    (struct chess_move){
-			        .from = from,
-			        .to   = (enum chess_square)(from + 2 * CHESS_OFFSET_WEST),
+			        .from           = from,
+			        .to             = (enum chess_square)(from + 2 * CHESS_OFFSET_WEST),
+			        .promotion_type = CHESS_PIECE_TYPE_NONE,
 			    }
 			);
 		}
