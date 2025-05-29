@@ -178,13 +178,16 @@ struct chess_moves {
 	size_t count;
 };
 
+void chess_color_debug(enum chess_color color);
 bool chess_color_is_valid(enum chess_color color);
 enum chess_color chess_color_opposite(enum chess_color color);
 
+void chess_piece_type_debug(enum chess_piece_type type);
 bool chess_piece_type_is_valid(enum chess_piece_type type);
 size_t chess_piece_type_from_algebraic(enum chess_piece_type *type, const char *string);
 size_t chess_piece_type_to_algebraic(enum chess_piece_type type, char *string, size_t string_size);
 
+void chess_piece_debug(enum chess_piece piece);
 bool chess_piece_is_valid(enum chess_piece piece);
 static inline enum chess_piece chess_piece_new(enum chess_color color, enum chess_piece_type type) {
 	return (enum chess_piece)(color << 3U | type);
@@ -198,14 +201,17 @@ static inline enum chess_piece_type chess_piece_type(enum chess_piece piece) {
 size_t chess_piece_from_algebraic(enum chess_piece *piece, const char *string);
 size_t chess_piece_to_algebraic(enum chess_piece piece, char *string, size_t string_size);
 
+void chess_file_debug(enum chess_file file);
 bool chess_file_is_valid(enum chess_file file);
 size_t chess_file_from_algebraic(enum chess_file *file, const char *string);
 size_t chess_file_to_algebraic(enum chess_file file, char *string, size_t string_size);
 
+void chess_rank_debug(enum chess_rank rank);
 bool chess_rank_is_valid(enum chess_rank rank);
 size_t chess_rank_from_algebraic(enum chess_rank *rank, const char *string);
 size_t chess_rank_to_algebraic(enum chess_rank rank, char *string, size_t string_size);
 
+void chess_square_debug(enum chess_square square);
 bool chess_square_is_valid(enum chess_square square);
 static inline enum chess_square chess_square_new(enum chess_file file, enum chess_rank rank) {
 	return (enum chess_square)(file | rank << 4U);
@@ -232,6 +238,7 @@ bool chess_position_is_fifty_move_rule(const struct chess_position *position);
 bool chess_position_is_threefold_repetition(const struct chess_position *position);
 bool chess_position_is_insufficient_material(const struct chess_position *position);
 
+void chess_move_debug(struct chess_move move);
 bool chess_move_is_valid(struct chess_move move);
 size_t chess_move_from_algebraic(const struct chess_position *position, struct chess_move *move, const char *string);
 size_t chess_move_to_algebraic(const struct chess_position *position, struct chess_move move, char *string, size_t string_size);

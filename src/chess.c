@@ -48,6 +48,22 @@
 		total_read += _read;                                       \
 	} while (false)
 
+void chess_color_debug(enum chess_color color) {
+	switch (color) {
+		case CHESS_COLOR_NONE:
+			printf("CHESS_COLOR_NONE");
+			break;
+		case CHESS_COLOR_WHITE:
+			printf("CHESS_COLOR_WHITE");
+			break;
+		case CHESS_COLOR_BLACK:
+			printf("CHESS_COLOR_BLACK");
+			break;
+		default:
+			printf("(enum chess_color)%d", color);
+			break;
+	}
+}
 bool chess_color_is_valid(enum chess_color color) {
 	switch (color) {
 		case CHESS_COLOR_WHITE:
@@ -64,6 +80,34 @@ enum chess_color chess_color_opposite(enum chess_color color) {
 	}
 }
 
+void chess_piece_type_debug(enum chess_piece_type type) {
+	switch (type) {
+		case CHESS_PIECE_TYPE_NONE:
+			printf("CHESS_PIECE_TYPE_NONE");
+			break;
+		case CHESS_PIECE_TYPE_PAWN:
+			printf("CHESS_PIECE_TYPE_PAWN");
+			break;
+		case CHESS_PIECE_TYPE_KNIGHT:
+			printf("CHESS_PIECE_TYPE_KNIGHT");
+			break;
+		case CHESS_PIECE_TYPE_BISHOP:
+			printf("CHESS_PIECE_TYPE_BISHOP");
+			break;
+		case CHESS_PIECE_TYPE_ROOK:
+			printf("CHESS_PIECE_TYPE_ROOK");
+			break;
+		case CHESS_PIECE_TYPE_QUEEN:
+			printf("CHESS_PIECE_TYPE_QUEEN");
+			break;
+		case CHESS_PIECE_TYPE_KING:
+			printf("CHESS_PIECE_TYPE_KING");
+			break;
+		default:
+			printf("(enum chess_piece_type)%d", type);
+			break;
+	}
+}
 bool chess_piece_type_is_valid(enum chess_piece_type type) {
 	switch (type) {
 		case CHESS_PIECE_TYPE_PAWN:
@@ -109,6 +153,52 @@ size_t chess_piece_type_to_algebraic(enum chess_piece_type type, char *string, s
 	return 1;
 }
 
+void chess_piece_debug(enum chess_piece piece) {
+	switch (piece) {
+		case CHESS_PIECE_NONE:
+			printf("CHESS_PIECE_NONE");
+			break;
+		case CHESS_PIECE_WHITE_PAWN:
+			printf("CHESS_PIECE_WHITE_PAWN");
+			break;
+		case CHESS_PIECE_WHITE_KNIGHT:
+			printf("CHESS_PIECE_WHITE_KNIGHT");
+			break;
+		case CHESS_PIECE_WHITE_BISHOP:
+			printf("CHESS_PIECE_WHITE_BISHOP");
+			break;
+		case CHESS_PIECE_WHITE_ROOK:
+			printf("CHESS_PIECE_WHITE_ROOK");
+			break;
+		case CHESS_PIECE_WHITE_QUEEN:
+			printf("CHESS_PIECE_WHITE_QUEEN");
+			break;
+		case CHESS_PIECE_WHITE_KING:
+			printf("CHESS_PIECE_WHITE_KING");
+			break;
+		case CHESS_PIECE_BLACK_PAWN:
+			printf("CHESS_PIECE_BLACK_PAWN");
+			break;
+		case CHESS_PIECE_BLACK_KNIGHT:
+			printf("CHESS_PIECE_BLACK_KNIGHT");
+			break;
+		case CHESS_PIECE_BLACK_BISHOP:
+			printf("CHESS_PIECE_BLACK_BISHOP");
+			break;
+		case CHESS_PIECE_BLACK_ROOK:
+			printf("CHESS_PIECE_BLACK_ROOK");
+			break;
+		case CHESS_PIECE_BLACK_QUEEN:
+			printf("CHESS_PIECE_BLACK_QUEEN");
+			break;
+		case CHESS_PIECE_BLACK_KING:
+			printf("CHESS_PIECE_BLACK_KING");
+			break;
+		default:
+			printf("(enum chess_piece)%d", piece);
+			break;
+	}
+}
 bool chess_piece_is_valid(enum chess_piece piece) {
 	switch (piece) {
 		case CHESS_PIECE_WHITE_PAWN:
@@ -172,6 +262,40 @@ size_t chess_piece_to_algebraic(enum chess_piece piece, char *string, size_t str
 	return 1;
 }
 
+void chess_file_debug(enum chess_file file) {
+	switch (file) {
+		case CHESS_FILE_NONE:
+			printf("CHESS_FILE_NONE");
+			break;
+		case CHESS_FILE_A:
+			printf("CHESS_FILE_A");
+			break;
+		case CHESS_FILE_B:
+			printf("CHESS_FILE_B");
+			break;
+		case CHESS_FILE_C:
+			printf("CHESS_FILE_C");
+			break;
+		case CHESS_FILE_D:
+			printf("CHESS_FILE_D");
+			break;
+		case CHESS_FILE_E:
+			printf("CHESS_FILE_E");
+			break;
+		case CHESS_FILE_F:
+			printf("CHESS_FILE_F");
+			break;
+		case CHESS_FILE_G:
+			printf("CHESS_FILE_G");
+			break;
+		case CHESS_FILE_H:
+			printf("CHESS_FILE_H");
+			break;
+		default:
+			printf("(enum chess_file)%d", file);
+			break;
+	}
+}
 bool chess_file_is_valid(enum chess_file file) {
 	return (file & 0x8U) == 0x8U;
 }
@@ -199,6 +323,40 @@ size_t chess_file_to_algebraic(enum chess_file file, char *string, size_t string
 	return 1;
 }
 
+void chess_rank_debug(enum chess_rank rank) {
+	switch (rank) {
+		case CHESS_RANK_NONE:
+			printf("CHESS_RANK_NONE");
+			break;
+		case CHESS_RANK_1:
+			printf("CHESS_RANK_1");
+			break;
+		case CHESS_RANK_2:
+			printf("CHESS_RANK_2");
+			break;
+		case CHESS_RANK_3:
+			printf("CHESS_RANK_3");
+			break;
+		case CHESS_RANK_4:
+			printf("CHESS_RANK_4");
+			break;
+		case CHESS_RANK_5:
+			printf("CHESS_RANK_5");
+			break;
+		case CHESS_RANK_6:
+			printf("CHESS_RANK_6");
+			break;
+		case CHESS_RANK_7:
+			printf("CHESS_RANK_7");
+			break;
+		case CHESS_RANK_8:
+			printf("CHESS_RANK_8");
+			break;
+		default:
+			printf("(enum chess_rank)%d", rank);
+			break;
+	}
+}
 bool chess_rank_is_valid(enum chess_rank rank) {
 	return (rank & 0x8U) == 0x8U;
 }
@@ -238,6 +396,18 @@ enum chess_offset : int8_t {
 	CHESS_OFFSET_NORTH_WEST = CHESS_OFFSET_NORTH + CHESS_OFFSET_WEST,
 };
 
+void chess_square_debug(enum chess_square square) {
+	if (square == CHESS_SQUARE_NONE) {
+		printf("CHESS_SQUARE_NONE");
+	} else if (chess_square_is_valid(square)) {
+		enum chess_file file = chess_square_file(square);
+		enum chess_rank rank = chess_square_rank(square);
+
+		printf("CHESS_SQUARE_%c%c", 'A' + (file - CHESS_FILE_A), '1' + (rank - CHESS_RANK_1));
+	} else {
+		printf("(enum chess_square)%d", square);
+	}
+}
 bool chess_square_is_valid(enum chess_square square) {
 	return (square & 0x88U) == 0x88U;
 }
@@ -604,7 +774,7 @@ size_t chess_position_to_fen(const struct chess_position *position, char *string
 			enum chess_piece piece = position->board[chess_square_new(file, rank)];
 			if (piece == CHESS_PIECE_NONE) {
 				unsigned int count = 1;
-				while (file + 1 <= CHESS_FILE_H) {
+				while (file < CHESS_FILE_H) {
 					piece = position->board[chess_square_new(file + 1, rank)];
 					if (piece != CHESS_PIECE_NONE) {
 						break;
@@ -687,6 +857,8 @@ bool chess_position_is_fifty_move_rule(const struct chess_position *position) {
 bool chess_position_is_threefold_repetition(const struct chess_position *position) {
 	assert(chess_position_is_valid(position));
 
+	(void)position;
+
 	// TODO: implement threefold repetition detection
 
 	return false;
@@ -694,11 +866,30 @@ bool chess_position_is_threefold_repetition(const struct chess_position *positio
 bool chess_position_is_insufficient_material(const struct chess_position *position) {
 	assert(chess_position_is_valid(position));
 
+	(void)position;
+
 	// TODO: implement insufficient material detection
 
 	return false;
 }
 
+void chess_move_debug(struct chess_move move) {
+	printf("(struct chess_move) {\n");
+
+	printf("\t.from = ");
+	chess_square_debug(move.from);
+	printf(",\n");
+
+	printf("\t.to = ");
+	chess_square_debug(move.to);
+	printf(",\n");
+
+	printf("\t.promotion_type = ");
+	chess_piece_type_debug(move.promotion_type);
+	printf(",\n");
+
+	printf("}");
+}
 bool chess_move_is_valid(struct chess_move move) {
 	if (!chess_square_is_valid(move.from) || !chess_square_is_valid(move.to)) {
 		return false;
@@ -971,6 +1162,8 @@ bool chess_move_is_legal(const struct chess_position *position, struct chess_mov
 }
 bool chess_move_is_promotion(const struct chess_position *position, struct chess_move move) {
 	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
+
+	(void)position;
 
 	return move.promotion_type != CHESS_PIECE_TYPE_NONE;
 }
