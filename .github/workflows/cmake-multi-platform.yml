@@ -49,7 +49,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-          sudo apt install -y cmocka
+          sudo apt install -y libcmocka0
 
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
