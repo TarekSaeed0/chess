@@ -716,9 +716,164 @@ bool chess_move_is_valid(struct chess_move move) {
 size_t chess_move_from_algebraic(const struct chess_position *position, struct chess_move *move, const char *string) {
 	assert(chess_position_is_valid(position) && move != nullptr && string != nullptr);
 
-	// TODO: implement parsing a move from string notation
+	size_t total_read = 0;
 
-	return 0;
+	while (isspace(string[total_read])) {
+		total_read++;
+	}
+
+	if (strncmp(&string[total_read], "O-O", 3) == 0) {
+		enum chess_square from = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_SQUARE_E1 : CHESS_SQUARE_E8;
+
+		if (chess_piece_type(position->board[from]) != CHESS_PIECE_TYPE_KING) {
+			return 0;
+		}
+
+		*move = (struct chess_move){ .from = from, .to = (enum chess_square)(from + 2 * CHESS_OFFSET_EAST) };
+		total_read += 3;
+
+		return total_read;
+	}
+	if (strncmp(&string[total_read], "O-O-O", 5) == 0) {
+		enum chess_square from = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_SQUARE_E1 : CHESS_SQUARE_E8;
+
+		if (chess_piece_type(position->board[from]) != CHESS_PIECE_TYPE_KING) {
+			return 0;
+		}
+
+		*move = (struct chess_move){ .from = from, .to = (enum chess_square)(from + 2 * CHESS_OFFSET_WEST) };
+		total_read += 5;
+
+		return total_read;
+	}
+
+	enum chess_piece_type type = CHESS_PIECE_TYPE_PAWN;
+	total_read += chess_piece_type_from_algebraic(&type, &string[total_read]);
+
+	enum chess_file file = CHESS_FILE_NONE;
+	enum chess_rank rank = CHESS_RANK_NONE;
+	total_read += chess_file_from_algebraic(&file, &string[total_read]);
+	total_read += chess_rank_from_algebraic(&rank, &string[total_read]);
+
+	bool is_capture = false;
+	if (string[total_read] == 'x') {
+		is_capture = true;
+		total_read++;
+	}
+
+	enum chess_square to = CHESS_SQUARE_NONE;
+	size_t read          = chess_square_from_algebraic(&to, &string[total_read]);
+	if (read != 0) {
+		total_read += read;
+	} else if (file != CHESS_FILE_NONE && rank != CHESS_RANK_NONE && !is_capture) {
+		to   = chess_square_new(file, rank);
+		file = CHESS_FILE_NONE;
+		rank = CHESS_RANK_NONE;
+	} else {
+		return 0;
+	}
+
+	enum chess_piece_type promotion_type = CHESS_PIECE_TYPE_NONE;
+	if (string[total_read] == '=') {
+		total_read++;
+		READ(chess_piece_type_from_algebraic, &promotion_type);
+	}
+
+	bool is_check     = false;
+	bool is_checkmate = false;
+	if (string[total_read] == '+') {
+		is_check = true;
+		total_read++;
+	} else if (string[total_read] == '#') {
+		is_checkmate = true;
+		total_read++;
+	}
+
+	if (file != CHESS_FILE_NONE && rank != CHESS_RANK_NONE) {
+		enum chess_square from = chess_square_new(file, rank);
+
+		if (type != CHESS_PIECE_TYPE_NONE && chess_piece_type(position->board[from]) != type) {
+			return 0;
+		}
+
+		*move = (struct chess_move){
+			.from           = from,
+			.to             = to,
+			.promotion_type = promotion_type,
+		};
+
+		if (is_capture && !chess_move_is_capture(position, *move)) {
+			return 0;
+		}
+
+		if (is_check || is_checkmate) {
+			struct chess_position position_after_move = *position;
+			if (!chess_move_do(&position_after_move, *move)) {
+				return 0;
+			}
+
+			if (is_check && !chess_position_is_check(&position_after_move)) {
+				return 0;
+			}
+
+			if (is_checkmate && !chess_position_is_checkmate(&position_after_move)) {
+				return 0;
+			}
+		}
+
+		return total_read;
+	}
+
+	struct chess_moves moves = chess_moves_generate(position);
+	size_t matches           = 0;
+	for (size_t i = 0; i < moves.count; i++) {
+		if (moves.moves[i].to != to) {
+			continue;
+		}
+
+		if (file != CHESS_FILE_NONE && chess_square_file(moves.moves[i].from) != file) {
+			continue;
+		}
+		if (rank != CHESS_RANK_NONE && chess_square_rank(moves.moves[i].from) != rank) {
+			continue;
+		}
+
+		if (chess_piece_type(position->board[moves.moves[i].from]) != type) {
+			continue;
+		}
+
+		if (moves.moves[i].promotion_type != promotion_type) {
+			continue;
+		}
+
+		if (is_capture && !chess_move_is_capture(position, moves.moves[i])) {
+			continue;
+		}
+
+		if (is_check || is_checkmate) {
+			struct chess_position position_after_move = *position;
+			if (!chess_move_do(&position_after_move, moves.moves[i])) {
+				continue;
+			}
+
+			if (is_check && !chess_position_is_check(&position_after_move)) {
+				continue;
+			}
+
+			if (is_checkmate && !chess_position_is_checkmate(&position_after_move)) {
+				continue;
+			}
+		}
+
+		*move = moves.moves[i];
+		matches++;
+	}
+
+	if (matches != 1) {
+		return 0;
+	}
+
+	return total_read;
 }
 size_t chess_move_to_algebraic(const struct chess_position *position, struct chess_move move, char *string, size_t string_size) {
 	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
@@ -738,43 +893,37 @@ size_t chess_move_to_algebraic(const struct chess_position *position, struct che
 	enum chess_piece_type type = chess_piece_type(piece);
 	enum chess_file file       = chess_square_file(move.from);
 	if (type != CHESS_PIECE_TYPE_PAWN) {
+		WRITE(chess_piece_type_to_algebraic, type);
+
 		enum chess_rank rank     = chess_square_rank(move.from);
 
 		bool is_ambiguous        = false;
-		bool is_type_ambiguous   = false;
 		bool is_file_ambiguous   = false;
 		bool is_rank_ambiguous   = false;
 
 		struct chess_moves moves = chess_moves_generate(position);
 		for (size_t i = 0; i < moves.count; i++) {
-			if (moves.moves[i].to != move.to || moves.moves[i].from == move.from) {
+			if (moves.moves[i].to != move.to || moves.moves[i].from == move.from || position->board[moves.moves[i].from] != piece) {
 				continue;
 			}
 
 			is_ambiguous = true;
 
-			if (position->board[moves.moves[i].from] == piece) {
-				is_type_ambiguous = true;
-
-				if (chess_square_file(moves.moves[i].from) == file) {
-					is_file_ambiguous = true;
-					break;
-				}
-				if (chess_square_rank(moves.moves[i].from) == rank) {
-					is_rank_ambiguous = true;
-					break;
-				}
+			if (chess_square_file(moves.moves[i].from) == file) {
+				is_file_ambiguous = true;
+			}
+			if (chess_square_rank(moves.moves[i].from) == rank) {
+				is_rank_ambiguous = true;
 			}
 		}
-
 		if (is_ambiguous) {
-			WRITE(chess_piece_type_to_algebraic, type);
-			if (is_type_ambiguous) {
-				if (!is_file_ambiguous) {
-					WRITE(chess_file_to_algebraic, file);
-				} else if (!is_rank_ambiguous) {
-					WRITE(chess_file_to_algebraic, file);
-				}
+			if (!is_file_ambiguous) {
+				WRITE(chess_file_to_algebraic, file);
+			} else if (!is_rank_ambiguous) {
+				WRITE(chess_rank_to_algebraic, rank);
+			} else {
+				WRITE(chess_file_to_algebraic, file);
+				WRITE(chess_rank_to_algebraic, rank);
 			}
 		}
 	}

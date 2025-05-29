@@ -3,22 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void chess_square_print(enum chess_square square) {
-	char algebraic[3];
-	chess_square_to_algebraic(square, algebraic, sizeof(algebraic));
-	printf("%s", algebraic);
-}
-enum chess_square chess_square_scan(void) {
-	char string[2];
-	(void)scanf(" %c%c", &string[0], &string[1]);
-
-	assert('a' <= string[0] && string[0] <= 'h' && '1' <= string[1] && string[1] <= '8');
-	enum chess_file file = (enum chess_file)(CHESS_FILE_A + (string[0] - 'a'));
-	enum chess_rank rank = (enum chess_rank)(CHESS_RANK_1 + (string[1] - '1'));
-
-	return chess_square_new(file, rank);
-}
-
 void chess_position_print(const struct chess_position *chess) {
 	assert(chess != NULL);
 
@@ -106,15 +90,24 @@ int main(void) {
 		printf("Available moves: ");
 		struct chess_moves moves = chess_moves_generate(&position);
 		for (size_t i = 0; i < moves.count; i++) {
-			char algebraic[8];
-			chess_move_to_algebraic(&position, moves.moves[i], algebraic, sizeof(algebraic));
-			printf("%s ", algebraic);
+			char string[8];
+			chess_move_to_algebraic(&position, moves.moves[i], string, sizeof(string));
+			printf("%s ", string);
 		}
 		printf("\n");
 
-		struct chess_move move = { .from = chess_square_scan(), .to = chess_square_scan() };
+		char string[64];
+		if (scanf("%63s", string) != 1) {
+			(void)fprintf(stderr, "Failed to read move.\n");
+			continue;
+		}
+		struct chess_move move;
+		if (chess_move_from_algebraic(&position, &move, string) == 0) {
+			(void)fprintf(stderr, "Invalid move: %s\n", string);
+			continue;
+		}
 		if (!chess_move_do(&position, move)) {
-			printf("Illegal move.\n");
+			(void)fprintf(stderr, "Illegal move.\n");
 			continue;
 		}
 		chess_position_print(&position);
