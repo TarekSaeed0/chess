@@ -72,11 +72,12 @@ bool chess_color_is_valid(enum chess_color color) {
 	}
 }
 enum chess_color chess_color_opposite(enum chess_color color) {
+	assert(chess_color_is_valid(color) || color == CHESS_COLOR_NONE);
+
 	switch (color) {
-		case CHESS_COLOR_NONE: return CHESS_COLOR_NONE;
 		case CHESS_COLOR_WHITE: return CHESS_COLOR_BLACK;
 		case CHESS_COLOR_BLACK: return CHESS_COLOR_WHITE;
-		default: assert(false);
+		default: return CHESS_COLOR_NONE;
 	}
 }
 
@@ -455,7 +456,7 @@ bool chess_square_is_attacked(const struct chess_position *position, enum chess_
 			}
 
 			// clang-format off
-			static constexpr uint8_t attacks[256] = {
+			static CHESS_CONSTEXPR uint8_t attacks[256] = {
 			 40,  0,  0,  0,  0,  0,  0, 48,  0,  0,  0,  0,  0,  0, 40,  0,
 				0, 40,  0,  0,  0,  0,  0, 48,  0,  0,  0,  0,  0, 40,  0,  0,
 				0,  0, 40,  0,  0,  0,  0, 48,  0,  0,  0,  0, 40,  0,  0,  0,
@@ -494,7 +495,7 @@ bool chess_square_is_attacked(const struct chess_position *position, enum chess_
 					case CHESS_PIECE_TYPE_BISHOP:
 					case CHESS_PIECE_TYPE_QUEEN: {
 						// clang-format off
-						static constexpr enum chess_offset directions[256] = {
+						static CHESS_CONSTEXPR enum chess_offset directions[256] = {
 							-17,  0,  0,  0,  0,  0,  0,-16,  0,  0,  0,  0,  0,  0,-15,  0,
 								0,-17,  0,  0,  0,  0,  0,-16,  0,  0,  0,  0,  0,-15,  0,  0,
 								0,  0,-17,  0,  0,  0,  0,-16,  0,  0,  0,  0,-15,  0,  0,  0,
@@ -1303,7 +1304,7 @@ static void chess_moves_generate_pawn_promotions(
 ) {
 	assert(moves != nullptr && chess_position_is_valid(position) && chess_square_is_valid(from) && chess_square_is_valid(to));
 
-	static constexpr enum chess_piece_type promotion_types[] = {
+	static CHESS_CONSTEXPR enum chess_piece_type promotion_types[] = {
 		CHESS_PIECE_TYPE_KNIGHT,
 		CHESS_PIECE_TYPE_BISHOP,
 		CHESS_PIECE_TYPE_ROOK,
@@ -1365,7 +1366,7 @@ static void chess_moves_generate_pawn(
 		}
 	}
 
-	static constexpr enum chess_offset offsets[] = {
+	static CHESS_CONSTEXPR enum chess_offset offsets[] = {
 		CHESS_OFFSET_EAST,
 		CHESS_OFFSET_WEST,
 	};
@@ -1531,7 +1532,7 @@ struct chess_moves chess_moves_generate(const struct chess_position *position) {
 					chess_moves_generate_pawn(&moves, position, from);
 				} break;
 				case CHESS_PIECE_TYPE_KNIGHT: {
-					static constexpr enum chess_offset offsets[] = {
+					static CHESS_CONSTEXPR enum chess_offset offsets[] = {
 						2 * CHESS_OFFSET_NORTH + CHESS_OFFSET_EAST,
 						2 * CHESS_OFFSET_NORTH + CHESS_OFFSET_WEST,
 						2 * CHESS_OFFSET_EAST + CHESS_OFFSET_NORTH,
@@ -1544,7 +1545,7 @@ struct chess_moves chess_moves_generate(const struct chess_position *position) {
 					chess_moves_generate_offsets(&moves, position, from, offsets, ARRAY_LENGTH(offsets));
 				} break;
 				case CHESS_PIECE_TYPE_BISHOP: {
-					static constexpr enum chess_offset directions[] = {
+					static CHESS_CONSTEXPR enum chess_offset directions[] = {
 						CHESS_OFFSET_NORTH_EAST,
 						CHESS_OFFSET_SOUTH_EAST,
 						CHESS_OFFSET_SOUTH_WEST,
@@ -1553,7 +1554,7 @@ struct chess_moves chess_moves_generate(const struct chess_position *position) {
 					chess_moves_generate_directions(&moves, position, from, directions, ARRAY_LENGTH(directions));
 				} break;
 				case CHESS_PIECE_TYPE_ROOK: {
-					static constexpr enum chess_offset directions[] = {
+					static CHESS_CONSTEXPR enum chess_offset directions[] = {
 						CHESS_OFFSET_NORTH,
 						CHESS_OFFSET_EAST,
 						CHESS_OFFSET_SOUTH,
@@ -1562,7 +1563,7 @@ struct chess_moves chess_moves_generate(const struct chess_position *position) {
 					chess_moves_generate_directions(&moves, position, from, directions, ARRAY_LENGTH(directions));
 				} break;
 				case CHESS_PIECE_TYPE_QUEEN: {
-					static constexpr enum chess_offset directions[] = {
+					static CHESS_CONSTEXPR enum chess_offset directions[] = {
 						CHESS_OFFSET_NORTH,
 						CHESS_OFFSET_EAST,
 						CHESS_OFFSET_SOUTH,
@@ -1575,7 +1576,7 @@ struct chess_moves chess_moves_generate(const struct chess_position *position) {
 					chess_moves_generate_directions(&moves, position, from, directions, ARRAY_LENGTH(directions));
 				} break;
 				case CHESS_PIECE_TYPE_KING: {
-					static constexpr enum chess_offset offsets[] = {
+					static CHESS_CONSTEXPR enum chess_offset offsets[] = {
 						CHESS_OFFSET_NORTH,
 						CHESS_OFFSET_EAST,
 						CHESS_OFFSET_SOUTH,

@@ -8,7 +8,25 @@ extern "C" {
 
 #include <stdint.h>
 
-constexpr size_t CHESS_MOVES_MAXIMUM_COUNT = 256;
+#if (defined(__cplusplus) && __cplusplus >= 201103L) || (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L)
+#define CHESS_HAS_CONSTEXPR 1
+#else
+#define CHESS_HAS_CONSTEXPR 0
+#endif
+
+#if CHESS_HAS_CONSTEXPR
+#define CHESS_CONSTEXPR constexpr
+#else
+#define CHESS_CONSTEXPR const
+#endif
+
+#if CHESS_HAS_CONSTEXPR
+static constexpr size_t CHESS_MOVES_MAXIMUM_COUNT = 256;
+#else
+enum {
+	CHESS_MOVES_MAXIMUM_COUNT = 256,
+};
+#endif
 
 enum chess_color : uint8_t {
 	CHESS_COLOR_NONE  = 0U,

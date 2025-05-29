@@ -12,7 +12,7 @@
 static void test_chess_color_is_valid(void **state) {
 	(void)state;
 
-	static constexpr struct {
+	static CHESS_CONSTEXPR struct {
 		enum chess_color color;
 		bool is_valid;
 	} test_cases[] = {
@@ -34,7 +34,7 @@ static void test_chess_color_is_valid(void **state) {
 static void test_chess_color_opposite(void **state) {
 	(void)state;
 
-	static constexpr struct {
+	static CHESS_CONSTEXPR struct {
 		enum chess_color color;
 		enum chess_color opposite;
 	} test_cases[] = {
@@ -51,7 +51,7 @@ static void test_chess_color_opposite(void **state) {
 static void test_chess_piece_type_is_valid(void **state) {
 	(void)state;
 
-	static constexpr struct {
+	static CHESS_CONSTEXPR struct {
 		enum chess_piece_type type;
 		bool is_valid;
 	} test_cases[] = {
@@ -124,7 +124,7 @@ static void test_chess_piece_type_to_algebraic(void **state) {
 static void test_chess_piece_new(void **state) {
 	(void)state;
 
-	static constexpr struct {
+	static CHESS_CONSTEXPR struct {
 		enum chess_color color;
 		enum chess_piece_type type;
 		enum chess_piece piece;
@@ -154,7 +154,7 @@ static void test_chess_piece_new(void **state) {
 static void test_chess_piece_color(void **state) {
 	(void)state;
 
-	static constexpr struct {
+	static CHESS_CONSTEXPR struct {
 		enum chess_piece piece;
 		enum chess_color color;
 	} test_cases[] = {
@@ -183,7 +183,7 @@ static void test_chess_piece_color(void **state) {
 static void test_chess_piece_type(void **state) {
 	(void)state;
 
-	static constexpr struct {
+	static CHESS_CONSTEXPR struct {
 		enum chess_piece piece;
 		enum chess_piece_type type;
 	} test_cases[] = {
@@ -212,7 +212,7 @@ static void test_chess_piece_type(void **state) {
 static void test_chess_piece_is_valid(void **state) {
 	(void)state;
 
-	static constexpr struct {
+	static CHESS_CONSTEXPR struct {
 		enum chess_piece piece;
 		bool is_valid;
 	} test_cases[] = {
@@ -306,7 +306,7 @@ static void test_chess_piece_to_algebraic(void **state) {
 static void test_chess_file_is_valid(void **state) {
 	(void)state;
 
-	static constexpr struct {
+	static CHESS_CONSTEXPR struct {
 		enum chess_file file;
 		bool is_valid;
 	} test_cases[] = {
@@ -385,7 +385,7 @@ static void test_chess_file_to_algebraic(void **state) {
 static void test_chess_rank_is_valid(void **state) {
 	(void)state;
 
-	static constexpr struct {
+	static CHESS_CONSTEXPR struct {
 		enum chess_rank rank;
 		bool is_valid;
 	} test_cases[] = {
@@ -464,7 +464,7 @@ static void test_chess_rank_to_algebraic(void **state) {
 static void test_chess_square_new(void **state) {
 	(void)state;
 
-	static constexpr struct {
+	static CHESS_CONSTEXPR struct {
 		enum chess_file file;
 		enum chess_rank rank;
 		enum chess_square square;
@@ -550,7 +550,7 @@ static void test_chess_square_new(void **state) {
 static void test_chess_square_file(void **state) {
 	(void)state;
 
-	static constexpr struct {
+	static CHESS_CONSTEXPR struct {
 		enum chess_square square;
 		enum chess_file file;
 	} test_cases[] = {
@@ -635,7 +635,7 @@ static void test_chess_square_file(void **state) {
 static void test_chess_square_rank(void **state) {
 	(void)state;
 
-	static constexpr struct {
+	static CHESS_CONSTEXPR struct {
 		enum chess_square square;
 		enum chess_rank rank;
 	} test_cases[] = {
@@ -720,7 +720,7 @@ static void test_chess_square_rank(void **state) {
 static void test_chess_square_is_valid(void **state) {
 	(void)state;
 
-	static constexpr struct {
+	static CHESS_CONSTEXPR struct {
 		enum chess_square square;
 		bool is_valid;
 	} test_cases[] = {
@@ -988,7 +988,7 @@ static void test_chess_square_to_algebraic(void **state) {
 static void test_chess_preft(void **state) {
 	(void)state;
 
-	static constexpr unsigned long expected[] = {
+	static CHESS_CONSTEXPR unsigned long expected[] = {
 		1,
 		20,
 		400,
