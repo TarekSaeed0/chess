@@ -8,9 +8,21 @@ extern "C" {
 
 #include <stdint.h>
 
-#if (defined(__cplusplus) && __cplusplus >= 201103L) || (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L)
+#ifdef __cplusplus
+#ifdef __cpp_constexpr
 #define CHESS_HAS_CONSTEXPR 1
+#endif
+#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L
+#if defined(__clang__)
+#if (__clang_major__ > 19) || (__clang_major__ == 19 && __clang_minor__ >= 1)
+#define CHESS_HAS_CONSTEXPR 1
+#endif
 #else
+#define CHESS_HAS_CONSTEXPR 1
+#endif
+#endif
+
+#ifndef CHESS_HAS_CONSTEXPR
 #define CHESS_HAS_CONSTEXPR 0
 #endif
 
