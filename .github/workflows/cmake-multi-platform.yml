@@ -51,7 +51,7 @@ jobs:
         uses: lukka/run-vcpkg@v7
         with:
           vcpkgArguments: cmocka
-          vcpkgCommitId: "a42af01b72c28a8e1d7b48107b33e4f286a55ef6"
+          vcpkgGitCommitId: "ce613c41372b23b1f51333815feb3edd87ef8a8b"
 
       - name: Set reusable strings
         # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
@@ -65,6 +65,7 @@ jobs:
         # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
         run: >
           cmake -B ${{ steps.strings.outputs.build-output-dir }}
+          -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
           -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
