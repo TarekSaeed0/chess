@@ -7,8 +7,6 @@
 
 #include <chess.h>
 
-#define ARRAY_LENGTH(array) (sizeof(array) / sizeof((array)[0]))
-
 static void test_chess_color_is_valid(void **state) {
 	(void)state;
 
@@ -22,7 +20,7 @@ static void test_chess_color_is_valid(void **state) {
 		{ .color = CHESS_COLOR_BLACK, .is_valid = true },
 	};
 
-	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {
 		bool is_valid = chess_color_is_valid(test_cases[i].color);
 		if (test_cases[i].is_valid) {
 			assert_true(is_valid);
@@ -42,7 +40,7 @@ static void test_chess_color_opposite(void **state) {
 		{ .color = CHESS_COLOR_BLACK, .opposite = CHESS_COLOR_WHITE },
 	};
 
-	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {
 		ChessColor opposite = chess_color_opposite(test_cases[i].color);
 		assert_int_equal(opposite, test_cases[i].opposite);
 	}
@@ -65,7 +63,7 @@ static void test_chess_piece_type_is_valid(void **state) {
 		{ .type = CHESS_PIECE_TYPE_KING, .is_valid = true },
 	};
 
-	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {
 		bool is_valid = chess_piece_type_is_valid(test_cases[i].type);
 		if (test_cases[i].is_valid) {
 			assert_true(is_valid);
@@ -90,7 +88,7 @@ static void test_chess_piece_type_from_algebraic(void **state) {
 		{ .string = "K", .type = CHESS_PIECE_TYPE_KING, .read = 1 },
 	};
 
-	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {
 		ChessPieceType type = CHESS_PIECE_TYPE_NONE;
 		size_t read         = chess_piece_type_from_algebraic(&type, test_cases[i].string);
 		assert_int_equal(type, test_cases[i].type);
@@ -113,7 +111,7 @@ static void test_chess_piece_type_to_algebraic(void **state) {
 		{ .type = CHESS_PIECE_TYPE_KING, .string = "K", .written = 1 },
 	};
 
-	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {
 		char string[2] = { 0 };
 		size_t written = chess_piece_type_to_algebraic(test_cases[i].type, string, sizeof(string));
 		assert_string_equal(string, test_cases[i].string);
@@ -146,7 +144,7 @@ static void test_chess_piece_new(void **state) {
 		{ .color = CHESS_COLOR_BLACK, .type = CHESS_PIECE_TYPE_KING, .piece = CHESS_PIECE_BLACK_KING },
 	};
 
-	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {
 		ChessPiece piece = chess_piece_new(test_cases[i].color, test_cases[i].type);
 		assert_int_equal(piece, test_cases[i].piece);
 	}
@@ -175,7 +173,7 @@ static void test_chess_piece_color(void **state) {
 		{ .piece = CHESS_PIECE_BLACK_KING, .color = CHESS_COLOR_BLACK },
 	};
 
-	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {
 		ChessColor color = chess_piece_color(test_cases[i].piece);
 		assert_int_equal(color, test_cases[i].color);
 	}
@@ -204,7 +202,7 @@ static void test_chess_piece_type(void **state) {
 		{ .piece = CHESS_PIECE_BLACK_KING, .type = CHESS_PIECE_TYPE_KING },
 	};
 
-	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {
 		ChessPieceType type = chess_piece_type(test_cases[i].piece);
 		assert_int_equal(type, test_cases[i].type);
 	}
@@ -233,7 +231,7 @@ static void test_chess_piece_is_valid(void **state) {
 		{ .piece = CHESS_PIECE_BLACK_KING, .is_valid = true },
 	};
 
-	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {
 		bool is_valid = chess_piece_is_valid(test_cases[i].piece);
 		if (test_cases[i].is_valid) {
 			assert_true(is_valid);
@@ -265,7 +263,7 @@ static void test_chess_piece_from_algebraic(void **state) {
 		{ .string = "k", .piece = CHESS_PIECE_BLACK_KING, .read = 1 },
 	};
 
-	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {
 		ChessPiece piece = CHESS_PIECE_NONE;
 		size_t read      = chess_piece_from_algebraic(&piece, test_cases[i].string);
 		assert_int_equal(piece, test_cases[i].piece);
@@ -295,7 +293,7 @@ static void test_chess_piece_to_algebraic(void **state) {
 		{ .piece = CHESS_PIECE_BLACK_KING, .string = "k", .written = 1 },
 	};
 
-	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {
 		char string[2] = { 0 };
 		size_t written = chess_piece_to_algebraic(test_cases[i].piece, string, sizeof(string));
 		assert_string_equal(string, test_cases[i].string);
@@ -322,7 +320,7 @@ static void test_chess_file_is_valid(void **state) {
 		{ .file = CHESS_FILE_H, .is_valid = true },
 	};
 
-	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {
 		bool is_valid = chess_file_is_valid(test_cases[i].file);
 		if (test_cases[i].is_valid) {
 			assert_true(is_valid);
@@ -349,7 +347,7 @@ static void test_chess_file_from_algebraic(void **state) {
 		{ .string = "h", .file = CHESS_FILE_H, .read = 1 },
 	};
 
-	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {
 		ChessFile file = CHESS_FILE_NONE;
 		size_t read    = chess_file_from_algebraic(&file, test_cases[i].string);
 		assert_int_equal(file, test_cases[i].file);
@@ -374,7 +372,7 @@ static void test_chess_file_to_algebraic(void **state) {
 		{ .file = CHESS_FILE_H, .string = "h", .written = 1 },
 	};
 
-	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {
 		char string[2] = { 0 };
 		size_t written = chess_file_to_algebraic(test_cases[i].file, string, sizeof(string));
 		assert_string_equal(string, test_cases[i].string);
@@ -401,7 +399,7 @@ static void test_chess_rank_is_valid(void **state) {
 		{ .rank = CHESS_RANK_8, .is_valid = true },
 	};
 
-	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {
 		bool is_valid = chess_rank_is_valid(test_cases[i].rank);
 		if (test_cases[i].is_valid) {
 			assert_true(is_valid);
@@ -428,7 +426,7 @@ static void test_chess_rank_from_algebraic(void **state) {
 		{ .string = "8", .rank = CHESS_RANK_8, .read = 1 },
 	};
 
-	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {
 		ChessRank rank = CHESS_RANK_NONE;
 		size_t read    = chess_rank_from_algebraic(&rank, test_cases[i].string);
 		assert_int_equal(rank, test_cases[i].rank);
@@ -453,7 +451,7 @@ static void test_chess_rank_to_algebraic(void **state) {
 		{ .rank = CHESS_RANK_8, .string = "8", .written = 1 },
 	};
 
-	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {
 		char string[2] = { 0 };
 		size_t written = chess_rank_to_algebraic(test_cases[i].rank, string, sizeof(string));
 		assert_string_equal(string, test_cases[i].string);
@@ -542,7 +540,7 @@ static void test_chess_square_new(void **state) {
 		{ .file = CHESS_FILE_H, .rank = CHESS_RANK_8, .square = CHESS_SQUARE_H8 },
 	};
 
-	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {
 		ChessSquare square = chess_square_new(test_cases[i].file, test_cases[i].rank);
 		assert_int_equal(square, test_cases[i].square);
 	}
@@ -627,7 +625,7 @@ static void test_chess_square_file(void **state) {
 		{ .square = CHESS_SQUARE_H8, .file = CHESS_FILE_H },
 	};
 
-	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {
 		ChessFile file = chess_square_file(test_cases[i].square);
 		assert_int_equal(file, test_cases[i].file);
 	}
@@ -712,7 +710,7 @@ static void test_chess_square_rank(void **state) {
 		{ .square = CHESS_SQUARE_H8, .rank = CHESS_RANK_8 },
 	};
 
-	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {
 		ChessRank rank = chess_square_rank(test_cases[i].square);
 		assert_int_equal(rank, test_cases[i].rank);
 	}
@@ -799,7 +797,7 @@ static void test_chess_square_is_valid(void **state) {
 		{ .square = CHESS_SQUARE_H8, .is_valid = true },
 	};
 
-	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {
 		bool is_valid = chess_square_is_valid(test_cases[i].square);
 		if (test_cases[i].is_valid) {
 			assert_true(is_valid);
@@ -889,7 +887,7 @@ static void test_chess_square_from_algebraic(void **state) {
 		{ .string = "h8", .square = CHESS_SQUARE_H8, .read = 2 },
 	};
 
-	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {
 		ChessSquare square = CHESS_SQUARE_NONE;
 		size_t read        = chess_square_from_algebraic(&square, test_cases[i].string);
 		assert_int_equal(square, test_cases[i].square);
@@ -977,7 +975,7 @@ static void test_chess_square_to_algebraic(void **state) {
 		{ .square = CHESS_SQUARE_H8, .string = "h8", .written = 2 },
 	};
 
-	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {
 		char string[3] = { 0 };
 		size_t written = chess_square_to_algebraic(test_cases[i].square, string, sizeof(string));
 		assert_string_equal(string, test_cases[i].string);
@@ -1051,7 +1049,7 @@ static void test_chess_move_is_valid(void **state) {
 		}
 	};
 
-	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
+	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {
 		bool is_valid = chess_move_is_valid(test_cases[i].move);
 		if (test_cases[i].is_valid) {
 			assert_true(is_valid);
@@ -1072,7 +1070,7 @@ static void test_chess_preft(void **state) {
 		197281
 	};
 
-	for (unsigned int depth = 0; depth < ARRAY_LENGTH(expected); depth++) {
+	for (unsigned int depth = 0; depth < CHESS_ARRAY_LENGTH(expected); depth++) {
 		assert_int_equal(chess_perft(depth), expected[depth]);
 	}
 }

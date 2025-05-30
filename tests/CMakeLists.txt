@@ -4,12 +4,12 @@ foreach(_CMOCKA_TEST ${CMOCKA_TESTS})
 	add_cmocka_test(
 		${_CMOCKA_TEST}
 		SOURCES
-		../src/chess.c
 		${_CMOCKA_TEST}.c
 		COMPILE_OPTIONS
 		${DEFAULT_C_COMPILE_FLAGS}
 		LINK_LIBRARIES
 		cmocka::cmocka
+		chess
 		LINK_OPTIONS
 		${DEFAULT_LINK_FLAGS}
 	)

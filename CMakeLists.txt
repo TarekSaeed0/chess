@@ -8,8 +8,24 @@ project(
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_library(chess src/chess.c)
-target_include_directories(chess PUBLIC include)
+add_library(
+	chess
+	src/chess.c
+	src/chess/color.c
+	src/chess/piece_type.c
+	src/chess/piece.c
+	src/chess/file.c
+	src/chess/rank.c
+	src/chess/square.c
+	src/chess/position.c
+	src/chess/move.c
+	src/chess/moves.c
+)
+target_include_directories(
+	chess
+	PUBLIC include
+	PRIVATE src
+)
 if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 	target_compile_options(
 		chess
