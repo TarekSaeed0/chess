@@ -7,47 +7,84 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-
-#ifdef __cplusplus
-#ifdef __cpp_constexpr
-#define CHESS_HAS_CONSTEXPR 1
+#if !defined(__STDC_VERSION__) || __STDC_VERSION__ < 202311L
+	#include <stdbool.h>
 #endif
+
+#if defined(__cplusplus) && defined(__cpp_constexpr)
+	#define CHESS_HAS_CONSTEXPR
 #elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L
-#if defined(__clang__)
-#if (__clang_major__ > 19) || (__clang_major__ == 19 && __clang_minor__ >= 1)
-#define CHESS_HAS_CONSTEXPR 1
+	#if defined(__clang__)
+		#if (__clang_major__ > 19) || (__clang_major__ == 19 && __clang_minor__ >= 1)
+			#define CHESS_HAS_CONSTEXPR
+		#endif
+	#else
+		#define CHESS_HAS_CONSTEXPR
+	#endif
 #endif
+
+#if defined(__cplusplus) && __cplusplus >= 201103L
+	#define CHESS_HAS_TYPED_ENUM
+#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L
+	#define CHESS_HAS_TYPED_ENUM
+#endif
+
+#if defined(__cplusplus) && __cplusplus >= 201103L
+	#define CHESS_HAS_NULLPTR
+#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L
+	#define CHESS_HAS_NULLPTR
+#endif
+
+#ifdef CHESS_HAS_CONSTEXPR
+	#define CHESS_CONSTEXPR constexpr
 #else
-#define CHESS_HAS_CONSTEXPR 1
-#endif
-#endif
-
-#ifndef CHESS_HAS_CONSTEXPR
-#define CHESS_HAS_CONSTEXPR 0
+	#define CHESS_CONSTEXPR const
 #endif
 
-#if CHESS_HAS_CONSTEXPR
-#define CHESS_CONSTEXPR constexpr
+#ifdef CHESS_HAS_CONSTEXPR
+	#define CHESS_DEFINE_INTEGRAL_CONSTANT(type, name, value) \
+		static CHESS_CONSTEXPR typeof(value) name = (value)
 #else
-#define CHESS_CONSTEXPR const
+	#ifdef CHESS_HAS_TYPED_ENUM
+		#define CHESS_DEFINE_INTEGRAL_CONSTANT(type, name, value) \
+			enum : type {                                           \
+				name = (value)                                        \
+			}
+	#else
+		#define CHESS_DEFINE_INTEGRAL_CONSTANT(type, name, value) \
+			enum {                                                  \
+				name = (value)                                        \
+			}
+	#endif
 #endif
 
-#if CHESS_HAS_CONSTEXPR
-static constexpr size_t CHESS_MOVES_MAXIMUM_COUNT = 256;
+#ifdef CHESS_HAS_TYPED_ENUM
+	#define CHESS_ENUM(type, name) \
+		enum name : type;            \
+		typedef enum name name;      \
+		enum name : type
 #else
-enum {
-	CHESS_MOVES_MAXIMUM_COUNT = 256,
-};
+	#define CHESS_ENUM(type, name) \
+		typedef type name;           \
+		enum name
 #endif
 
-enum chess_color : uint8_t {
+#ifdef CHESS_HAS_NULLPTR
+	#define CHESS_NULL nullptr
+#else
+	#define CHESS_NULL NULL
+#endif
+
+CHESS_DEFINE_INTEGRAL_CONSTANT(size_t, CHESS_MOVES_MAXIMUM_COUNT, 256);
+
+CHESS_ENUM(uint8_t, ChessColor) {
 	CHESS_COLOR_NONE  = 0U,
 
 	CHESS_COLOR_WHITE = 1U,
 	CHESS_COLOR_BLACK = 2U,
 };
 
-enum chess_piece_type : uint8_t {
+CHESS_ENUM(uint8_t, ChessPieceType) {
 	CHESS_PIECE_TYPE_NONE   = 0U,
 
 	CHESS_PIECE_TYPE_PAWN   = 1U,
@@ -58,7 +95,7 @@ enum chess_piece_type : uint8_t {
 	CHESS_PIECE_TYPE_KING   = 6U,
 };
 
-enum chess_piece : uint8_t {
+CHESS_ENUM(uint8_t, ChessPiece) {
 	CHESS_PIECE_NONE         = CHESS_COLOR_NONE << 3U | CHESS_PIECE_TYPE_NONE,
 
 	CHESS_PIECE_WHITE_PAWN   = CHESS_COLOR_WHITE << 3U | CHESS_PIECE_TYPE_PAWN,
@@ -76,7 +113,7 @@ enum chess_piece : uint8_t {
 	CHESS_PIECE_BLACK_KING   = CHESS_COLOR_BLACK << 3U | CHESS_PIECE_TYPE_KING,
 };
 
-enum chess_file : uint8_t {
+CHESS_ENUM(uint8_t, ChessFile) {
 	CHESS_FILE_NONE = 0U,
 
 	CHESS_FILE_A    = 8U,
@@ -89,7 +126,7 @@ enum chess_file : uint8_t {
 	CHESS_FILE_H    = 15U,
 };
 
-enum chess_rank : uint8_t {
+CHESS_ENUM(uint8_t, ChessRank) {
 	CHESS_RANK_NONE = 0U,
 
 	CHESS_RANK_1    = 8U,
@@ -102,7 +139,7 @@ enum chess_rank : uint8_t {
 	CHESS_RANK_8    = 15U,
 };
 
-enum chess_square : uint8_t {
+CHESS_ENUM(uint8_t, ChessSquare) {
 	CHESS_SQUARE_NONE = CHESS_FILE_NONE | CHESS_RANK_NONE << 4U,
 
 	CHESS_SQUARE_A1   = CHESS_FILE_A | CHESS_RANK_1 << 4U,
@@ -178,7 +215,7 @@ enum chess_square : uint8_t {
 	CHESS_SQUARE_H8   = CHESS_FILE_H | CHESS_RANK_8 << 4U,
 };
 
-enum chess_castling_rights : uint8_t {
+CHESS_ENUM(uint8_t, ChessCastlingRights) {
 	CHESS_CASTLING_RIGHTS_NONE            = 0U,
 
 	CHESS_CASTLING_RIGHTS_WHITE_KINGSIDE  = 1U << 0U,
@@ -187,100 +224,100 @@ enum chess_castling_rights : uint8_t {
 	CHESS_CASTLING_RIGHTS_BLACK_QUEENSIDE = 1U << 3U,
 };
 
-struct chess_position {
-	enum chess_piece board[256];
-	enum chess_color side_to_move;
-	enum chess_castling_rights castling_rights;
-	enum chess_square en_passant_square;
+typedef struct ChessPosition {
+	ChessPiece board[256];
+	ChessColor side_to_move;
+	ChessCastlingRights castling_rights;
+	ChessSquare en_passant_square;
 	unsigned int half_move_clock;
 	unsigned int full_move_number;
-	enum chess_square king_squares[3];
-};
+	ChessSquare king_squares[3];
+} ChessPosition;
 
-struct chess_move {
-	enum chess_square from;
-	enum chess_square to;
-	enum chess_piece_type promotion_type;
-};
+typedef struct ChessMove {
+	ChessSquare from;
+	ChessSquare to;
+	ChessPieceType promotion_type;
+} ChessMove;
 
-struct chess_moves {
-	struct chess_move moves[CHESS_MOVES_MAXIMUM_COUNT];
+typedef struct ChessMoves {
+	struct ChessMove moves[CHESS_MOVES_MAXIMUM_COUNT];
 	size_t count;
-};
+} ChessMoves;
 
-void chess_color_debug(enum chess_color color);
-bool chess_color_is_valid(enum chess_color color);
-enum chess_color chess_color_opposite(enum chess_color color);
+void chess_color_debug(ChessColor color);
+bool chess_color_is_valid(ChessColor color);
+ChessColor chess_color_opposite(ChessColor color);
 
-void chess_piece_type_debug(enum chess_piece_type type);
-bool chess_piece_type_is_valid(enum chess_piece_type type);
-size_t chess_piece_type_from_algebraic(enum chess_piece_type *type, const char *string);
-size_t chess_piece_type_to_algebraic(enum chess_piece_type type, char *string, size_t string_size);
+void chess_piece_type_debug(ChessPieceType type);
+bool chess_piece_type_is_valid(ChessPieceType type);
+size_t chess_piece_type_from_algebraic(ChessPieceType *type, const char *string);
+size_t chess_piece_type_to_algebraic(ChessPieceType type, char *string, size_t string_size);
 
-void chess_piece_debug(enum chess_piece piece);
-bool chess_piece_is_valid(enum chess_piece piece);
-static inline enum chess_piece chess_piece_new(enum chess_color color, enum chess_piece_type type) {
-	return (enum chess_piece)(color << 3U | type);
+void chess_piece_debug(ChessPiece piece);
+bool chess_piece_is_valid(ChessPiece piece);
+static inline ChessPiece chess_piece_new(ChessColor color, ChessPieceType type) {
+	return (ChessPiece)(color << 3U | type);
 }
-static inline enum chess_color chess_piece_color(enum chess_piece piece) {
-	return (enum chess_color)(piece >> 3U);
+static inline ChessColor chess_piece_color(ChessPiece piece) {
+	return (ChessColor)(piece >> 3U);
 }
-static inline enum chess_piece_type chess_piece_type(enum chess_piece piece) {
-	return (enum chess_piece_type)(piece & 0x7U);
+static inline ChessPieceType chess_piece_type(ChessPiece piece) {
+	return (ChessPieceType)(piece & 0x7U);
 }
-size_t chess_piece_from_algebraic(enum chess_piece *piece, const char *string);
-size_t chess_piece_to_algebraic(enum chess_piece piece, char *string, size_t string_size);
+size_t chess_piece_from_algebraic(ChessPiece *piece, const char *string);
+size_t chess_piece_to_algebraic(ChessPiece piece, char *string, size_t string_size);
 
-void chess_file_debug(enum chess_file file);
-bool chess_file_is_valid(enum chess_file file);
-size_t chess_file_from_algebraic(enum chess_file *file, const char *string);
-size_t chess_file_to_algebraic(enum chess_file file, char *string, size_t string_size);
+void chess_file_debug(ChessFile file);
+bool chess_file_is_valid(ChessFile file);
+size_t chess_file_from_algebraic(ChessFile *file, const char *string);
+size_t chess_file_to_algebraic(ChessFile file, char *string, size_t string_size);
 
-void chess_rank_debug(enum chess_rank rank);
-bool chess_rank_is_valid(enum chess_rank rank);
-size_t chess_rank_from_algebraic(enum chess_rank *rank, const char *string);
-size_t chess_rank_to_algebraic(enum chess_rank rank, char *string, size_t string_size);
+void chess_rank_debug(ChessRank rank);
+bool chess_rank_is_valid(ChessRank rank);
+size_t chess_rank_from_algebraic(ChessRank *rank, const char *string);
+size_t chess_rank_to_algebraic(ChessRank rank, char *string, size_t string_size);
 
-void chess_square_debug(enum chess_square square);
-bool chess_square_is_valid(enum chess_square square);
-static inline enum chess_square chess_square_new(enum chess_file file, enum chess_rank rank) {
-	return (enum chess_square)(file | rank << 4U);
+void chess_square_debug(ChessSquare square);
+bool chess_square_is_valid(ChessSquare square);
+static inline ChessSquare chess_square_new(ChessFile file, ChessRank rank) {
+	return (ChessSquare)(file | rank << 4U);
 }
-static inline enum chess_file chess_square_file(enum chess_square square) {
-	return (enum chess_file)(square & 0xFU);
+static inline ChessFile chess_square_file(ChessSquare square) {
+	return (ChessFile)(square & 0xFU);
 }
-static inline enum chess_rank chess_square_rank(enum chess_square square) {
-	return (enum chess_rank)(square >> 4U);
+static inline ChessRank chess_square_rank(ChessSquare square) {
+	return (ChessRank)(square >> 4U);
 }
-enum chess_color chess_square_color(enum chess_square square);
-size_t chess_square_from_algebraic(enum chess_square *square, const char *string);
-size_t chess_square_to_algebraic(enum chess_square square, char *string, size_t string_size);
-bool chess_square_is_attacked(const struct chess_position *position, enum chess_square square, enum chess_color color);
+ChessColor chess_square_color(ChessSquare square);
+size_t chess_square_from_algebraic(ChessSquare *square, const char *string);
+size_t chess_square_to_algebraic(ChessSquare square, char *string, size_t string_size);
+bool chess_square_is_attacked(const ChessPosition *position, ChessSquare square, ChessColor color);
 
-bool chess_position_is_valid(const struct chess_position *position);
-struct chess_position chess_position_new(void);
-size_t chess_position_from_fen(struct chess_position *position, const char *string);
-size_t chess_position_to_fen(const struct chess_position *position, char *string, size_t string_size);
-bool chess_position_is_check(const struct chess_position *position);
-bool chess_position_is_checkmate(const struct chess_position *position);
-bool chess_position_is_stalemate(const struct chess_position *position);
-bool chess_position_is_fifty_move_rule(const struct chess_position *position);
-bool chess_position_is_threefold_repetition(const struct chess_position *position);
-bool chess_position_is_insufficient_material(const struct chess_position *position);
+bool chess_position_is_valid(const ChessPosition *position);
+ChessPosition chess_position_new(void);
+size_t chess_position_from_fen(ChessPosition *position, const char *string);
+size_t chess_position_to_fen(const ChessPosition *position, char *string, size_t string_size);
+bool chess_position_is_check(const ChessPosition *position);
+bool chess_position_is_checkmate(const ChessPosition *position);
+bool chess_position_is_stalemate(const ChessPosition *position);
+bool chess_position_is_fifty_move_rule(const ChessPosition *position);
+bool chess_position_is_threefold_repetition(const ChessPosition *position);
+bool chess_position_is_insufficient_material(const ChessPosition *position);
 
-void chess_move_debug(struct chess_move move);
-bool chess_move_is_valid(struct chess_move move);
-size_t chess_move_from_algebraic(const struct chess_position *position, struct chess_move *move, const char *string);
-size_t chess_move_to_algebraic(const struct chess_position *position, struct chess_move move, char *string, size_t string_size);
-bool chess_move_is_legal(const struct chess_position *position, struct chess_move move);
-bool chess_move_is_promotion(const struct chess_position *position, struct chess_move move);
-bool chess_move_is_en_passant(const struct chess_position *position, struct chess_move move);
-bool chess_move_is_capture(const struct chess_position *position, struct chess_move move);
-bool chess_move_is_kingside_castling(const struct chess_position *position, struct chess_move move);
-bool chess_move_is_queenside_castling(const struct chess_position *position, struct chess_move move);
-bool chess_move_do(struct chess_position *position, struct chess_move move);
+void chess_move_debug(ChessMove move);
+bool chess_move_is_valid(ChessMove move);
+size_t chess_move_from_algebraic(const ChessPosition *position, ChessMove *move, const char *string);
+size_t chess_move_to_algebraic(const ChessPosition *position, ChessMove move, char *string, size_t string_size);
+bool chess_move_is_legal(const ChessPosition *position, ChessMove move);
+bool chess_move_is_promotion(const ChessPosition *position, ChessMove move);
+bool chess_move_is_en_passant(const ChessPosition *position, ChessMove move);
+bool chess_move_is_capture(const ChessPosition *position, ChessMove move);
+bool chess_move_is_kingside_castling(const ChessPosition *position, ChessMove move);
+bool chess_move_is_queenside_castling(const ChessPosition *position, ChessMove move);
+bool chess_move_do(ChessPosition *position, ChessMove move);
 
-struct chess_moves chess_moves_generate(const struct chess_position *position);
+ChessMoves chess_moves_generate(const ChessPosition *position);
 
 unsigned long chess_perft(unsigned int depth);
 

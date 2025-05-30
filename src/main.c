@@ -3,25 +3,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void chess_position_print(const struct chess_position *chess) {
+void chess_position_print(const ChessPosition *chess) {
 	assert(chess != NULL);
 
 	printf("\033[38;5;254;48;5;233m   ");
-	for (enum chess_file file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
+	for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
 		printf(" %c ", 'a' + (file - CHESS_FILE_A));
 	}
 	printf("   \033[0m\n");
-	for (enum chess_rank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
+	for (ChessRank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
 		printf("\033[38;5;254;48;5;233m %c ", '1' + (rank - CHESS_RANK_1));
-		for (enum chess_file file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
-			enum chess_square square      = chess_square_new(file, rank);
-			enum chess_color square_color = chess_square_color(square);
+		for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
+			ChessSquare square      = chess_square_new(file, rank);
+			ChessColor square_color = chess_square_color(square);
 			if (square_color == CHESS_COLOR_WHITE) {
 				printf("\033[38;5;235;48;5;254m");
 			} else {
 				printf("\033[38;5;254;48;5;235m");
 			}
-			enum chess_piece piece = chess->board[square];
+			ChessPiece piece = chess->board[square];
 			if (piece == CHESS_PIECE_NONE) {
 				printf("   ");
 			} else {
@@ -61,14 +61,14 @@ void chess_position_print(const struct chess_position *chess) {
 		}
 	}
 	printf("\033[0m\n\033[38;5;254;48;5;233m   ");
-	for (enum chess_file file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
+	for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
 		printf(" %c ", 'a' + (file - CHESS_FILE_A));
 	}
 	printf("   \033[0m\n");
 }
 
 int main(void) {
-	struct chess_position position = chess_position_new();
+	ChessPosition position = chess_position_new();
 	if (!chess_position_from_fen(&position, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")) {
 		(void)fprintf(stderr, "Error: Invalid FEN position\n");
 		return EXIT_FAILURE;
@@ -88,7 +88,7 @@ int main(void) {
 		}
 		printf("%s to move.\n", position.side_to_move == CHESS_COLOR_WHITE ? "White" : "Black");
 		printf("Available moves: ");
-		struct chess_moves moves = chess_moves_generate(&position);
+		ChessMoves moves = chess_moves_generate(&position);
 		for (size_t i = 0; i < moves.count; i++) {
 			char string[8];
 			chess_move_to_algebraic(&position, moves.moves[i], string, sizeof(string));
@@ -101,7 +101,7 @@ int main(void) {
 			(void)fprintf(stderr, "Failed to read move.\n");
 			continue;
 		}
-		struct chess_move move;
+		ChessMove move;
 		if (chess_move_from_algebraic(&position, &move, string) == 0) {
 			(void)fprintf(stderr, "Invalid move: %s\n", string);
 			continue;

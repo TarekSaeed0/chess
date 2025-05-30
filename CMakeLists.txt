@@ -8,9 +8,6 @@ project(
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(CMAKE_C_STANDARD 23)
-set(CMAKE_C_STANDARD_REQUIRED ON)
-
 add_library(chess src/chess.c)
 target_include_directories(chess PUBLIC include)
 target_compile_options(

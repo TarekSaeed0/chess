@@ -13,7 +13,7 @@ static void test_chess_color_is_valid(void **state) {
 	(void)state;
 
 	static CHESS_CONSTEXPR struct {
-		enum chess_color color;
+		ChessColor color;
 		bool is_valid;
 	} test_cases[] = {
 		{ .color = CHESS_COLOR_NONE, .is_valid = false },
@@ -35,15 +35,15 @@ static void test_chess_color_opposite(void **state) {
 	(void)state;
 
 	static CHESS_CONSTEXPR struct {
-		enum chess_color color;
-		enum chess_color opposite;
+		ChessColor color;
+		ChessColor opposite;
 	} test_cases[] = {
 		{ .color = CHESS_COLOR_WHITE, .opposite = CHESS_COLOR_BLACK },
 		{ .color = CHESS_COLOR_BLACK, .opposite = CHESS_COLOR_WHITE },
 	};
 
 	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
-		enum chess_color opposite = chess_color_opposite(test_cases[i].color);
+		ChessColor opposite = chess_color_opposite(test_cases[i].color);
 		assert_int_equal(opposite, test_cases[i].opposite);
 	}
 }
@@ -52,7 +52,7 @@ static void test_chess_piece_type_is_valid(void **state) {
 	(void)state;
 
 	static CHESS_CONSTEXPR struct {
-		enum chess_piece_type type;
+		ChessPieceType type;
 		bool is_valid;
 	} test_cases[] = {
 		{ .type = CHESS_PIECE_TYPE_NONE, .is_valid = false },
@@ -79,7 +79,7 @@ static void test_chess_piece_type_from_algebraic(void **state) {
 
 	static const struct {
 		const char *string;
-		enum chess_piece_type type;
+		ChessPieceType type;
 		size_t read;
 	} test_cases[] = {
 		{ .string = "P", .type = CHESS_PIECE_TYPE_PAWN, .read = 1 },
@@ -91,8 +91,8 @@ static void test_chess_piece_type_from_algebraic(void **state) {
 	};
 
 	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
-		enum chess_piece_type type = CHESS_PIECE_TYPE_NONE;
-		size_t read                = chess_piece_type_from_algebraic(&type, test_cases[i].string);
+		ChessPieceType type = CHESS_PIECE_TYPE_NONE;
+		size_t read         = chess_piece_type_from_algebraic(&type, test_cases[i].string);
 		assert_int_equal(type, test_cases[i].type);
 		assert_int_equal(read, test_cases[i].read);
 	}
@@ -101,7 +101,7 @@ static void test_chess_piece_type_to_algebraic(void **state) {
 	(void)state;
 
 	static const struct {
-		enum chess_piece_type type;
+		ChessPieceType type;
 		const char *string;
 		size_t written;
 	} test_cases[] = {
@@ -125,9 +125,9 @@ static void test_chess_piece_new(void **state) {
 	(void)state;
 
 	static CHESS_CONSTEXPR struct {
-		enum chess_color color;
-		enum chess_piece_type type;
-		enum chess_piece piece;
+		ChessColor color;
+		ChessPieceType type;
+		ChessPiece piece;
 	} test_cases[] = {
 		{ .color = CHESS_COLOR_NONE, .type = CHESS_PIECE_TYPE_NONE, .piece = CHESS_PIECE_NONE },
 
@@ -147,7 +147,7 @@ static void test_chess_piece_new(void **state) {
 	};
 
 	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
-		enum chess_piece piece = chess_piece_new(test_cases[i].color, test_cases[i].type);
+		ChessPiece piece = chess_piece_new(test_cases[i].color, test_cases[i].type);
 		assert_int_equal(piece, test_cases[i].piece);
 	}
 }
@@ -155,8 +155,8 @@ static void test_chess_piece_color(void **state) {
 	(void)state;
 
 	static CHESS_CONSTEXPR struct {
-		enum chess_piece piece;
-		enum chess_color color;
+		ChessPiece piece;
+		ChessColor color;
 	} test_cases[] = {
 		{ .piece = CHESS_PIECE_NONE, .color = CHESS_COLOR_NONE },
 
@@ -176,7 +176,7 @@ static void test_chess_piece_color(void **state) {
 	};
 
 	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
-		enum chess_color color = chess_piece_color(test_cases[i].piece);
+		ChessColor color = chess_piece_color(test_cases[i].piece);
 		assert_int_equal(color, test_cases[i].color);
 	}
 }
@@ -184,8 +184,8 @@ static void test_chess_piece_type(void **state) {
 	(void)state;
 
 	static CHESS_CONSTEXPR struct {
-		enum chess_piece piece;
-		enum chess_piece_type type;
+		ChessPiece piece;
+		ChessPieceType type;
 	} test_cases[] = {
 		{ .piece = CHESS_PIECE_NONE, .type = CHESS_PIECE_TYPE_NONE },
 
@@ -205,7 +205,7 @@ static void test_chess_piece_type(void **state) {
 	};
 
 	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
-		enum chess_piece_type type = chess_piece_type(test_cases[i].piece);
+		ChessPieceType type = chess_piece_type(test_cases[i].piece);
 		assert_int_equal(type, test_cases[i].type);
 	}
 }
@@ -213,7 +213,7 @@ static void test_chess_piece_is_valid(void **state) {
 	(void)state;
 
 	static CHESS_CONSTEXPR struct {
-		enum chess_piece piece;
+		ChessPiece piece;
 		bool is_valid;
 	} test_cases[] = {
 		{ .piece = CHESS_PIECE_NONE, .is_valid = false },
@@ -247,7 +247,7 @@ static void test_chess_piece_from_algebraic(void **state) {
 
 	static const struct {
 		const char *string;
-		enum chess_piece piece;
+		ChessPiece piece;
 		size_t read;
 	} test_cases[] = {
 		{ .string = "P", .piece = CHESS_PIECE_WHITE_PAWN, .read = 1 },
@@ -266,8 +266,8 @@ static void test_chess_piece_from_algebraic(void **state) {
 	};
 
 	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
-		enum chess_piece piece = CHESS_PIECE_NONE;
-		size_t read            = chess_piece_from_algebraic(&piece, test_cases[i].string);
+		ChessPiece piece = CHESS_PIECE_NONE;
+		size_t read      = chess_piece_from_algebraic(&piece, test_cases[i].string);
 		assert_int_equal(piece, test_cases[i].piece);
 		assert_int_equal(read, test_cases[i].read);
 	}
@@ -276,7 +276,7 @@ static void test_chess_piece_to_algebraic(void **state) {
 	(void)state;
 
 	static const struct {
-		enum chess_piece piece;
+		ChessPiece piece;
 		const char *string;
 		size_t written;
 	} test_cases[] = {
@@ -307,7 +307,7 @@ static void test_chess_file_is_valid(void **state) {
 	(void)state;
 
 	static CHESS_CONSTEXPR struct {
-		enum chess_file file;
+		ChessFile file;
 		bool is_valid;
 	} test_cases[] = {
 		{ .file = CHESS_FILE_NONE, .is_valid = false },
@@ -336,7 +336,7 @@ static void test_chess_file_from_algebraic(void **state) {
 
 	static const struct {
 		const char *string;
-		enum chess_file file;
+		ChessFile file;
 		size_t read;
 	} test_cases[] = {
 		{ .string = "a", .file = CHESS_FILE_A, .read = 1 },
@@ -350,8 +350,8 @@ static void test_chess_file_from_algebraic(void **state) {
 	};
 
 	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
-		enum chess_file file = CHESS_FILE_NONE;
-		size_t read          = chess_file_from_algebraic(&file, test_cases[i].string);
+		ChessFile file = CHESS_FILE_NONE;
+		size_t read    = chess_file_from_algebraic(&file, test_cases[i].string);
 		assert_int_equal(file, test_cases[i].file);
 		assert_int_equal(read, test_cases[i].read);
 	}
@@ -360,7 +360,7 @@ static void test_chess_file_to_algebraic(void **state) {
 	(void)state;
 
 	static const struct {
-		enum chess_file file;
+		ChessFile file;
 		const char *string;
 		size_t written;
 	} test_cases[] = {
@@ -386,7 +386,7 @@ static void test_chess_rank_is_valid(void **state) {
 	(void)state;
 
 	static CHESS_CONSTEXPR struct {
-		enum chess_rank rank;
+		ChessRank rank;
 		bool is_valid;
 	} test_cases[] = {
 		{ .rank = CHESS_RANK_NONE, .is_valid = false },
@@ -415,7 +415,7 @@ static void test_chess_rank_from_algebraic(void **state) {
 
 	static const struct {
 		const char *string;
-		enum chess_rank rank;
+		ChessRank rank;
 		size_t read;
 	} test_cases[] = {
 		{ .string = "1", .rank = CHESS_RANK_1, .read = 1 },
@@ -429,8 +429,8 @@ static void test_chess_rank_from_algebraic(void **state) {
 	};
 
 	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
-		enum chess_rank rank = CHESS_RANK_NONE;
-		size_t read          = chess_rank_from_algebraic(&rank, test_cases[i].string);
+		ChessRank rank = CHESS_RANK_NONE;
+		size_t read    = chess_rank_from_algebraic(&rank, test_cases[i].string);
 		assert_int_equal(rank, test_cases[i].rank);
 		assert_int_equal(read, test_cases[i].read);
 	}
@@ -439,7 +439,7 @@ static void test_chess_rank_to_algebraic(void **state) {
 	(void)state;
 
 	static const struct {
-		enum chess_rank rank;
+		ChessRank rank;
 		const char *string;
 		size_t written;
 	} test_cases[] = {
@@ -465,9 +465,9 @@ static void test_chess_square_new(void **state) {
 	(void)state;
 
 	static CHESS_CONSTEXPR struct {
-		enum chess_file file;
-		enum chess_rank rank;
-		enum chess_square square;
+		ChessFile file;
+		ChessRank rank;
+		ChessSquare square;
 	} test_cases[] = {
 		{ .file = CHESS_FILE_A, .rank = CHESS_RANK_1, .square = CHESS_SQUARE_A1 },
 		{ .file = CHESS_FILE_B, .rank = CHESS_RANK_1, .square = CHESS_SQUARE_B1 },
@@ -543,7 +543,7 @@ static void test_chess_square_new(void **state) {
 	};
 
 	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
-		enum chess_square square = chess_square_new(test_cases[i].file, test_cases[i].rank);
+		ChessSquare square = chess_square_new(test_cases[i].file, test_cases[i].rank);
 		assert_int_equal(square, test_cases[i].square);
 	}
 }
@@ -551,8 +551,8 @@ static void test_chess_square_file(void **state) {
 	(void)state;
 
 	static CHESS_CONSTEXPR struct {
-		enum chess_square square;
-		enum chess_file file;
+		ChessSquare square;
+		ChessFile file;
 	} test_cases[] = {
 		{ .square = CHESS_SQUARE_A1, .file = CHESS_FILE_A },
 		{ .square = CHESS_SQUARE_B1, .file = CHESS_FILE_B },
@@ -628,7 +628,7 @@ static void test_chess_square_file(void **state) {
 	};
 
 	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
-		enum chess_file file = chess_square_file(test_cases[i].square);
+		ChessFile file = chess_square_file(test_cases[i].square);
 		assert_int_equal(file, test_cases[i].file);
 	}
 }
@@ -636,8 +636,8 @@ static void test_chess_square_rank(void **state) {
 	(void)state;
 
 	static CHESS_CONSTEXPR struct {
-		enum chess_square square;
-		enum chess_rank rank;
+		ChessSquare square;
+		ChessRank rank;
 	} test_cases[] = {
 		{ .square = CHESS_SQUARE_A1, .rank = CHESS_RANK_1 },
 		{ .square = CHESS_SQUARE_B1, .rank = CHESS_RANK_1 },
@@ -713,7 +713,7 @@ static void test_chess_square_rank(void **state) {
 	};
 
 	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
-		enum chess_rank rank = chess_square_rank(test_cases[i].square);
+		ChessRank rank = chess_square_rank(test_cases[i].square);
 		assert_int_equal(rank, test_cases[i].rank);
 	}
 }
@@ -721,7 +721,7 @@ static void test_chess_square_is_valid(void **state) {
 	(void)state;
 
 	static CHESS_CONSTEXPR struct {
-		enum chess_square square;
+		ChessSquare square;
 		bool is_valid;
 	} test_cases[] = {
 		{ .square = CHESS_SQUARE_NONE, .is_valid = false },
@@ -813,7 +813,7 @@ static void test_chess_square_from_algebraic(void **state) {
 
 	static const struct {
 		const char *string;
-		enum chess_square square;
+		ChessSquare square;
 		size_t read;
 	} test_cases[] = {
 		{ .string = "a1", .square = CHESS_SQUARE_A1, .read = 2 },
@@ -890,8 +890,8 @@ static void test_chess_square_from_algebraic(void **state) {
 	};
 
 	for (size_t i = 0; i < ARRAY_LENGTH(test_cases); i++) {
-		enum chess_square square = CHESS_SQUARE_NONE;
-		size_t read              = chess_square_from_algebraic(&square, test_cases[i].string);
+		ChessSquare square = CHESS_SQUARE_NONE;
+		size_t read        = chess_square_from_algebraic(&square, test_cases[i].string);
 		assert_int_equal(square, test_cases[i].square);
 		assert_int_equal(read, test_cases[i].read);
 	}
@@ -900,7 +900,7 @@ static void test_chess_square_to_algebraic(void **state) {
 	(void)state;
 
 	static const struct {
-		enum chess_square square;
+		ChessSquare square;
 		const char *string;
 		size_t written;
 	} test_cases[] = {
@@ -989,11 +989,11 @@ static void test_chess_move_is_valid(void **state) {
 	(void)state;
 
 	static CHESS_CONSTEXPR struct {
-		struct chess_move move;
+		ChessMove move;
 		bool is_valid;
 	} test_cases[] = {
 		{
-		    .move = (struct chess_move){
+		    .move = (ChessMove){
 		        .from           = CHESS_SQUARE_NONE,
 		        .to             = CHESS_SQUARE_A2,
 		        .promotion_type = CHESS_PIECE_TYPE_NONE,
@@ -1001,7 +1001,7 @@ static void test_chess_move_is_valid(void **state) {
 		    .is_valid = false,
 		},
 		{
-		    .move = (struct chess_move){
+		    .move = (ChessMove){
 		        .from           = CHESS_SQUARE_A2,
 		        .to             = CHESS_SQUARE_NONE,
 		        .promotion_type = CHESS_PIECE_TYPE_NONE,
@@ -1009,7 +1009,7 @@ static void test_chess_move_is_valid(void **state) {
 		    .is_valid = false,
 		},
 		{
-		    .move = (struct chess_move){
+		    .move = (ChessMove){
 		        .from           = CHESS_SQUARE_A2,
 		        .to             = CHESS_SQUARE_A1,
 		        .promotion_type = CHESS_PIECE_TYPE_KING,
@@ -1018,7 +1018,7 @@ static void test_chess_move_is_valid(void **state) {
 		},
 
 		{
-		    .move = (struct chess_move){
+		    .move = (ChessMove){
 		        .from           = CHESS_SQUARE_A2,
 		        .to             = CHESS_SQUARE_A1,
 		        .promotion_type = CHESS_PIECE_TYPE_KNIGHT,
@@ -1026,7 +1026,7 @@ static void test_chess_move_is_valid(void **state) {
 		    .is_valid = true,
 		},
 		{
-		    .move = (struct chess_move){
+		    .move = (ChessMove){
 		        .from           = CHESS_SQUARE_B1,
 		        .to             = CHESS_SQUARE_C3,
 		        .promotion_type = CHESS_PIECE_TYPE_NONE,
@@ -1034,7 +1034,7 @@ static void test_chess_move_is_valid(void **state) {
 		    .is_valid = true,
 		},
 		{
-		    .move = (struct chess_move){
+		    .move = (ChessMove){
 		        .from           = CHESS_SQUARE_E2,
 		        .to             = CHESS_SQUARE_E4,
 		        .promotion_type = CHESS_PIECE_TYPE_NONE,
@@ -1042,7 +1042,7 @@ static void test_chess_move_is_valid(void **state) {
 		    .is_valid = true,
 		},
 		{
-		    .move = (struct chess_move){
+		    .move = (ChessMove){
 		        .from           = CHESS_SQUARE_C7,
 		        .to             = CHESS_SQUARE_C8,
 		        .promotion_type = CHESS_PIECE_TYPE_QUEEN,
@@ -1113,5 +1113,5 @@ int main(void) {
 		cmocka_unit_test(test_chess_preft),
 	};
 
-	return cmocka_run_group_tests(tests, nullptr, nullptr);
+	return cmocka_run_group_tests(tests, CHESS_NULL, CHESS_NULL);
 }

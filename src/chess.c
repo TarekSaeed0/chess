@@ -15,7 +15,7 @@
 	do {                                                            \
 		size_t _written = function(__VA_ARGS__, string, string_size); \
 		if (_written < string_size) {                                 \
-			if (string != nullptr) {                                    \
+			if (string != CHESS_NULL) {                                 \
 				string += _written;                                       \
 			}                                                           \
 			string_size -= _written;                                    \
@@ -29,7 +29,7 @@
 		int _written = snprintf(string, string_size, __VA_ARGS__); \
 		assert(_written >= 0);                                     \
 		if ((size_t)_written < string_size) {                      \
-			if (string != nullptr) {                                 \
+			if (string != CHESS_NULL) {                              \
 				string += (size_t)_written;                            \
 			}                                                        \
 			string_size -= (size_t)_written;                         \
@@ -48,7 +48,7 @@
 		total_read += _read;                                       \
 	} while (false)
 
-void chess_color_debug(enum chess_color color) {
+void chess_color_debug(ChessColor color) {
 	switch (color) {
 		case CHESS_COLOR_NONE:
 			printf("CHESS_COLOR_NONE");
@@ -60,18 +60,18 @@ void chess_color_debug(enum chess_color color) {
 			printf("CHESS_COLOR_BLACK");
 			break;
 		default:
-			printf("(enum chess_color)%d", color);
+			printf("(ChessColor)%d", color);
 			break;
 	}
 }
-bool chess_color_is_valid(enum chess_color color) {
+bool chess_color_is_valid(ChessColor color) {
 	switch (color) {
 		case CHESS_COLOR_WHITE:
 		case CHESS_COLOR_BLACK: return true;
 		default: return false;
 	}
 }
-enum chess_color chess_color_opposite(enum chess_color color) {
+ChessColor chess_color_opposite(ChessColor color) {
 	assert(chess_color_is_valid(color) || color == CHESS_COLOR_NONE);
 
 	switch (color) {
@@ -81,7 +81,7 @@ enum chess_color chess_color_opposite(enum chess_color color) {
 	}
 }
 
-void chess_piece_type_debug(enum chess_piece_type type) {
+void chess_piece_type_debug(ChessPieceType type) {
 	switch (type) {
 		case CHESS_PIECE_TYPE_NONE:
 			printf("CHESS_PIECE_TYPE_NONE");
@@ -105,11 +105,11 @@ void chess_piece_type_debug(enum chess_piece_type type) {
 			printf("CHESS_PIECE_TYPE_KING");
 			break;
 		default:
-			printf("(enum chess_piece_type)%d", type);
+			printf("(ChessPieceType)%d", type);
 			break;
 	}
 }
-bool chess_piece_type_is_valid(enum chess_piece_type type) {
+bool chess_piece_type_is_valid(ChessPieceType type) {
 	switch (type) {
 		case CHESS_PIECE_TYPE_PAWN:
 		case CHESS_PIECE_TYPE_KNIGHT:
@@ -120,8 +120,8 @@ bool chess_piece_type_is_valid(enum chess_piece_type type) {
 		default: return false;
 	}
 }
-size_t chess_piece_type_from_algebraic(enum chess_piece_type *type, const char *string) {
-	assert(type != nullptr && string != nullptr);
+size_t chess_piece_type_from_algebraic(ChessPieceType *type, const char *string) {
+	assert(type != CHESS_NULL && string != CHESS_NULL);
 
 	switch (string[0]) {
 		case 'P': *type = CHESS_PIECE_TYPE_PAWN; break;
@@ -135,10 +135,10 @@ size_t chess_piece_type_from_algebraic(enum chess_piece_type *type, const char *
 
 	return 1;
 }
-size_t chess_piece_type_to_algebraic(enum chess_piece_type type, char *string, size_t string_size) {
-	assert(chess_piece_type_is_valid(type) && (string != nullptr || string_size == 0));
+size_t chess_piece_type_to_algebraic(ChessPieceType type, char *string, size_t string_size) {
+	assert(chess_piece_type_is_valid(type) && (string != CHESS_NULL || string_size == 0));
 
-	if (string != nullptr && string_size >= 2) {
+	if (string != CHESS_NULL && string_size >= 2) {
 		switch (type) {
 			case CHESS_PIECE_TYPE_PAWN: string[0] = 'P'; break;
 			case CHESS_PIECE_TYPE_KNIGHT: string[0] = 'N'; break;
@@ -154,7 +154,7 @@ size_t chess_piece_type_to_algebraic(enum chess_piece_type type, char *string, s
 	return 1;
 }
 
-void chess_piece_debug(enum chess_piece piece) {
+void chess_piece_debug(ChessPiece piece) {
 	switch (piece) {
 		case CHESS_PIECE_NONE:
 			printf("CHESS_PIECE_NONE");
@@ -196,11 +196,11 @@ void chess_piece_debug(enum chess_piece piece) {
 			printf("CHESS_PIECE_BLACK_KING");
 			break;
 		default:
-			printf("(enum chess_piece)%d", piece);
+			printf("(ChessPiece)%d", piece);
 			break;
 	}
 }
-bool chess_piece_is_valid(enum chess_piece piece) {
+bool chess_piece_is_valid(ChessPiece piece) {
 	switch (piece) {
 		case CHESS_PIECE_WHITE_PAWN:
 		case CHESS_PIECE_WHITE_KNIGHT:
@@ -217,8 +217,8 @@ bool chess_piece_is_valid(enum chess_piece piece) {
 		default: return false;
 	}
 }
-size_t chess_piece_from_algebraic(enum chess_piece *piece, const char *string) {
-	assert(piece != nullptr && string != nullptr);
+size_t chess_piece_from_algebraic(ChessPiece *piece, const char *string) {
+	assert(piece != CHESS_NULL && string != CHESS_NULL);
 
 	switch (string[0]) {
 		case 'P': *piece = CHESS_PIECE_WHITE_PAWN; break;
@@ -238,10 +238,10 @@ size_t chess_piece_from_algebraic(enum chess_piece *piece, const char *string) {
 
 	return 1;
 }
-size_t chess_piece_to_algebraic(enum chess_piece piece, char *string, size_t string_size) {
-	assert(chess_piece_is_valid(piece) && (string != nullptr || string_size == 0));
+size_t chess_piece_to_algebraic(ChessPiece piece, char *string, size_t string_size) {
+	assert(chess_piece_is_valid(piece) && (string != CHESS_NULL || string_size == 0));
 
-	if (string != nullptr && string_size >= 2) {
+	if (string != CHESS_NULL && string_size >= 2) {
 		switch (piece) {
 			case CHESS_PIECE_WHITE_PAWN: string[0] = 'P'; break;
 			case CHESS_PIECE_WHITE_KNIGHT: string[0] = 'N'; break;
@@ -263,7 +263,7 @@ size_t chess_piece_to_algebraic(enum chess_piece piece, char *string, size_t str
 	return 1;
 }
 
-void chess_file_debug(enum chess_file file) {
+void chess_file_debug(ChessFile file) {
 	switch (file) {
 		case CHESS_FILE_NONE:
 			printf("CHESS_FILE_NONE");
@@ -293,30 +293,30 @@ void chess_file_debug(enum chess_file file) {
 			printf("CHESS_FILE_H");
 			break;
 		default:
-			printf("(enum chess_file)%d", file);
+			printf("(ChessFile)%d", file);
 			break;
 	}
 }
-bool chess_file_is_valid(enum chess_file file) {
+bool chess_file_is_valid(ChessFile file) {
 	return (file & 0x8U) == 0x8U;
 }
-size_t chess_file_from_algebraic(enum chess_file *file, const char *string) {
-	assert(file != nullptr && string != nullptr);
+size_t chess_file_from_algebraic(ChessFile *file, const char *string) {
+	assert(file != CHESS_NULL && string != CHESS_NULL);
 
 	if (string[0] < 'a' || 'h' < string[0]) {
 		return 0;
 	}
 
-	*file = (enum chess_file)(CHESS_FILE_A + (string[0] - 'a'));
+	*file = (ChessFile)(CHESS_FILE_A + (string[0] - 'a'));
 
 	assert(chess_file_is_valid(*file));
 
 	return 1;
 }
-size_t chess_file_to_algebraic(enum chess_file file, char *string, size_t string_size) {
-	assert(chess_file_is_valid(file) && (string != nullptr || string_size == 0));
+size_t chess_file_to_algebraic(ChessFile file, char *string, size_t string_size) {
+	assert(chess_file_is_valid(file) && (string != CHESS_NULL || string_size == 0));
 
-	if (string != nullptr && string_size >= 2) {
+	if (string != CHESS_NULL && string_size >= 2) {
 		string[0] = (char)('a' + (file - CHESS_FILE_A));
 		string[1] = '\0';
 	}
@@ -324,7 +324,7 @@ size_t chess_file_to_algebraic(enum chess_file file, char *string, size_t string
 	return 1;
 }
 
-void chess_rank_debug(enum chess_rank rank) {
+void chess_rank_debug(ChessRank rank) {
 	switch (rank) {
 		case CHESS_RANK_NONE:
 			printf("CHESS_RANK_NONE");
@@ -354,30 +354,30 @@ void chess_rank_debug(enum chess_rank rank) {
 			printf("CHESS_RANK_8");
 			break;
 		default:
-			printf("(enum chess_rank)%d", rank);
+			printf("(ChessRank)%d", rank);
 			break;
 	}
 }
-bool chess_rank_is_valid(enum chess_rank rank) {
+bool chess_rank_is_valid(ChessRank rank) {
 	return (rank & 0x8U) == 0x8U;
 }
-size_t chess_rank_from_algebraic(enum chess_rank *rank, const char *string) {
-	assert(rank != nullptr && string != nullptr);
+size_t chess_rank_from_algebraic(ChessRank *rank, const char *string) {
+	assert(rank != CHESS_NULL && string != CHESS_NULL);
 
 	if (string[0] < '1' || '8' < string[0]) {
 		return 0;
 	}
 
-	*rank = (enum chess_rank)(CHESS_RANK_1 + (string[0] - '1'));
+	*rank = (ChessRank)(CHESS_RANK_1 + (string[0] - '1'));
 
 	assert(chess_rank_is_valid(*rank));
 
 	return 1;
 }
-size_t chess_rank_to_algebraic(enum chess_rank rank, char *string, size_t string_size) {
-	assert(chess_rank_is_valid(rank) && (string != nullptr || string_size == 0));
+size_t chess_rank_to_algebraic(ChessRank rank, char *string, size_t string_size) {
+	assert(chess_rank_is_valid(rank) && (string != CHESS_NULL || string_size == 0));
 
-	if (string != nullptr && string_size >= 2) {
+	if (string != CHESS_NULL && string_size >= 2) {
 		string[0] = (char)('1' + (rank - CHESS_RANK_1));
 		string[1] = '\0';
 	}
@@ -385,7 +385,7 @@ size_t chess_rank_to_algebraic(enum chess_rank rank, char *string, size_t string
 	return 1;
 }
 
-enum chess_offset : int8_t {
+CHESS_ENUM(int8_t, chess_offset) {
 	CHESS_OFFSET_NORTH      = CHESS_SQUARE_A2 - CHESS_SQUARE_A1,
 	CHESS_OFFSET_EAST       = CHESS_SQUARE_B1 - CHESS_SQUARE_A1,
 	CHESS_OFFSET_SOUTH      = -CHESS_OFFSET_NORTH,
@@ -397,33 +397,33 @@ enum chess_offset : int8_t {
 	CHESS_OFFSET_NORTH_WEST = CHESS_OFFSET_NORTH + CHESS_OFFSET_WEST,
 };
 
-void chess_square_debug(enum chess_square square) {
+void chess_square_debug(ChessSquare square) {
 	if (square == CHESS_SQUARE_NONE) {
 		printf("CHESS_SQUARE_NONE");
 	} else if (chess_square_is_valid(square)) {
-		enum chess_file file = chess_square_file(square);
-		enum chess_rank rank = chess_square_rank(square);
+		ChessFile file = chess_square_file(square);
+		ChessRank rank = chess_square_rank(square);
 
 		printf("CHESS_SQUARE_%c%c", 'A' + (file - CHESS_FILE_A), '1' + (rank - CHESS_RANK_1));
 	} else {
-		printf("(enum chess_square)%d", square);
+		printf("(ChessSquare)%d", square);
 	}
 }
-bool chess_square_is_valid(enum chess_square square) {
+bool chess_square_is_valid(ChessSquare square) {
 	return (square & 0x88U) == 0x88U;
 }
-enum chess_color chess_square_color(enum chess_square square) {
+ChessColor chess_square_color(ChessSquare square) {
 	return (chess_square_file(square) + chess_square_rank(square)) % 2U ? CHESS_COLOR_BLACK : CHESS_COLOR_WHITE;
 }
-size_t chess_square_from_algebraic(enum chess_square *square, const char *string) {
-	assert(square != nullptr && string != nullptr);
+size_t chess_square_from_algebraic(ChessSquare *square, const char *string) {
+	assert(square != CHESS_NULL && string != CHESS_NULL);
 
-	size_t total_read    = 0;
+	size_t total_read = 0;
 
-	enum chess_file file = CHESS_FILE_NONE;
+	ChessFile file    = CHESS_FILE_NONE;
 	READ(chess_file_from_algebraic, &file);
 
-	enum chess_rank rank = CHESS_RANK_NONE;
+	ChessRank rank = CHESS_RANK_NONE;
 	READ(chess_rank_from_algebraic, &rank);
 
 	*square = chess_square_new(file, rank);
@@ -432,7 +432,7 @@ size_t chess_square_from_algebraic(enum chess_square *square, const char *string
 
 	return total_read;
 }
-size_t chess_square_to_algebraic(enum chess_square square, char *string, size_t string_size) {
+size_t chess_square_to_algebraic(ChessSquare square, char *string, size_t string_size) {
 	assert(chess_square_is_valid(square));
 
 	size_t total_written = 0;
@@ -442,15 +442,15 @@ size_t chess_square_to_algebraic(enum chess_square square, char *string, size_t 
 
 	return total_written;
 }
-bool chess_square_is_attacked(const struct chess_position *position, enum chess_square square, enum chess_color color) {
+bool chess_square_is_attacked(const ChessPosition *position, ChessSquare square, ChessColor color) {
 	assert(chess_position_is_valid(position) && chess_square_is_valid(square));
 
-	for (enum chess_rank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
-		for (enum chess_file file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
-			enum chess_square attacker_square = chess_square_new(file, rank);
+	for (ChessRank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
+		for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
+			ChessSquare attacker_square = chess_square_new(file, rank);
 
-			enum chess_piece attacker         = position->board[attacker_square];
-			enum chess_color attacker_color   = chess_piece_color(attacker);
+			ChessPiece attacker         = position->board[attacker_square];
+			ChessColor attacker_color   = chess_piece_color(attacker);
 			if (attacker_color != color) {
 				continue;
 			}
@@ -476,10 +476,10 @@ bool chess_square_is_attacked(const struct chess_position *position, enum chess_
 			};
 			// clang-format on
 
-			int8_t difference                   = (int8_t)(square - attacker_square);
-			uint8_t index                       = (uint8_t)(difference + 0x77);
+			int8_t difference            = (int8_t)(square - attacker_square);
+			uint8_t index                = (uint8_t)(difference + 0x77);
 
-			enum chess_piece_type attacker_type = chess_piece_type(attacker);
+			ChessPieceType attacker_type = chess_piece_type(attacker);
 			if (attacks[index] & (1U << attacker_type)) {
 				switch (attacker_type) {
 					case CHESS_PIECE_TYPE_PAWN: {
@@ -495,7 +495,7 @@ bool chess_square_is_attacked(const struct chess_position *position, enum chess_
 					case CHESS_PIECE_TYPE_BISHOP:
 					case CHESS_PIECE_TYPE_QUEEN: {
 						// clang-format off
-						static CHESS_CONSTEXPR enum chess_offset directions[256] = {
+						static CHESS_CONSTEXPR chess_offset directions[256] = {
 							-17,  0,  0,  0,  0,  0,  0,-16,  0,  0,  0,  0,  0,  0,-15,  0,
 								0,-17,  0,  0,  0,  0,  0,-16,  0,  0,  0,  0,  0,-15,  0,  0,
 								0,  0,-17,  0,  0,  0,  0,-16,  0,  0,  0,  0,-15,  0,  0,  0,
@@ -515,8 +515,8 @@ bool chess_square_is_attacked(const struct chess_position *position, enum chess_
 						};
 						// clang-format on
 
-						enum chess_offset direction = directions[index];
-						enum chess_square current   = (enum chess_square)(attacker_square + direction);
+						chess_offset direction = directions[index];
+						ChessSquare current    = (ChessSquare)(attacker_square + direction);
 						while (true) {
 							if (current == square) {
 								return true;
@@ -536,8 +536,8 @@ bool chess_square_is_attacked(const struct chess_position *position, enum chess_
 	return false;
 }
 
-bool chess_position_is_valid(const struct chess_position *position) {
-	if (position == nullptr) {
+bool chess_position_is_valid(const ChessPosition *position) {
+	if (position == CHESS_NULL) {
 		return false;
 	}
 
@@ -578,16 +578,16 @@ bool chess_position_is_valid(const struct chess_position *position) {
 		return false;
 	}
 
-	for (enum chess_rank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
-		for (enum chess_file file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
-			enum chess_square square = chess_square_new(file, rank);
-			enum chess_piece piece   = position->board[square];
+	for (ChessRank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
+		for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
+			ChessSquare square = chess_square_new(file, rank);
+			ChessPiece piece   = position->board[square];
 			if (piece != CHESS_PIECE_NONE && !chess_piece_is_valid(piece)) {
 				return false;
 			}
 
-			enum chess_color color     = chess_piece_color(piece);
-			enum chess_piece_type type = chess_piece_type(piece);
+			ChessColor color    = chess_piece_color(piece);
+			ChessPieceType type = chess_piece_type(piece);
 			if (type == CHESS_PIECE_TYPE_KING && square != position->king_squares[color]) {
 				return false;
 			}
@@ -596,8 +596,8 @@ bool chess_position_is_valid(const struct chess_position *position) {
 
 	return true;
 }
-struct chess_position chess_position_new(void) {
-	return (struct chess_position){
+ChessPosition chess_position_new(void) {
+	return (ChessPosition){
 		.board = {
 		    [CHESS_SQUARE_A8] = CHESS_PIECE_BLACK_ROOK,
 		    [CHESS_SQUARE_B8] = CHESS_PIECE_BLACK_KNIGHT,
@@ -646,8 +646,8 @@ struct chess_position chess_position_new(void) {
     }
 	};
 }
-size_t chess_position_from_fen(struct chess_position *position, const char *string) {
-	assert(position != nullptr && string != nullptr);
+size_t chess_position_from_fen(ChessPosition *position, const char *string) {
+	assert(position != CHESS_NULL && string != CHESS_NULL);
 
 	size_t total_read = 0;
 
@@ -656,9 +656,9 @@ size_t chess_position_from_fen(struct chess_position *position, const char *stri
 	}
 
 	memset(position->board, CHESS_PIECE_NONE, sizeof(position->board));
-	for (enum chess_rank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
-		for (enum chess_file file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
-			enum chess_square square = chess_square_new(file, rank);
+	for (ChessRank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
+		for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
+			ChessSquare square = chess_square_new(file, rank);
 			if ('1' <= string[total_read] && string[total_read] <= '8') {
 				if (string[total_read] > CHESS_FILE_H - file + '1') {
 					return 0;
@@ -739,7 +739,7 @@ size_t chess_position_from_fen(struct chess_position *position, const char *stri
 	}
 
 	errno                = 0;
-	char *end            = nullptr;
+	char *end            = CHESS_NULL;
 	unsigned long number = strtoul(string + total_read, &end, 10);
 	if (end == string + total_read || errno != 0 || number > UINT_MAX) {
 		return 0;
@@ -755,7 +755,7 @@ size_t chess_position_from_fen(struct chess_position *position, const char *stri
 	}
 
 	errno  = 0;
-	end    = nullptr;
+	end    = CHESS_NULL;
 	number = strtoul(string + total_read, &end, 10);
 	if (end == string + total_read || errno != 0 || number > UINT_MAX) {
 		return 0;
@@ -765,14 +765,14 @@ size_t chess_position_from_fen(struct chess_position *position, const char *stri
 
 	return total_read;
 }
-size_t chess_position_to_fen(const struct chess_position *position, char *string, size_t string_size) {
+size_t chess_position_to_fen(const ChessPosition *position, char *string, size_t string_size) {
 	assert(chess_position_is_valid(position));
 
 	size_t total_written = 0;
 
-	for (enum chess_rank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
-		for (enum chess_file file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
-			enum chess_piece piece = position->board[chess_square_new(file, rank)];
+	for (ChessRank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
+		for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
+			ChessPiece piece = position->board[chess_square_new(file, rank)];
 			if (piece == CHESS_PIECE_NONE) {
 				unsigned int count = 1;
 				while (file < CHESS_FILE_H) {
@@ -830,32 +830,32 @@ size_t chess_position_to_fen(const struct chess_position *position, char *string
 
 	return total_written;
 }
-bool chess_position_is_king_attacked(const struct chess_position *position, enum chess_color color) {
+bool chess_position_is_king_attacked(const ChessPosition *position, ChessColor color) {
 	assert(chess_position_is_valid(position));
 
 	return chess_square_is_attacked(position, position->king_squares[color], chess_color_opposite(color));
 }
-bool chess_position_is_check(const struct chess_position *position) {
+bool chess_position_is_check(const ChessPosition *position) {
 	assert(chess_position_is_valid(position));
 
 	return chess_position_is_king_attacked(position, position->side_to_move);
 }
-bool chess_position_is_checkmate(const struct chess_position *position) {
+bool chess_position_is_checkmate(const ChessPosition *position) {
 	assert(chess_position_is_valid(position));
 
 	return chess_position_is_check(position) && chess_moves_generate(position).count == 0;
 }
-bool chess_position_is_stalemate(const struct chess_position *position) {
+bool chess_position_is_stalemate(const ChessPosition *position) {
 	assert(chess_position_is_valid(position));
 
 	return !chess_position_is_check(position) && chess_moves_generate(position).count == 0;
 }
-bool chess_position_is_fifty_move_rule(const struct chess_position *position) {
+bool chess_position_is_fifty_move_rule(const ChessPosition *position) {
 	assert(chess_position_is_valid(position));
 
 	return position->half_move_clock >= 100 && !chess_position_is_checkmate(position);
 }
-bool chess_position_is_threefold_repetition(const struct chess_position *position) {
+bool chess_position_is_threefold_repetition(const ChessPosition *position) {
 	assert(chess_position_is_valid(position));
 
 	(void)position;
@@ -864,7 +864,7 @@ bool chess_position_is_threefold_repetition(const struct chess_position *positio
 
 	return false;
 }
-bool chess_position_is_insufficient_material(const struct chess_position *position) {
+bool chess_position_is_insufficient_material(const ChessPosition *position) {
 	assert(chess_position_is_valid(position));
 
 	(void)position;
@@ -874,8 +874,8 @@ bool chess_position_is_insufficient_material(const struct chess_position *positi
 	return false;
 }
 
-void chess_move_debug(struct chess_move move) {
-	printf("(struct chess_move) {\n");
+void chess_move_debug(ChessMove move) {
+	printf("(ChessMove) {\n");
 
 	printf("\t.from = ");
 	chess_square_debug(move.from);
@@ -891,7 +891,7 @@ void chess_move_debug(struct chess_move move) {
 
 	printf("}");
 }
-bool chess_move_is_valid(struct chess_move move) {
+bool chess_move_is_valid(ChessMove move) {
 	if (!chess_square_is_valid(move.from) || !chess_square_is_valid(move.to)) {
 		return false;
 	}
@@ -905,8 +905,8 @@ bool chess_move_is_valid(struct chess_move move) {
 		default: return false;
 	}
 }
-size_t chess_move_from_algebraic(const struct chess_position *position, struct chess_move *move, const char *string) {
-	assert(chess_position_is_valid(position) && move != nullptr && string != nullptr);
+size_t chess_move_from_algebraic(const ChessPosition *position, ChessMove *move, const char *string) {
+	assert(chess_position_is_valid(position) && move != CHESS_NULL && string != CHESS_NULL);
 
 	size_t total_read = 0;
 
@@ -915,35 +915,35 @@ size_t chess_move_from_algebraic(const struct chess_position *position, struct c
 	}
 
 	if (strncmp(&string[total_read], "O-O", 3) == 0) {
-		enum chess_square from = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_SQUARE_E1 : CHESS_SQUARE_E8;
+		ChessSquare from = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_SQUARE_E1 : CHESS_SQUARE_E8;
 
 		if (chess_piece_type(position->board[from]) != CHESS_PIECE_TYPE_KING) {
 			return 0;
 		}
 
-		*move = (struct chess_move){ .from = from, .to = (enum chess_square)(from + 2 * CHESS_OFFSET_EAST) };
+		*move = (ChessMove){ .from = from, .to = (ChessSquare)(from + 2 * CHESS_OFFSET_EAST) };
 		total_read += 3;
 
 		return total_read;
 	}
 	if (strncmp(&string[total_read], "O-O-O", 5) == 0) {
-		enum chess_square from = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_SQUARE_E1 : CHESS_SQUARE_E8;
+		ChessSquare from = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_SQUARE_E1 : CHESS_SQUARE_E8;
 
 		if (chess_piece_type(position->board[from]) != CHESS_PIECE_TYPE_KING) {
 			return 0;
 		}
 
-		*move = (struct chess_move){ .from = from, .to = (enum chess_square)(from + 2 * CHESS_OFFSET_WEST) };
+		*move = (ChessMove){ .from = from, .to = (ChessSquare)(from + 2 * CHESS_OFFSET_WEST) };
 		total_read += 5;
 
 		return total_read;
 	}
 
-	enum chess_piece_type type = CHESS_PIECE_TYPE_PAWN;
+	ChessPieceType type = CHESS_PIECE_TYPE_PAWN;
 	total_read += chess_piece_type_from_algebraic(&type, &string[total_read]);
 
-	enum chess_file file = CHESS_FILE_NONE;
-	enum chess_rank rank = CHESS_RANK_NONE;
+	ChessFile file = CHESS_FILE_NONE;
+	ChessRank rank = CHESS_RANK_NONE;
 	total_read += chess_file_from_algebraic(&file, &string[total_read]);
 	total_read += chess_rank_from_algebraic(&rank, &string[total_read]);
 
@@ -953,8 +953,8 @@ size_t chess_move_from_algebraic(const struct chess_position *position, struct c
 		total_read++;
 	}
 
-	enum chess_square to = CHESS_SQUARE_NONE;
-	size_t read          = chess_square_from_algebraic(&to, &string[total_read]);
+	ChessSquare to = CHESS_SQUARE_NONE;
+	size_t read    = chess_square_from_algebraic(&to, &string[total_read]);
 	if (read != 0) {
 		total_read += read;
 	} else if (file != CHESS_FILE_NONE && rank != CHESS_RANK_NONE && !is_capture) {
@@ -965,7 +965,7 @@ size_t chess_move_from_algebraic(const struct chess_position *position, struct c
 		return 0;
 	}
 
-	enum chess_piece_type promotion_type = CHESS_PIECE_TYPE_NONE;
+	ChessPieceType promotion_type = CHESS_PIECE_TYPE_NONE;
 	if (string[total_read] == '=') {
 		total_read++;
 		READ(chess_piece_type_from_algebraic, &promotion_type);
@@ -982,13 +982,13 @@ size_t chess_move_from_algebraic(const struct chess_position *position, struct c
 	}
 
 	if (file != CHESS_FILE_NONE && rank != CHESS_RANK_NONE) {
-		enum chess_square from = chess_square_new(file, rank);
+		ChessSquare from = chess_square_new(file, rank);
 
 		if (type != CHESS_PIECE_TYPE_NONE && chess_piece_type(position->board[from]) != type) {
 			return 0;
 		}
 
-		*move = (struct chess_move){
+		*move = (ChessMove){
 			.from           = from,
 			.to             = to,
 			.promotion_type = promotion_type,
@@ -999,7 +999,7 @@ size_t chess_move_from_algebraic(const struct chess_position *position, struct c
 		}
 
 		if (is_check || is_checkmate) {
-			struct chess_position position_after_move = *position;
+			ChessPosition position_after_move = *position;
 			if (!chess_move_do(&position_after_move, *move)) {
 				return 0;
 			}
@@ -1016,8 +1016,8 @@ size_t chess_move_from_algebraic(const struct chess_position *position, struct c
 		return total_read;
 	}
 
-	struct chess_moves moves = chess_moves_generate(position);
-	size_t matches           = 0;
+	ChessMoves moves = chess_moves_generate(position);
+	size_t matches   = 0;
 	for (size_t i = 0; i < moves.count; i++) {
 		if (moves.moves[i].to != to) {
 			continue;
@@ -1043,7 +1043,7 @@ size_t chess_move_from_algebraic(const struct chess_position *position, struct c
 		}
 
 		if (is_check || is_checkmate) {
-			struct chess_position position_after_move = *position;
+			ChessPosition position_after_move = *position;
 			if (!chess_move_do(&position_after_move, moves.moves[i])) {
 				continue;
 			}
@@ -1067,7 +1067,7 @@ size_t chess_move_from_algebraic(const struct chess_position *position, struct c
 
 	return total_read;
 }
-size_t chess_move_to_algebraic(const struct chess_position *position, struct chess_move move, char *string, size_t string_size) {
+size_t chess_move_to_algebraic(const ChessPosition *position, ChessMove move, char *string, size_t string_size) {
 	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
 
 	size_t total_written = 0;
@@ -1081,19 +1081,19 @@ size_t chess_move_to_algebraic(const struct chess_position *position, struct che
 		return total_written;
 	}
 
-	enum chess_piece piece     = position->board[move.from];
-	enum chess_piece_type type = chess_piece_type(piece);
-	enum chess_file file       = chess_square_file(move.from);
+	ChessPiece piece    = position->board[move.from];
+	ChessPieceType type = chess_piece_type(piece);
+	ChessFile file      = chess_square_file(move.from);
 	if (type != CHESS_PIECE_TYPE_PAWN) {
 		WRITE(chess_piece_type_to_algebraic, type);
 
-		enum chess_rank rank     = chess_square_rank(move.from);
+		ChessRank rank         = chess_square_rank(move.from);
 
-		bool is_ambiguous        = false;
-		bool is_file_ambiguous   = false;
-		bool is_rank_ambiguous   = false;
+		bool is_ambiguous      = false;
+		bool is_file_ambiguous = false;
+		bool is_rank_ambiguous = false;
 
-		struct chess_moves moves = chess_moves_generate(position);
+		ChessMoves moves       = chess_moves_generate(position);
 		for (size_t i = 0; i < moves.count; i++) {
 			if (moves.moves[i].to != move.to || moves.moves[i].from == move.from || position->board[moves.moves[i].from] != piece) {
 				continue;
@@ -1134,7 +1134,7 @@ size_t chess_move_to_algebraic(const struct chess_position *position, struct che
 		WRITE(chess_piece_type_to_algebraic, move.promotion_type);
 	}
 
-	struct chess_position position_after_move = *position;
+	ChessPosition position_after_move = *position;
 	if (chess_move_do(&position_after_move, move)) {
 		if (chess_position_is_check(&position_after_move)) {
 			if (chess_position_is_checkmate(&position_after_move)) {
@@ -1147,11 +1147,11 @@ size_t chess_move_to_algebraic(const struct chess_position *position, struct che
 
 	return total_written;
 }
-bool chess_move_is_legal(const struct chess_position *position, struct chess_move move) {
+bool chess_move_is_legal(const ChessPosition *position, ChessMove move) {
 	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
 
 	// TODO: implement actual move legality checking
-	struct chess_moves moves = chess_moves_generate(position);
+	ChessMoves moves = chess_moves_generate(position);
 	for (size_t i = 0; i < moves.count; i++) {
 		if (moves.moves[i].from == move.from && moves.moves[i].to == move.to &&
 		    moves.moves[i].promotion_type == move.promotion_type) {
@@ -1161,20 +1161,20 @@ bool chess_move_is_legal(const struct chess_position *position, struct chess_mov
 
 	return false;
 }
-bool chess_move_is_promotion(const struct chess_position *position, struct chess_move move) {
+bool chess_move_is_promotion(const ChessPosition *position, ChessMove move) {
 	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
 
 	(void)position;
 
 	return move.promotion_type != CHESS_PIECE_TYPE_NONE;
 }
-bool chess_move_is_en_passant(const struct chess_position *position, struct chess_move move) {
+bool chess_move_is_en_passant(const ChessPosition *position, ChessMove move) {
 	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
 
 	return chess_piece_type(position->board[move.from]) == CHESS_PIECE_TYPE_PAWN &&
 	       move.to == position->en_passant_square;
 }
-bool chess_move_is_capture(const struct chess_position *position, struct chess_move move) {
+bool chess_move_is_capture(const ChessPosition *position, ChessMove move) {
 	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
 
 	if (position->board[move.to] != CHESS_PIECE_NONE) {
@@ -1183,33 +1183,33 @@ bool chess_move_is_capture(const struct chess_position *position, struct chess_m
 
 	return chess_move_is_en_passant(position, move);
 }
-bool chess_move_is_kingside_castling(const struct chess_position *position, struct chess_move move) {
+bool chess_move_is_kingside_castling(const ChessPosition *position, ChessMove move) {
 	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
 
 	return chess_piece_type(position->board[move.from]) == CHESS_PIECE_TYPE_KING &&
 	       move.to - move.from == 2 * CHESS_OFFSET_EAST;
 }
-bool chess_move_is_queenside_castling(const struct chess_position *position, struct chess_move move) {
+bool chess_move_is_queenside_castling(const ChessPosition *position, ChessMove move) {
 	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
 
 	return chess_piece_type(position->board[move.from]) == CHESS_PIECE_TYPE_KING && move.to - move.from == 2 * CHESS_OFFSET_WEST;
 }
-static void chess_move_do_unchecked(struct chess_position *position, struct chess_move move) {
+static void chess_move_do_unchecked(ChessPosition *position, ChessMove move) {
 	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
 
-	enum chess_piece piece              = position->board[move.from];
-	enum chess_piece_type type          = chess_piece_type(piece);
-	enum chess_piece captured_piece     = position->board[move.to];
-	enum chess_piece_type captured_type = chess_piece_type(captured_piece);
-	enum chess_color side_to_move       = position->side_to_move;
-	enum chess_square en_passant_square = position->en_passant_square;
+	ChessPiece piece              = position->board[move.from];
+	ChessPieceType type           = chess_piece_type(piece);
+	ChessPiece captured_piece     = position->board[move.to];
+	ChessPieceType captured_type  = chess_piece_type(captured_piece);
+	ChessColor side_to_move       = position->side_to_move;
+	ChessSquare en_passant_square = position->en_passant_square;
 
-	position->board[move.to]            = piece;
-	position->board[move.from]          = CHESS_PIECE_NONE;
+	position->board[move.to]      = piece;
+	position->board[move.from]    = CHESS_PIECE_NONE;
 
-	position->side_to_move              = chess_color_opposite(side_to_move);
+	position->side_to_move        = chess_color_opposite(side_to_move);
 
-	position->en_passant_square         = CHESS_SQUARE_NONE;
+	position->en_passant_square   = CHESS_SQUARE_NONE;
 
 	if (captured_type != CHESS_PIECE_TYPE_NONE) {
 		position->half_move_clock = 0;
@@ -1226,11 +1226,11 @@ static void chess_move_do_unchecked(struct chess_position *position, struct ches
 	}
 
 	if (type == CHESS_PIECE_TYPE_PAWN) {
-		position->half_move_clock   = 0;
+		position->half_move_clock = 0;
 
-		enum chess_offset direction = side_to_move == CHESS_COLOR_WHITE ? CHESS_OFFSET_NORTH : CHESS_OFFSET_SOUTH;
+		chess_offset direction    = side_to_move == CHESS_COLOR_WHITE ? CHESS_OFFSET_NORTH : CHESS_OFFSET_SOUTH;
 		if (move.to - move.from == 2 * direction) {
-			position->en_passant_square = (enum chess_square)(move.from + direction);
+			position->en_passant_square = (ChessSquare)(move.from + direction);
 		} else if (move.to == en_passant_square) {
 			position->board[move.to - direction] = CHESS_PIECE_NONE;
 		}
@@ -1272,7 +1272,7 @@ static void chess_move_do_unchecked(struct chess_position *position, struct ches
 		}
 	}
 }
-bool chess_move_do(struct chess_position *position, struct chess_move move) {
+bool chess_move_do(ChessPosition *position, ChessMove move) {
 	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
 
 	if (!chess_move_is_legal(position, move)) {
@@ -1286,10 +1286,10 @@ bool chess_move_do(struct chess_position *position, struct chess_move move) {
 	return true;
 }
 
-static void chess_moves_add(struct chess_moves *moves, const struct chess_position *position, struct chess_move move) {
-	assert(moves != nullptr && chess_position_is_valid(position) && chess_move_is_valid(move));
+static void chess_moves_add(ChessMoves *moves, const ChessPosition *position, ChessMove move) {
+	assert(moves != CHESS_NULL && chess_position_is_valid(position) && chess_move_is_valid(move));
 
-	struct chess_position position_after_move = *position;
+	ChessPosition position_after_move = *position;
 	chess_move_do_unchecked(&position_after_move, move);
 	if (!chess_position_is_king_attacked(&position_after_move, position->side_to_move)) {
 		assert(moves->count < CHESS_MOVES_MAXIMUM_COUNT);
@@ -1297,14 +1297,14 @@ static void chess_moves_add(struct chess_moves *moves, const struct chess_positi
 	}
 }
 static void chess_moves_generate_pawn_promotions(
-    struct chess_moves *moves,
-    const struct chess_position *position,
-    enum chess_square from,
-    enum chess_square to
+    ChessMoves *moves,
+    const ChessPosition *position,
+    ChessSquare from,
+    ChessSquare to
 ) {
-	assert(moves != nullptr && chess_position_is_valid(position) && chess_square_is_valid(from) && chess_square_is_valid(to));
+	assert(moves != CHESS_NULL && chess_position_is_valid(position) && chess_square_is_valid(from) && chess_square_is_valid(to));
 
-	static CHESS_CONSTEXPR enum chess_piece_type promotion_types[] = {
+	static CHESS_CONSTEXPR ChessPieceType promotion_types[] = {
 		CHESS_PIECE_TYPE_KNIGHT,
 		CHESS_PIECE_TYPE_BISHOP,
 		CHESS_PIECE_TYPE_ROOK,
@@ -1314,7 +1314,7 @@ static void chess_moves_generate_pawn_promotions(
 		chess_moves_add(
 		    moves,
 		    position,
-		    (struct chess_move){
+		    (ChessMove){
 		        .from           = from,
 		        .to             = to,
 		        .promotion_type = promotion_types[i],
@@ -1323,17 +1323,17 @@ static void chess_moves_generate_pawn_promotions(
 	}
 }
 static void chess_moves_generate_pawn(
-    struct chess_moves *moves,
-    const struct chess_position *position,
-    enum chess_square from
+    ChessMoves *moves,
+    const ChessPosition *position,
+    ChessSquare from
 ) {
-	assert(moves != nullptr && chess_position_is_valid(position) && chess_square_is_valid(from));
+	assert(moves != CHESS_NULL && chess_position_is_valid(position) && chess_square_is_valid(from));
 
-	enum chess_offset direction    = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_OFFSET_NORTH : CHESS_OFFSET_SOUTH;
+	chess_offset direction   = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_OFFSET_NORTH : CHESS_OFFSET_SOUTH;
 
-	enum chess_rank promotion_rank = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_RANK_8 : CHESS_RANK_1;
+	ChessRank promotion_rank = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_RANK_8 : CHESS_RANK_1;
 
-	enum chess_square to           = (enum chess_square)(from + direction);
+	ChessSquare to           = (ChessSquare)(from + direction);
 	if (chess_square_is_valid(to) && position->board[to] == CHESS_PIECE_NONE) {
 		if (chess_square_rank(to) == promotion_rank) {
 			chess_moves_generate_pawn_promotions(moves, position, from, to);
@@ -1341,21 +1341,21 @@ static void chess_moves_generate_pawn(
 			chess_moves_add(
 			    moves,
 			    position,
-			    (struct chess_move){
+			    (ChessMove){
 			        .from           = from,
 			        .to             = to,
 			        .promotion_type = CHESS_PIECE_TYPE_NONE,
 			    }
 			);
 
-			enum chess_rank start_rank = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_RANK_2 : CHESS_RANK_7;
+			ChessRank start_rank = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_RANK_2 : CHESS_RANK_7;
 			if (chess_square_rank(from) == start_rank) {
-				to = (enum chess_square)(from + 2 * direction);
+				to = (ChessSquare)(from + 2 * direction);
 				if (position->board[to] == CHESS_PIECE_NONE) {
 					chess_moves_add(
 					    moves,
 					    position,
-					    (struct chess_move){
+					    (ChessMove){
 					        .from           = from,
 					        .to             = to,
 					        .promotion_type = CHESS_PIECE_TYPE_NONE,
@@ -1366,17 +1366,17 @@ static void chess_moves_generate_pawn(
 		}
 	}
 
-	static CHESS_CONSTEXPR enum chess_offset offsets[] = {
+	static CHESS_CONSTEXPR chess_offset offsets[] = {
 		CHESS_OFFSET_EAST,
 		CHESS_OFFSET_WEST,
 	};
 	for (size_t i = 0; i < ARRAY_LENGTH(offsets); i++) {
-		to = (enum chess_square)(from + direction + offsets[i]);
+		to = (ChessSquare)(from + direction + offsets[i]);
 		if (to == position->en_passant_square) {
 			chess_moves_add(
 			    moves,
 			    position,
-			    (struct chess_move){
+			    (ChessMove){
 			        .from           = from,
 			        .to             = to,
 			        .promotion_type = CHESS_PIECE_TYPE_NONE,
@@ -1390,7 +1390,7 @@ static void chess_moves_generate_pawn(
 				chess_moves_add(
 				    moves,
 				    position,
-				    (struct chess_move){
+				    (ChessMove){
 				        .from           = from,
 				        .to             = to,
 				        .promotion_type = CHESS_PIECE_TYPE_NONE,
@@ -1401,17 +1401,17 @@ static void chess_moves_generate_pawn(
 	}
 }
 static void chess_moves_generate_directions(
-    struct chess_moves *moves,
-    const struct chess_position *position,
-    enum chess_square from,
-    const enum chess_offset *directions,
+    ChessMoves *moves,
+    const ChessPosition *position,
+    ChessSquare from,
+    const chess_offset *directions,
     size_t direction_count
 ) {
-	assert(moves != nullptr && chess_position_is_valid(position) && (directions != nullptr || direction_count == 0));
+	assert(moves != CHESS_NULL && chess_position_is_valid(position) && (directions != CHESS_NULL || direction_count == 0));
 
 	for (size_t i = 0; i < direction_count; i++) {
-		enum chess_offset direction = directions[i];
-		enum chess_square to        = from;
+		chess_offset direction = directions[i];
+		ChessSquare to         = from;
 		while (true) {
 			to += direction;
 			if (!chess_square_is_valid(to)) {
@@ -1419,13 +1419,13 @@ static void chess_moves_generate_directions(
 			}
 
 			if (position->board[to] == CHESS_PIECE_NONE) {
-				chess_moves_add(moves, position, (struct chess_move){ .from = from, .to = to });
+				chess_moves_add(moves, position, (ChessMove){ .from = from, .to = to });
 			} else {
 				if (chess_piece_color(position->board[to]) != position->side_to_move) {
 					chess_moves_add(
 					    moves,
 					    position,
-					    (struct chess_move){
+					    (ChessMove){
 					        .from           = from,
 					        .to             = to,
 					        .promotion_type = CHESS_PIECE_TYPE_NONE,
@@ -1438,21 +1438,21 @@ static void chess_moves_generate_directions(
 	}
 }
 static void chess_moves_generate_offsets(
-    struct chess_moves *moves,
-    const struct chess_position *position,
-    enum chess_square from,
-    const enum chess_offset *offsets,
+    ChessMoves *moves,
+    const ChessPosition *position,
+    ChessSquare from,
+    const chess_offset *offsets,
     size_t offset_count
 ) {
-	assert(moves != nullptr && chess_position_is_valid(position) && (offsets != nullptr || offset_count == 0));
+	assert(moves != CHESS_NULL && chess_position_is_valid(position) && (offsets != CHESS_NULL || offset_count == 0));
 
 	for (size_t i = 0; i < offset_count; i++) {
-		enum chess_square to = (enum chess_square)(from + offsets[i]);
+		ChessSquare to = (ChessSquare)(from + offsets[i]);
 		if (chess_square_is_valid(to) && chess_piece_color(position->board[to]) != position->side_to_move) {
 			chess_moves_add(
 			    moves,
 			    position,
-			    (struct chess_move){
+			    (ChessMove){
 			        .from           = from,
 			        .to             = to,
 			        .promotion_type = CHESS_PIECE_TYPE_NONE,
@@ -1461,31 +1461,31 @@ static void chess_moves_generate_offsets(
 		}
 	}
 }
-static void chess_moves_generate_castlings(struct chess_moves *moves, const struct chess_position *position) {
-	assert(moves != nullptr && chess_position_is_valid(position));
+static void chess_moves_generate_castlings(ChessMoves *moves, const ChessPosition *position) {
+	assert(moves != CHESS_NULL && chess_position_is_valid(position));
 
-	enum chess_square from                               = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_SQUARE_E1 : CHESS_SQUARE_E8;
-	enum chess_castling_rights king_side_castling_right  = position->side_to_move == CHESS_COLOR_WHITE
-	                                                           ? CHESS_CASTLING_RIGHTS_WHITE_KINGSIDE
-	                                                           : CHESS_CASTLING_RIGHTS_BLACK_KINGSIDE;
-	enum chess_castling_rights queen_side_castling_right = position->side_to_move == CHESS_COLOR_WHITE
-	                                                           ? CHESS_CASTLING_RIGHTS_WHITE_QUEENSIDE
-	                                                           : CHESS_CASTLING_RIGHTS_BLACK_QUEENSIDE;
+	ChessSquare from                              = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_SQUARE_E1 : CHESS_SQUARE_E8;
+	ChessCastlingRights king_side_castling_right  = position->side_to_move == CHESS_COLOR_WHITE
+	                                                    ? CHESS_CASTLING_RIGHTS_WHITE_KINGSIDE
+	                                                    : CHESS_CASTLING_RIGHTS_BLACK_KINGSIDE;
+	ChessCastlingRights queen_side_castling_right = position->side_to_move == CHESS_COLOR_WHITE
+	                                                    ? CHESS_CASTLING_RIGHTS_WHITE_QUEENSIDE
+	                                                    : CHESS_CASTLING_RIGHTS_BLACK_QUEENSIDE;
 
-	enum chess_color other_side                          = chess_color_opposite(position->side_to_move);
+	ChessColor other_side                         = chess_color_opposite(position->side_to_move);
 
 	if (position->castling_rights & king_side_castling_right) {
 		if (position->board[from + CHESS_OFFSET_EAST] == CHESS_PIECE_NONE &&
 		    position->board[from + 2 * CHESS_OFFSET_EAST] == CHESS_PIECE_NONE &&
 		    !chess_square_is_attacked(position, from, other_side) &&
-		    !chess_square_is_attacked(position, (enum chess_square)(from + CHESS_OFFSET_EAST), other_side) &&
-		    !chess_square_is_attacked(position, (enum chess_square)(from + 2 * CHESS_OFFSET_EAST), other_side)) {
+		    !chess_square_is_attacked(position, (ChessSquare)(from + CHESS_OFFSET_EAST), other_side) &&
+		    !chess_square_is_attacked(position, (ChessSquare)(from + 2 * CHESS_OFFSET_EAST), other_side)) {
 			chess_moves_add(
 			    moves,
 			    position,
-			    (struct chess_move){
+			    (ChessMove){
 			        .from           = from,
-			        .to             = (enum chess_square)(from + 2 * CHESS_OFFSET_EAST),
+			        .to             = (ChessSquare)(from + 2 * CHESS_OFFSET_EAST),
 			        .promotion_type = CHESS_PIECE_TYPE_NONE,
 			    }
 			);
@@ -1496,43 +1496,43 @@ static void chess_moves_generate_castlings(struct chess_moves *moves, const stru
 		    position->board[from + 2 * CHESS_OFFSET_WEST] == CHESS_PIECE_NONE &&
 		    position->board[from + 3 * CHESS_OFFSET_WEST] == CHESS_PIECE_NONE &&
 		    !chess_square_is_attacked(position, from, other_side) &&
-		    !chess_square_is_attacked(position, (enum chess_square)(from + CHESS_OFFSET_WEST), other_side) &&
-		    !chess_square_is_attacked(position, (enum chess_square)(from + 2 * CHESS_OFFSET_WEST), other_side)) {
+		    !chess_square_is_attacked(position, (ChessSquare)(from + CHESS_OFFSET_WEST), other_side) &&
+		    !chess_square_is_attacked(position, (ChessSquare)(from + 2 * CHESS_OFFSET_WEST), other_side)) {
 			chess_moves_add(
 			    moves,
 			    position,
-			    (struct chess_move){
+			    (ChessMove){
 			        .from           = from,
-			        .to             = (enum chess_square)(from + 2 * CHESS_OFFSET_WEST),
+			        .to             = (ChessSquare)(from + 2 * CHESS_OFFSET_WEST),
 			        .promotion_type = CHESS_PIECE_TYPE_NONE,
 			    }
 			);
 		}
 	}
 }
-struct chess_moves chess_moves_generate(const struct chess_position *position) {
+ChessMoves chess_moves_generate(const ChessPosition *position) {
 	assert(chess_position_is_valid(position));
 
-	struct chess_moves moves = { 0 };
+	ChessMoves moves = { 0 };
 
-	for (enum chess_rank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
-		for (enum chess_file file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
-			enum chess_square from = chess_square_new(file, rank);
+	for (ChessRank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
+		for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
+			ChessSquare from = chess_square_new(file, rank);
 
-			enum chess_piece piece = position->board[from];
+			ChessPiece piece = position->board[from];
 
-			enum chess_color color = chess_piece_color(piece);
+			ChessColor color = chess_piece_color(piece);
 			if (color != position->side_to_move) {
 				continue;
 			}
 
-			enum chess_piece_type type = chess_piece_type(piece);
+			ChessPieceType type = chess_piece_type(piece);
 			switch (type) {
 				case CHESS_PIECE_TYPE_PAWN: {
 					chess_moves_generate_pawn(&moves, position, from);
 				} break;
 				case CHESS_PIECE_TYPE_KNIGHT: {
-					static CHESS_CONSTEXPR enum chess_offset offsets[] = {
+					static CHESS_CONSTEXPR chess_offset offsets[] = {
 						2 * CHESS_OFFSET_NORTH + CHESS_OFFSET_EAST,
 						2 * CHESS_OFFSET_NORTH + CHESS_OFFSET_WEST,
 						2 * CHESS_OFFSET_EAST + CHESS_OFFSET_NORTH,
@@ -1545,7 +1545,7 @@ struct chess_moves chess_moves_generate(const struct chess_position *position) {
 					chess_moves_generate_offsets(&moves, position, from, offsets, ARRAY_LENGTH(offsets));
 				} break;
 				case CHESS_PIECE_TYPE_BISHOP: {
-					static CHESS_CONSTEXPR enum chess_offset directions[] = {
+					static CHESS_CONSTEXPR chess_offset directions[] = {
 						CHESS_OFFSET_NORTH_EAST,
 						CHESS_OFFSET_SOUTH_EAST,
 						CHESS_OFFSET_SOUTH_WEST,
@@ -1554,7 +1554,7 @@ struct chess_moves chess_moves_generate(const struct chess_position *position) {
 					chess_moves_generate_directions(&moves, position, from, directions, ARRAY_LENGTH(directions));
 				} break;
 				case CHESS_PIECE_TYPE_ROOK: {
-					static CHESS_CONSTEXPR enum chess_offset directions[] = {
+					static CHESS_CONSTEXPR chess_offset directions[] = {
 						CHESS_OFFSET_NORTH,
 						CHESS_OFFSET_EAST,
 						CHESS_OFFSET_SOUTH,
@@ -1563,7 +1563,7 @@ struct chess_moves chess_moves_generate(const struct chess_position *position) {
 					chess_moves_generate_directions(&moves, position, from, directions, ARRAY_LENGTH(directions));
 				} break;
 				case CHESS_PIECE_TYPE_QUEEN: {
-					static CHESS_CONSTEXPR enum chess_offset directions[] = {
+					static CHESS_CONSTEXPR chess_offset directions[] = {
 						CHESS_OFFSET_NORTH,
 						CHESS_OFFSET_EAST,
 						CHESS_OFFSET_SOUTH,
@@ -1576,7 +1576,7 @@ struct chess_moves chess_moves_generate(const struct chess_position *position) {
 					chess_moves_generate_directions(&moves, position, from, directions, ARRAY_LENGTH(directions));
 				} break;
 				case CHESS_PIECE_TYPE_KING: {
-					static CHESS_CONSTEXPR enum chess_offset offsets[] = {
+					static CHESS_CONSTEXPR chess_offset offsets[] = {
 						CHESS_OFFSET_NORTH,
 						CHESS_OFFSET_EAST,
 						CHESS_OFFSET_SOUTH,
@@ -1598,19 +1598,19 @@ struct chess_moves chess_moves_generate(const struct chess_position *position) {
 	return moves;
 }
 
-unsigned long chess_perft_recursive(const struct chess_position *position, unsigned int depth) {
+unsigned long chess_perft_recursive(const ChessPosition *position, unsigned int depth) {
 	if (depth == 0) {
 		return 1;
 	}
 
-	struct chess_moves moves = chess_moves_generate(position);
+	ChessMoves moves = chess_moves_generate(position);
 	if (depth == 1) {
 		return moves.count;
 	}
 
 	unsigned long count = 0;
 	for (size_t i = 0; i < moves.count; i++) {
-		struct chess_position position_after_move = *position;
+		ChessPosition position_after_move = *position;
 		chess_move_do_unchecked(&position_after_move, moves.moves[i]);
 		count += chess_perft_recursive(&position_after_move, depth - 1);
 	}
@@ -1618,6 +1618,6 @@ unsigned long chess_perft_recursive(const struct chess_position *position, unsig
 	return count;
 }
 unsigned long chess_perft(unsigned int depth) {
-	struct chess_position position = chess_position_new();
+	ChessPosition position = chess_position_new();
 	return chess_perft_recursive(&position, depth);
 }
