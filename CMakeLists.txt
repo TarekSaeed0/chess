@@ -10,24 +10,26 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_library(chess src/chess.c)
 target_include_directories(chess PUBLIC include)
-target_compile_options(
-	chess
-	PRIVATE -Werror
-			-Wall
-			-Wextra
-			-pedantic
-			-Wfloat-equal
-			-Wundef
-			-Wshadow
-			-Wpointer-arith
-			-Wcast-align
-			-Wstrict-prototypes
-			-Wstrict-overflow=5
-			-Wwrite-strings
-			-Wcast-qual
-			-Wconversion
-			-Wno-enum-enum-conversion
-)
+if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
+	target_compile_options(
+		chess
+		PRIVATE -Werror
+				-Wall
+				-Wextra
+				-pedantic
+				-Wfloat-equal
+				-Wundef
+				-Wshadow
+				-Wpointer-arith
+				-Wcast-align
+				-Wstrict-prototypes
+				-Wstrict-overflow=5
+				-Wwrite-strings
+				-Wcast-qual
+	)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+	target_compile_options(chess PRIVATE /W4)
+endif()
 
 add_executable(main src/main.c)
 target_link_libraries(main chess)
@@ -46,7 +48,6 @@ target_compile_options(
 			-Wstrict-overflow=5
 			-Wwrite-strings
 			-Wcast-qual
-			-Wconversion
 )
 
 if(UNIT_TESTING)
