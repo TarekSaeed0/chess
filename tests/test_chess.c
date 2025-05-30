@@ -993,7 +993,7 @@ static void test_chess_move_is_valid(void **state) {
 		bool is_valid;
 	} test_cases[] = {
 		{
-		    .move = (ChessMove){
+		    .move = {
 		        .from           = CHESS_SQUARE_NONE,
 		        .to             = CHESS_SQUARE_A2,
 		        .promotion_type = CHESS_PIECE_TYPE_NONE,
@@ -1001,7 +1001,7 @@ static void test_chess_move_is_valid(void **state) {
 		    .is_valid = false,
 		},
 		{
-		    .move = (ChessMove){
+		    .move = {
 		        .from           = CHESS_SQUARE_A2,
 		        .to             = CHESS_SQUARE_NONE,
 		        .promotion_type = CHESS_PIECE_TYPE_NONE,
@@ -1009,7 +1009,7 @@ static void test_chess_move_is_valid(void **state) {
 		    .is_valid = false,
 		},
 		{
-		    .move = (ChessMove){
+		    .move = {
 		        .from           = CHESS_SQUARE_A2,
 		        .to             = CHESS_SQUARE_A1,
 		        .promotion_type = CHESS_PIECE_TYPE_KING,
@@ -1018,7 +1018,7 @@ static void test_chess_move_is_valid(void **state) {
 		},
 
 		{
-		    .move = (ChessMove){
+		    .move = {
 		        .from           = CHESS_SQUARE_A2,
 		        .to             = CHESS_SQUARE_A1,
 		        .promotion_type = CHESS_PIECE_TYPE_KNIGHT,
@@ -1026,7 +1026,7 @@ static void test_chess_move_is_valid(void **state) {
 		    .is_valid = true,
 		},
 		{
-		    .move = (ChessMove){
+		    .move = {
 		        .from           = CHESS_SQUARE_B1,
 		        .to             = CHESS_SQUARE_C3,
 		        .promotion_type = CHESS_PIECE_TYPE_NONE,
@@ -1034,7 +1034,7 @@ static void test_chess_move_is_valid(void **state) {
 		    .is_valid = true,
 		},
 		{
-		    .move = (ChessMove){
+		    .move = {
 		        .from           = CHESS_SQUARE_E2,
 		        .to             = CHESS_SQUARE_E4,
 		        .promotion_type = CHESS_PIECE_TYPE_NONE,
@@ -1042,7 +1042,7 @@ static void test_chess_move_is_valid(void **state) {
 		    .is_valid = true,
 		},
 		{
-		    .move = (ChessMove){
+		    .move = {
 		        .from           = CHESS_SQUARE_C7,
 		        .to             = CHESS_SQUARE_C8,
 		        .promotion_type = CHESS_PIECE_TYPE_QUEEN,
