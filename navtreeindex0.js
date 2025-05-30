@@ -7,7 +7,7 @@ var NAVTREEINDEX0 =
 "files.html":[1,0],
 "index.html":[],
 "pages.html":[],
-"structchess__move.html":[0,0,0],
-"structchess__moves.html":[0,0,1],
-"structchess__position.html":[0,0,2]
+"structChessMove.html":[0,0,0],
+"structChessMoves.html":[0,0,1],
+"structChessPosition.html":[0,0,2]
 };

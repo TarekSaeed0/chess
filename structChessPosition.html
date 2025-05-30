@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=11" />
   <meta name="generator" content="Doxygen 1.9.8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Chess: chess_moves Struct Reference</title>
+  <title>Chess: ChessPosition Struct Reference</title>
   <!--BEGIN PROJECT_ICON-->
   <link rel="icon" href="$projecticon" type="image/x-icon" />
   <!--END PROJECT_ICON-->
@@ -79,7 +79,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(document).ready(function(){initNavTree('structchess__moves.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('structChessPosition.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -107,19 +107,34 @@ $(document).ready(function(){initNavTree('structchess__moves.html',''); initResi
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="structchess__moves-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">chess_moves Struct Reference</div></div>
+<a href="structChessPosition-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">ChessPosition Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:afa6d506ba13dd068d4896322e0d255a2" id="r_afa6d506ba13dd068d4896322e0d255a2"><td class="memItemLeft" align="right" valign="top"><a id="afa6d506ba13dd068d4896322e0d255a2" name="afa6d506ba13dd068d4896322e0d255a2"></a>
-struct <a class="el" href="structchess__move.html">chess_move</a>&#160;</td><td class="memItemRight" valign="bottom"><b>moves</b> [CHESS_MOVES_MAXIMUM_COUNT]</td></tr>
-<tr class="separator:afa6d506ba13dd068d4896322e0d255a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a064bd6a44e64fd533bf486b990f3642d" id="r_a064bd6a44e64fd533bf486b990f3642d"><td class="memItemLeft" align="right" valign="top"><a id="a064bd6a44e64fd533bf486b990f3642d" name="a064bd6a44e64fd533bf486b990f3642d"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><b>count</b></td></tr>
-<tr class="separator:a064bd6a44e64fd533bf486b990f3642d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7214c2c667b8c5eeb3fcbaf05456c9d8" id="r_a7214c2c667b8c5eeb3fcbaf05456c9d8"><td class="memItemLeft" align="right" valign="top"><a id="a7214c2c667b8c5eeb3fcbaf05456c9d8" name="a7214c2c667b8c5eeb3fcbaf05456c9d8"></a>
+ChessPiece&#160;</td><td class="memItemRight" valign="bottom"><b>board</b> [256]</td></tr>
+<tr class="separator:a7214c2c667b8c5eeb3fcbaf05456c9d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3327b502d8c7d9540f323a0c8a30ff6" id="r_ac3327b502d8c7d9540f323a0c8a30ff6"><td class="memItemLeft" align="right" valign="top"><a id="ac3327b502d8c7d9540f323a0c8a30ff6" name="ac3327b502d8c7d9540f323a0c8a30ff6"></a>
+ChessColor&#160;</td><td class="memItemRight" valign="bottom"><b>side_to_move</b></td></tr>
+<tr class="separator:ac3327b502d8c7d9540f323a0c8a30ff6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a368f8ed7615f801d30b49ad3b3c974e9" id="r_a368f8ed7615f801d30b49ad3b3c974e9"><td class="memItemLeft" align="right" valign="top"><a id="a368f8ed7615f801d30b49ad3b3c974e9" name="a368f8ed7615f801d30b49ad3b3c974e9"></a>
+ChessCastlingRights&#160;</td><td class="memItemRight" valign="bottom"><b>castling_rights</b></td></tr>
+<tr class="separator:a368f8ed7615f801d30b49ad3b3c974e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3407749412597dcc76b5ecee29691c4a" id="r_a3407749412597dcc76b5ecee29691c4a"><td class="memItemLeft" align="right" valign="top"><a id="a3407749412597dcc76b5ecee29691c4a" name="a3407749412597dcc76b5ecee29691c4a"></a>
+ChessSquare&#160;</td><td class="memItemRight" valign="bottom"><b>en_passant_square</b></td></tr>
+<tr class="separator:a3407749412597dcc76b5ecee29691c4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a925cf995629fcd8b16d32081b9675bc1" id="r_a925cf995629fcd8b16d32081b9675bc1"><td class="memItemLeft" align="right" valign="top"><a id="a925cf995629fcd8b16d32081b9675bc1" name="a925cf995629fcd8b16d32081b9675bc1"></a>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>half_move_clock</b></td></tr>
+<tr class="separator:a925cf995629fcd8b16d32081b9675bc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69935229252d01288bdb10bd11974539" id="r_a69935229252d01288bdb10bd11974539"><td class="memItemLeft" align="right" valign="top"><a id="a69935229252d01288bdb10bd11974539" name="a69935229252d01288bdb10bd11974539"></a>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>full_move_number</b></td></tr>
+<tr class="separator:a69935229252d01288bdb10bd11974539"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a913368a7e486dc9faa6a93610c2fa7ee" id="r_a913368a7e486dc9faa6a93610c2fa7ee"><td class="memItemLeft" align="right" valign="top"><a id="a913368a7e486dc9faa6a93610c2fa7ee" name="a913368a7e486dc9faa6a93610c2fa7ee"></a>
+ChessSquare&#160;</td><td class="memItemRight" valign="bottom"><b>king_squares</b> [3]</td></tr>
+<tr class="separator:a913368a7e486dc9faa6a93610c2fa7ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>/github/workspace/include/<a class="el" href="chess_8h_source.html">chess.h</a></li>
@@ -129,7 +144,7 @@ size_t&#160;</td><td class="memItemRight" valign="bottom"><b>count</b></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="structchess__moves.html">chess_moves</a></li>
+    <li class="navelem"><a class="el" href="structChessPosition.html">ChessPosition</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
