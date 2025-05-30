@@ -33,22 +33,26 @@ endif()
 
 add_executable(main src/main.c)
 target_link_libraries(main chess)
-target_compile_options(
-	main
-	PRIVATE -Werror
-			-Wall
-			-Wextra
-			-pedantic
-			-Wfloat-equal
-			-Wundef
-			-Wshadow
-			-Wpointer-arith
-			-Wcast-align
-			-Wstrict-prototypes
-			-Wstrict-overflow=5
-			-Wwrite-strings
-			-Wcast-qual
-)
+if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
+	target_compile_options(
+		main
+		PRIVATE -Werror
+				-Wall
+				-Wextra
+				-pedantic
+				-Wfloat-equal
+				-Wundef
+				-Wshadow
+				-Wpointer-arith
+				-Wcast-align
+				-Wstrict-prototypes
+				-Wstrict-overflow=5
+				-Wwrite-strings
+				-Wcast-qual
+	)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+	target_compile_options(main PRIVATE /W4)
+endif()
 
 if(UNIT_TESTING)
 	list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmocka)
