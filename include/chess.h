@@ -17,8 +17,6 @@ extern "C" {
 #include <chess/rank.h>
 #include <chess/square.h>
 
-unsigned long chess_perft(unsigned int depth);
-
 #ifdef __cplusplus
 }
 #endif

@@ -10,7 +10,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_library(
 	chess
-	src/chess.c
 	src/chess/color.c
 	src/chess/piece_type.c
 	src/chess/piece.c
@@ -44,7 +43,7 @@ if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 				-Wcast-qual
 	)
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-	target_compile_options(chess PRIVATE /W4)
+	target_compile_options(chess PRIVATE /WX /W4)
 endif()
 
 add_executable(main src/main.c)
@@ -67,7 +66,7 @@ if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 				-Wcast-qual
 	)
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-	target_compile_options(main PRIVATE /W4)
+	target_compile_options(main PRIVATE /WX /W4)
 endif()
 
 if(UNIT_TESTING)
