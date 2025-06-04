@@ -110,7 +110,7 @@ size_t chess_move_from_algebraic(const ChessPosition *position, ChessMove *move,
 	ChessPieceType promotion_type = CHESS_PIECE_TYPE_NONE;
 	if (string[total_read] == '=') {
 		total_read++;
-		READ(chess_piece_type_from_algebraic, &promotion_type);
+		CHESS_READ(chess_piece_type_from_algebraic, &promotion_type);
 	}
 
 	bool is_check     = false;
@@ -215,11 +215,11 @@ size_t chess_move_to_algebraic(const ChessPosition *position, ChessMove move, ch
 	size_t total_written = 0;
 
 	if (chess_move_is_kingside_castling(position, move)) {
-		WRITE_FORMATTED("O-O");
+		CHESS_WRITE_FORMATTED("O-O");
 		return total_written;
 	}
 	if (chess_move_is_queenside_castling(position, move)) {
-		WRITE_FORMATTED("O-O-O");
+		CHESS_WRITE_FORMATTED("O-O-O");
 		return total_written;
 	}
 
@@ -227,7 +227,7 @@ size_t chess_move_to_algebraic(const ChessPosition *position, ChessMove move, ch
 	ChessPieceType type = chess_piece_type(piece);
 	ChessFile file      = chess_square_file(move.from);
 	if (type != CHESS_PIECE_TYPE_PAWN) {
-		WRITE(chess_piece_type_to_algebraic, type);
+		CHESS_WRITE(chess_piece_type_to_algebraic, type);
 
 		ChessRank rank         = chess_square_rank(move.from);
 
@@ -252,37 +252,37 @@ size_t chess_move_to_algebraic(const ChessPosition *position, ChessMove move, ch
 		}
 		if (is_ambiguous) {
 			if (!is_file_ambiguous) {
-				WRITE(chess_file_to_algebraic, file);
+				CHESS_WRITE(chess_file_to_algebraic, file);
 			} else if (!is_rank_ambiguous) {
-				WRITE(chess_rank_to_algebraic, rank);
+				CHESS_WRITE(chess_rank_to_algebraic, rank);
 			} else {
-				WRITE(chess_file_to_algebraic, file);
-				WRITE(chess_rank_to_algebraic, rank);
+				CHESS_WRITE(chess_file_to_algebraic, file);
+				CHESS_WRITE(chess_rank_to_algebraic, rank);
 			}
 		}
 	}
 
 	if (chess_move_is_capture(position, move)) {
 		if (type == CHESS_PIECE_TYPE_PAWN) {
-			WRITE(chess_file_to_algebraic, file);
+			CHESS_WRITE(chess_file_to_algebraic, file);
 		}
-		WRITE_FORMATTED("x");
+		CHESS_WRITE_FORMATTED("x");
 	}
 
-	WRITE(chess_square_to_algebraic, move.to);
+	CHESS_WRITE(chess_square_to_algebraic, move.to);
 
 	if (chess_move_is_promotion(position, move)) {
-		WRITE_FORMATTED("=");
-		WRITE(chess_piece_type_to_algebraic, move.promotion_type);
+		CHESS_WRITE_FORMATTED("=");
+		CHESS_WRITE(chess_piece_type_to_algebraic, move.promotion_type);
 	}
 
 	ChessPosition position_after_move = *position;
 	if (chess_move_do(&position_after_move, move)) {
 		if (chess_position_is_check(&position_after_move)) {
 			if (chess_position_is_checkmate(&position_after_move)) {
-				WRITE_FORMATTED("#");
+				CHESS_WRITE_FORMATTED("#");
 			} else {
-				WRITE_FORMATTED("+");
+				CHESS_WRITE_FORMATTED("+");
 			}
 		}
 	}
@@ -389,10 +389,7 @@ void chess_move_do_unchecked(ChessPosition *position, ChessMove move) {
 			position->board[move.to + 2 * CHESS_OFFSET_WEST] = CHESS_PIECE_NONE;
 		}
 
-		position->castling_rights &=
-		    ~(side_to_move == CHESS_COLOR_WHITE
-		          ? CHESS_CASTLING_RIGHTS_WHITE_KINGSIDE | CHESS_CASTLING_RIGHTS_WHITE_QUEENSIDE
-		          : CHESS_CASTLING_RIGHTS_BLACK_KINGSIDE | CHESS_CASTLING_RIGHTS_BLACK_QUEENSIDE);
+		position->castling_rights &= ~(side_to_move == CHESS_COLOR_WHITE ? CHESS_CASTLING_RIGHTS_WHITE : CHESS_CASTLING_RIGHTS_BLACK);
 	}
 
 	if (type == CHESS_PIECE_TYPE_ROOK) {

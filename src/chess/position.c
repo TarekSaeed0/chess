@@ -115,7 +115,7 @@ ChessPosition chess_position_new(void) {
 		    [CHESS_SQUARE_H1] = CHESS_PIECE_WHITE_ROOK,
 		},
 		.side_to_move      = CHESS_COLOR_WHITE,
-		.castling_rights   = CHESS_CASTLING_RIGHTS_WHITE_KINGSIDE | CHESS_CASTLING_RIGHTS_WHITE_QUEENSIDE | CHESS_CASTLING_RIGHTS_BLACK_KINGSIDE | CHESS_CASTLING_RIGHTS_BLACK_QUEENSIDE,
+		.castling_rights   = CHESS_CASTLING_RIGHTS_ALL,
 		.en_passant_square = CHESS_SQUARE_NONE,
 		.half_move_clock   = 0,
 		.full_move_number  = 1,
@@ -145,7 +145,7 @@ size_t chess_position_from_fen(ChessPosition *position, const char *string) {
 				file += (string[total_read] - '1');
 				total_read++;
 			} else {
-				READ(chess_piece_from_algebraic, &position->board[square]);
+				CHESS_READ(chess_piece_from_algebraic, &position->board[square]);
 
 				if (chess_piece_type(position->board[square]) == CHESS_PIECE_TYPE_KING) {
 					position->king_squares[chess_piece_color(position->board[square])] = square;
@@ -207,7 +207,7 @@ size_t chess_position_from_fen(ChessPosition *position, const char *string) {
 		position->en_passant_square = CHESS_SQUARE_NONE;
 		total_read++;
 	} else {
-		READ(chess_square_from_algebraic, &position->en_passant_square);
+		CHESS_READ(chess_square_from_algebraic, &position->en_passant_square);
 	}
 
 	if (!isspace(string[total_read])) {
@@ -262,50 +262,50 @@ size_t chess_position_to_fen(const ChessPosition *position, char *string, size_t
 					count++;
 					file++;
 				}
-				WRITE_FORMATTED("%c", (char)('0' + count));
+				CHESS_WRITE_FORMATTED("%c", (char)('0' + count));
 			} else {
-				WRITE(chess_piece_to_algebraic, piece);
+				CHESS_WRITE(chess_piece_to_algebraic, piece);
 			}
 		}
 		if (rank != CHESS_RANK_1) {
-			WRITE_FORMATTED("/");
+			CHESS_WRITE_FORMATTED("/");
 		}
 	}
 
-	WRITE_FORMATTED(" ");
+	CHESS_WRITE_FORMATTED(" ");
 
-	WRITE_FORMATTED("%c", position->side_to_move == CHESS_COLOR_WHITE ? 'w' : 'b');
+	CHESS_WRITE_FORMATTED("%c", position->side_to_move == CHESS_COLOR_WHITE ? 'w' : 'b');
 
-	WRITE_FORMATTED(" ");
+	CHESS_WRITE_FORMATTED(" ");
 
 	if (position->castling_rights) {
 		if (position->castling_rights & CHESS_CASTLING_RIGHTS_WHITE_KINGSIDE) {
-			WRITE_FORMATTED("K");
+			CHESS_WRITE_FORMATTED("K");
 		}
 		if (position->castling_rights & CHESS_CASTLING_RIGHTS_WHITE_QUEENSIDE) {
-			WRITE_FORMATTED("Q");
+			CHESS_WRITE_FORMATTED("Q");
 		}
 		if (position->castling_rights & CHESS_CASTLING_RIGHTS_BLACK_KINGSIDE) {
-			WRITE_FORMATTED("k");
+			CHESS_WRITE_FORMATTED("k");
 		}
 		if (position->castling_rights & CHESS_CASTLING_RIGHTS_BLACK_QUEENSIDE) {
-			WRITE_FORMATTED("q");
+			CHESS_WRITE_FORMATTED("q");
 		}
 	} else {
-		WRITE_FORMATTED("-");
+		CHESS_WRITE_FORMATTED("-");
 	}
 
-	WRITE_FORMATTED(" ");
+	CHESS_WRITE_FORMATTED(" ");
 
 	if (position->en_passant_square != CHESS_SQUARE_NONE) {
-		WRITE(chess_square_to_algebraic, position->en_passant_square);
+		CHESS_WRITE(chess_square_to_algebraic, position->en_passant_square);
 	} else {
-		WRITE_FORMATTED("-");
+		CHESS_WRITE_FORMATTED("-");
 	}
 
-	WRITE_FORMATTED(" ");
+	CHESS_WRITE_FORMATTED(" ");
 
-	WRITE_FORMATTED("%u %u", position->half_move_clock, position->full_move_number);
+	CHESS_WRITE_FORMATTED("%u %u", position->half_move_clock, position->full_move_number);
 
 	return total_written;
 }

@@ -8,7 +8,9 @@ extern "C" {
 #include <chess/types.h>
 
 void chess_file_debug(ChessFile file);
-bool chess_file_is_valid(ChessFile file);
+static inline bool chess_file_is_valid(ChessFile file) {
+	return (file & 0x8U) == 0x8U;
+}
 size_t chess_file_from_algebraic(ChessFile *file, const char *string);
 size_t chess_file_to_algebraic(ChessFile file, char *string, size_t string_size);
 

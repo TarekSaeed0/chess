@@ -8,7 +8,9 @@ extern "C" {
 #include <chess/types.h>
 
 void chess_square_debug(ChessSquare square);
-bool chess_square_is_valid(ChessSquare square);
+static inline bool chess_square_is_valid(ChessSquare square) {
+	return (square & 0x88U) == 0x88U;
+}
 static inline ChessSquare chess_square_new(ChessFile file, ChessRank rank) {
 	return (ChessSquare)(file | rank << 4U);
 }

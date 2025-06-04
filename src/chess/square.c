@@ -22,9 +22,6 @@ void chess_square_debug(ChessSquare square) {
 		printf("(ChessSquare)%d", square);
 	}
 }
-bool chess_square_is_valid(ChessSquare square) {
-	return (square & 0x88U) == 0x88U;
-}
 ChessColor chess_square_color(ChessSquare square) {
 	return (chess_square_file(square) + chess_square_rank(square)) % 2U ? CHESS_COLOR_BLACK : CHESS_COLOR_WHITE;
 }
@@ -34,10 +31,10 @@ size_t chess_square_from_algebraic(ChessSquare *square, const char *string) {
 	size_t total_read = 0;
 
 	ChessFile file    = CHESS_FILE_NONE;
-	READ(chess_file_from_algebraic, &file);
+	CHESS_READ(chess_file_from_algebraic, &file);
 
 	ChessRank rank = CHESS_RANK_NONE;
-	READ(chess_rank_from_algebraic, &rank);
+	CHESS_READ(chess_rank_from_algebraic, &rank);
 
 	*square = chess_square_new(file, rank);
 
@@ -50,8 +47,8 @@ size_t chess_square_to_algebraic(ChessSquare square, char *string, size_t string
 
 	size_t total_written = 0;
 
-	WRITE(chess_file_to_algebraic, chess_square_file(square));
-	WRITE(chess_rank_to_algebraic, chess_square_rank(square));
+	CHESS_WRITE(chess_file_to_algebraic, chess_square_file(square));
+	CHESS_WRITE(chess_rank_to_algebraic, chess_square_rank(square));
 
 	return total_written;
 }

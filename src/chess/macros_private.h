@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-#define WRITE(function, ...)                                      \
+#define CHESS_WRITE(function, ...)                                \
 	do {                                                            \
 		size_t _written = function(__VA_ARGS__, string, string_size); \
 		if (_written < string_size) {                                 \
@@ -16,7 +16,7 @@
 		}                                                             \
 		total_written += _written;                                    \
 	} while (false)
-#define WRITE_FORMATTED(...)                                   \
+#define CHESS_WRITE_FORMATTED(...)                             \
 	do {                                                         \
 		int _written = snprintf(string, string_size, __VA_ARGS__); \
 		assert(_written >= 0);                                     \
@@ -31,7 +31,7 @@
 		total_written += (size_t)_written;                         \
 	} while (false)
 
-#define READ(function, ...)                                    \
+#define CHESS_READ(function, ...)                              \
 	do {                                                         \
 		size_t _read = function(__VA_ARGS__, &string[total_read]); \
 		if (_read == 0) {                                          \
