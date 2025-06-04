@@ -7,14 +7,14 @@ on:
       - "**.h"
       - "**.c"
       - "**/CMakeList.txt"
-      - ".github/workflows/cmake-single-platform.yml"
+      - ".github/workflows/cmake-multi-platform.yml"
   pull_request:
     branches: [main]
     paths:
       - "**.h"
       - "**.c"
       - "**/CMakeList.txt"
-      - ".github/workflows/cmake-single-platform.yml"
+      - ".github/workflows/cmake-multi-platform.yml"
 
 jobs:
   build:
