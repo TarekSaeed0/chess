@@ -17,6 +17,7 @@ bool chess_position_is_stalemate(const ChessPosition *position);
 bool chess_position_is_fifty_move_rule(const ChessPosition *position);
 bool chess_position_is_threefold_repetition(const ChessPosition *position);
 bool chess_position_is_insufficient_material(const ChessPosition *position);
+uint64_t chess_position_hash(const ChessPosition *position);
 
 #ifdef __cplusplus
 }

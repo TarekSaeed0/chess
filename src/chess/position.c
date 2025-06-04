@@ -352,3 +352,80 @@ bool chess_position_is_insufficient_material(const ChessPosition *position) {
 
 	return false;
 }
+
+uint64_t chess_random(uint64_t *state) {
+	assert(state != CHESS_NULL && *state != 0);
+
+	uint64_t value = *state;
+	value ^= value >> 12;
+	value ^= value << 25;
+	value ^= value >> 27;
+
+	*state = value;
+
+	return value * 0x2545F4914F6CDD1DULL;
+}
+uint64_t chess_position_hash(const ChessPosition *position) {
+	assert(chess_position_is_valid(position));
+
+	static bool initialized                                                               = false;
+	static uint64_t piece_at_square_hash[CHESS_PIECE_BLACK_KING + 1][CHESS_SQUARE_H8 + 1] = { 0 };
+	static uint64_t side_to_move_hash                                                     = 0;
+	static uint64_t castling_rights_hash[CHESS_CASTLING_RIGHTS_ALL + 1]                   = { 0 };
+	static uint64_t en_passant_file_hash[CHESS_FILE_H + 1]                                = { 0 };
+	if (!initialized) {
+		uint64_t random_state = 0x9E3779B97F4A7C15ULL;
+
+		for (ChessPiece piece = CHESS_PIECE_WHITE_PAWN; piece <= CHESS_PIECE_BLACK_KING; piece++) {
+			if (!chess_piece_is_valid(piece)) {
+				piece = CHESS_PIECE_BLACK_PAWN - 1;
+			}
+			for (ChessRank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
+				for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
+					ChessSquare square                  = chess_square_new(file, rank);
+					piece_at_square_hash[piece][square] = chess_random(&random_state);
+				}
+			}
+		}
+
+		side_to_move_hash = chess_random(&random_state);
+
+		for (ChessCastlingRights castling_rights = CHESS_CASTLING_RIGHTS_NONE; castling_rights <= CHESS_CASTLING_RIGHTS_ALL; castling_rights++) {
+			castling_rights_hash[castling_rights] = chess_random(&random_state);
+		}
+
+		for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
+			en_passant_file_hash[file] = chess_random(&random_state);
+		}
+
+		initialized = true;
+	}
+
+	uint64_t hash = 0;
+
+	for (ChessRank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
+		for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
+			ChessSquare square = chess_square_new(file, rank);
+
+			ChessPiece piece   = position->board[square];
+			if (piece == CHESS_PIECE_NONE) {
+				continue;
+			}
+
+			hash ^= piece_at_square_hash[piece][square];
+		}
+	}
+
+	if (position->side_to_move == CHESS_COLOR_BLACK) {
+		hash ^= side_to_move_hash;
+	}
+
+	hash ^= castling_rights_hash[position->castling_rights];
+
+	if (position->en_passant_square != CHESS_SQUARE_NONE) {
+		ChessFile file = chess_square_file(position->en_passant_square);
+		hash ^= en_passant_file_hash[file];
+	}
+
+	return hash;
+}
