@@ -108,7 +108,60 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
   <div class="headertitle"><div class="title">Chess </div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="md__2github_2workspace_2README"></a> A chess library written in c </p>
+<div class="textblock"><p><a class="anchor" id="md__2github_2workspace_2README"></a> <a href="https://github.com/TarekSaeed0/chess/actions?query=workflow%3A%22%22CMake%20on%20multiple%20platforms%22%22%20%20"><img src="https://img.shields.io/github/actions/workflow/status/TarekSaeed0/chess/cmake-multi-platform.yml" alt="Build Status" class="inline"/></a> <a href="https://github.com/TarekSaeed0/chess/stargazers"><img src="https://img.shields.io/github/stars/TarekSaeed0/chess?style=flat&amp;label=stars" alt="GitHub Stars" class="inline"/></a> [<img src="https://img.shields.io/github/license/TarekSaeed0/chess" alt="Github License" class="inline"/>](LICENSE)</p>
+<p>A portable C library for representing and manipulating chess positions, and generating legal moves. This library provides a clean API for chess engines, GUIs, and tools.</p>
+<h1><a class="anchor" id="autotoc_md1"></a>
+Features</h1>
+<ul>
+<li>Full representation of chess positions, moves, and pieces</li>
+<li>Move generation and validation</li>
+<li>FEN parsing and generation</li>
+<li>Algebraic notation parsing and formatting</li>
+<li>Castling, en passant, promotion, and all standard chess rules</li>
+<li>No dependencies required, <a href="https://gitlab.com/cmocka/cmocka">cmocka</a> is optionally required for testing</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md2"></a>
+Usage</h1>
+<p>Include the main header in your project:</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;chess.h&gt;</span></div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md3"></a>
+Example</h2>
+<p>Creating a new position and generating moves</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;chess.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">void</span>) {</div>
+<div class="line">    <a class="code hl_struct" href="structChessPosition.html">ChessPosition</a> position = chess_position_new();</div>
+<div class="line">    <a class="code hl_struct" href="structChessMoves.html">ChessMoves</a> moves = chess_moves_generate(&amp;position);</div>
+<div class="line"> </div>
+<div class="line">    printf(<span class="stringliteral">&quot;There is %zu legal moves:\n&quot;</span>, moves.count);</div>
+<div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; moves.count; ++i) {</div>
+<div class="line">        <span class="keywordtype">char</span> buffer[16];</div>
+<div class="line">        chess_move_to_algebraic(&amp;position, moves.moves[i], buffer, <span class="keyword">sizeof</span>(buffer));</div>
+<div class="line">        printf(<span class="stringliteral">&quot;%s\n&quot;</span>, buffer);</div>
+<div class="line">    }</div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">}</div>
+<div class="ttc" id="astructChessMoves_html"><div class="ttname"><a href="structChessMoves.html">ChessMoves</a></div><div class="ttdef"><b>Definition</b> types.h:186</div></div>
+<div class="ttc" id="astructChessPosition_html"><div class="ttname"><a href="structChessPosition.html">ChessPosition</a></div><div class="ttdef"><b>Definition</b> types.h:170</div></div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md4"></a>
+Building</h1>
+<p>This library is written in standard C and should compile with any modern C compiler. It requires at least C11 support. To build using cmake:</p>
+<div class="fragment"><div class="line">cmake -S . -B build -DCMAKE_BUILD_TYPE=Release</div>
+<div class="line">cmake --build build</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md5"></a>
+API Overview</h1>
+<ul>
+<li><code>chess_position_new()</code>: Create a new position with the standard starting position</li>
+<li><code>chess_moves_generate()</code>: Generate all legal moves</li>
+<li><code>chess_move_do()</code>: Make a move on a position</li>
+<li><code>chess_position_from_fen()</code>, <code>chess_position_to_fen()</code>: convert to and from FEN</li>
+<li><code>*_from_algebraic()</code>, <code>*_to_algebraic()</code>: convert to and from algebraic notation</li>
+</ul>
+<p>See the <code>include/chess/</code> headers for full API documentation.</p>
+<h1><a class="anchor" id="autotoc_md6"></a>
+License</h1>
+<p>MIT License. See [LICENSE](LICENSE) for details. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->
