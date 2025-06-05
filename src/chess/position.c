@@ -346,9 +346,58 @@ bool chess_position_is_threefold_repetition(const ChessPosition *position) {
 bool chess_position_is_insufficient_material(const ChessPosition *position) {
 	assert(chess_position_is_valid(position));
 
-	(void)position;
+	unsigned int white_bishops           = 0;
+	unsigned int black_bishops           = 0;
+	unsigned int white_knights           = 0;
+	unsigned int black_knights           = 0;
+	ChessColor white_bishop_square_color = CHESS_COLOR_NONE;
+	ChessColor black_bishop_square_color = CHESS_COLOR_NONE;
+	for (ChessRank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
+		for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
+			ChessSquare square  = chess_square_new(file, rank);
+			ChessPiece piece    = position->board[square];
 
-	// TODO: implement insufficient material detection
+			ChessPieceType type = chess_piece_type(piece);
+			if (type == CHESS_PIECE_TYPE_NONE || type == CHESS_PIECE_TYPE_KING) {
+				continue;
+			}
+
+			if (type == CHESS_PIECE_TYPE_BISHOP) {
+				ChessColor color = chess_piece_color(piece);
+				if (color == CHESS_COLOR_WHITE) {
+					white_bishops++;
+					white_bishop_square_color = chess_square_color(square);
+				} else if (color == CHESS_COLOR_BLACK) {
+					black_bishops++;
+					black_bishop_square_color = chess_square_color(square);
+				}
+			} else if (type == CHESS_PIECE_TYPE_KNIGHT) {
+				ChessColor color = chess_piece_color(piece);
+				if (color == CHESS_COLOR_WHITE) {
+					white_knights++;
+				} else if (color == CHESS_COLOR_BLACK) {
+					black_knights++;
+				}
+			} else {
+				return false;
+			}
+		}
+	}
+
+	if (white_bishops == 0 && black_bishops == 0 &&
+	    white_knights == 0 && black_knights == 0) {
+		return true;
+	}
+
+	if ((white_bishops == 1) + (white_knights == 1) + (black_bishops == 1) + (black_knights == 1) == 1) {
+		return true;
+	}
+
+	if (white_bishops == 1 && black_bishops == 1 &&
+	    white_knights == 0 && black_knights == 0 &&
+	    white_bishop_square_color == black_bishop_square_color) {
+		return true;
+	}
 
 	return false;
 }
