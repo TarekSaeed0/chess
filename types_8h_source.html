@@ -283,40 +283,58 @@ $(document).ready(function(){initNavTree('types_8h_source.html',''); initResizab
 <div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>};</div>
 <div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span> </div>
 <div class="foldopen" id="foldopen00170" data-start="{" data-end="};">
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno"><a class="line" href="structChessPosition.html">  170</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structChessPosition.html">ChessPosition</a> {</div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>    ChessPiece board[256];</div>
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>    ChessColor side_to_move;</div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>    ChessCastlingRights castling_rights;</div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>    ChessSquare en_passant_square;</div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> half_move_clock;</div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> full_move_number;</div>
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>    ChessSquare king_squares[3];</div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>} <a class="code hl_struct" href="structChessPosition.html">ChessPosition</a>;</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno"><a class="line" href="structChessPositionCounterEntry.html">  170</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structChessPositionCounterEntry.html">ChessPositionCounterEntry</a> {</div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>    uint64_t key;</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> value;</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>} <a class="code hl_struct" href="structChessPositionCounterEntry.html">ChessPositionCounterEntry</a>;</div>
 </div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span> </div>
-<div class="foldopen" id="foldopen00180" data-start="{" data-end="};">
-<div class="line"><a id="l00180" name="l00180"></a><span class="lineno"><a class="line" href="structChessMove.html">  180</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structChessMove.html">ChessMove</a> {</div>
-<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>    ChessSquare from;</div>
-<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>    ChessSquare to;</div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>    ChessPieceType promotion_type;</div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>} <a class="code hl_struct" href="structChessMove.html">ChessMove</a>;</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span> </div>
+<div class="foldopen" id="foldopen00175" data-start="{" data-end="};">
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno"><a class="line" href="structChessPositionCounter.html">  175</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structChessPositionCounter.html">ChessPositionCounter</a> {</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>    <a class="code hl_struct" href="structChessPositionCounterEntry.html">ChessPositionCounterEntry</a> *entries;</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>    <span class="keywordtype">size_t</span> size;</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>    <span class="keywordtype">size_t</span> count;</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>} <a class="code hl_struct" href="structChessPositionCounter.html">ChessPositionCounter</a>;</div>
 </div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span> </div>
-<div class="foldopen" id="foldopen00186" data-start="{" data-end="};">
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno"><a class="line" href="structChessMoves.html">  186</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structChessMoves.html">ChessMoves</a> {</div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>    <span class="keyword">struct </span><a class="code hl_struct" href="structChessMove.html">ChessMove</a> moves[CHESS_MOVES_MAXIMUM_COUNT];</div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>    <span class="keywordtype">size_t</span> count;</div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>} <a class="code hl_struct" href="structChessMoves.html">ChessMoves</a>;</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span> </div>
+<div class="foldopen" id="foldopen00181" data-start="{" data-end="};">
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno"><a class="line" href="structChessPosition.html">  181</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structChessPosition.html">ChessPosition</a> {</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>    ChessPiece board[256];</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>    ChessColor side_to_move;</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>    ChessCastlingRights castling_rights;</div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>    ChessSquare en_passant_square;</div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> half_move_clock;</div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> full_move_number;</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>    ChessSquare king_squares[3];</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>    <a class="code hl_struct" href="structChessPositionCounter.html">ChessPositionCounter</a> position_counter;</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>} <a class="code hl_struct" href="structChessPosition.html">ChessPosition</a>;</div>
 </div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span> </div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>}</div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span> </div>
-<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span><span class="preprocessor">#endif </span><span class="comment">// CHESS_TYPES_H_INCLUDED</span></div>
-<div class="ttc" id="astructChessMove_html"><div class="ttname"><a href="structChessMove.html">ChessMove</a></div><div class="ttdef"><b>Definition</b> types.h:180</div></div>
-<div class="ttc" id="astructChessMoves_html"><div class="ttname"><a href="structChessMoves.html">ChessMoves</a></div><div class="ttdef"><b>Definition</b> types.h:186</div></div>
-<div class="ttc" id="astructChessPosition_html"><div class="ttname"><a href="structChessPosition.html">ChessPosition</a></div><div class="ttdef"><b>Definition</b> types.h:170</div></div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span> </div>
+<div class="foldopen" id="foldopen00192" data-start="{" data-end="};">
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno"><a class="line" href="structChessMove.html">  192</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structChessMove.html">ChessMove</a> {</div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>    ChessSquare from;</div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>    ChessSquare to;</div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>    ChessPieceType promotion_type;</div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>} <a class="code hl_struct" href="structChessMove.html">ChessMove</a>;</div>
+</div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span> </div>
+<div class="foldopen" id="foldopen00198" data-start="{" data-end="};">
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno"><a class="line" href="structChessMoves.html">  198</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structChessMoves.html">ChessMoves</a> {</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>    <span class="keyword">struct </span><a class="code hl_struct" href="structChessMove.html">ChessMove</a> moves[CHESS_MOVES_MAXIMUM_COUNT];</div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>    <span class="keywordtype">size_t</span> count;</div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>} <a class="code hl_struct" href="structChessMoves.html">ChessMoves</a>;</div>
+</div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span> </div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>}</div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span> </div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span><span class="preprocessor">#endif </span><span class="comment">// CHESS_TYPES_H_INCLUDED</span></div>
+<div class="ttc" id="astructChessMove_html"><div class="ttname"><a href="structChessMove.html">ChessMove</a></div><div class="ttdef"><b>Definition</b> types.h:192</div></div>
+<div class="ttc" id="astructChessMoves_html"><div class="ttname"><a href="structChessMoves.html">ChessMoves</a></div><div class="ttdef"><b>Definition</b> types.h:198</div></div>
+<div class="ttc" id="astructChessPositionCounterEntry_html"><div class="ttname"><a href="structChessPositionCounterEntry.html">ChessPositionCounterEntry</a></div><div class="ttdef"><b>Definition</b> types.h:170</div></div>
+<div class="ttc" id="astructChessPositionCounter_html"><div class="ttname"><a href="structChessPositionCounter.html">ChessPositionCounter</a></div><div class="ttdef"><b>Definition</b> types.h:175</div></div>
+<div class="ttc" id="astructChessPosition_html"><div class="ttname"><a href="structChessPosition.html">ChessPosition</a></div><div class="ttdef"><b>Definition</b> types.h:181</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
