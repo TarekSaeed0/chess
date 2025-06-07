@@ -16,7 +16,9 @@ add_library(
 	src/chess/file.c
 	src/chess/rank.c
 	src/chess/square.c
+	src/chess/castling_rights.c
 	src/chess/position.c
+	src/chess/position_counter.c
 	src/chess/move.c
 	src/chess/moves.c
 )
@@ -42,7 +44,7 @@ if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 				-Wwrite-strings
 				-Wcast-qual
 	)
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+elseif(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
 	target_compile_options(chess PRIVATE /WX /W4)
 endif()
 
@@ -65,7 +67,7 @@ if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 				-Wwrite-strings
 				-Wcast-qual
 	)
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+elseif(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
 	target_compile_options(main PRIVATE /WX /W4)
 endif()
 

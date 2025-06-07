@@ -1,11 +1,13 @@
 #include <chess/position.h>
 #include <chess/position_private.h>
 
+#include <chess/castling_rights.h>
 #include <chess/color.h>
 #include <chess/macros_private.h>
 #include <chess/moves.h>
 #include <chess/offset.h>
 #include <chess/piece.h>
+#include <chess/position_counter.h>
 #include <chess/square.h>
 
 #include <assert.h>
@@ -15,6 +17,39 @@
 #include <stdlib.h>
 #include <string.h>
 
+void chess_position_debug(const ChessPosition *position) {
+	printf("(ChessPosition) {\n");
+
+	printf("\t.board = { ");
+	printf("},");
+
+	printf("\t.side_to_move = ");
+	chess_color_debug(position->side_to_move);
+	printf(",\n");
+
+	printf("\t.castling_rights = ");
+	chess_castling_rights_debug(position->castling_rights);
+	printf(",\n");
+
+	printf("\t.en_passant_square = ");
+	chess_square_debug(position->en_passant_square);
+	printf(",\n");
+
+	printf("\t.half_move_clock = %u,\n", position->half_move_clock);
+
+	printf("\t.full_move_number = %u,\n", position->full_move_number);
+
+	printf("\t.king_squares = { ");
+	printf("\t\t[CHESS_COLOR_WHITE] = ");
+	chess_square_debug(position->king_squares[CHESS_COLOR_WHITE]);
+	printf(",\n");
+	printf("\t\t[CHESS_COLOR_BLACK] = ");
+	chess_square_debug(position->king_squares[CHESS_COLOR_BLACK]);
+	printf(",\n");
+	printf("},");
+
+	printf("}");
+}
 bool chess_position_is_valid(const ChessPosition *position) {
 	if (position == CHESS_NULL) {
 		return false;
@@ -31,7 +66,8 @@ bool chess_position_is_valid(const ChessPosition *position) {
 		return false;
 	}
 
-	if (((position->castling_rights & CHESS_CASTLING_RIGHTS_WHITE_KINGSIDE) &&
+	if (!chess_castling_rights_is_valid(position->castling_rights) ||
+	    ((position->castling_rights & CHESS_CASTLING_RIGHTS_WHITE_KINGSIDE) &&
 	     (position->board[CHESS_SQUARE_E1] != CHESS_PIECE_WHITE_KING ||
 	      position->board[CHESS_SQUARE_H1] != CHESS_PIECE_WHITE_ROOK)) ||
 	    ((position->castling_rights & CHESS_CASTLING_RIGHTS_WHITE_QUEENSIDE) &&
@@ -73,7 +109,7 @@ bool chess_position_is_valid(const ChessPosition *position) {
 		}
 	}
 
-	return true;
+	return chess_position_counter_is_valid(&position->position_counter);
 }
 ChessPosition chess_position_new(void) {
 	return (ChessPosition){
@@ -122,8 +158,14 @@ ChessPosition chess_position_new(void) {
 		.king_squares      = {
         [CHESS_COLOR_WHITE] = CHESS_SQUARE_E1,
         [CHESS_COLOR_BLACK] = CHESS_SQUARE_E8,
-    }
+    },
+		.position_counter = chess_position_counter_new(),
 	};
+}
+void chess_position_drop(ChessPosition *position) {
+	assert(chess_position_is_valid(position));
+
+	chess_position_counter_drop(&position->position_counter);
 }
 size_t chess_position_from_fen(ChessPosition *position, const char *string) {
 	assert(position != CHESS_NULL && string != CHESS_NULL);
@@ -337,11 +379,7 @@ bool chess_position_is_fifty_move_rule(const ChessPosition *position) {
 bool chess_position_is_threefold_repetition(const ChessPosition *position) {
 	assert(chess_position_is_valid(position));
 
-	(void)position;
-
-	// TODO: implement threefold repetition detection
-
-	return false;
+	return chess_position_counter_count(&position->position_counter, position) >= 3;
 }
 bool chess_position_is_insufficient_material(const ChessPosition *position) {
 	assert(chess_position_is_valid(position));

@@ -1,4 +1,5 @@
 #include <chess/move.h>
+#include <chess/move_private.h>
 
 #include <chess/color.h>
 #include <chess/file.h>
@@ -8,6 +9,7 @@
 #include <chess/piece.h>
 #include <chess/piece_type.h>
 #include <chess/position.h>
+#include <chess/position_counter.h>
 #include <chess/rank.h>
 #include <chess/square.h>
 
@@ -63,7 +65,11 @@ size_t chess_move_from_algebraic(const ChessPosition *position, ChessMove *move,
 			return 0;
 		}
 
-		*move = (ChessMove){ .from = from, .to = (ChessSquare)(from + 2 * CHESS_OFFSET_EAST) };
+		*move = (ChessMove){
+			.from           = from,
+			.to             = (ChessSquare)(from + 2 * CHESS_OFFSET_EAST),
+			.promotion_type = CHESS_PIECE_TYPE_NONE,
+		};
 		total_read += 3;
 
 		return total_read;
@@ -75,7 +81,11 @@ size_t chess_move_from_algebraic(const ChessPosition *position, ChessMove *move,
 			return 0;
 		}
 
-		*move = (ChessMove){ .from = from, .to = (ChessSquare)(from + 2 * CHESS_OFFSET_WEST) };
+		*move = (ChessMove){
+			.from           = from,
+			.to             = (ChessSquare)(from + 2 * CHESS_OFFSET_WEST),
+			.promotion_type = CHESS_PIECE_TYPE_NONE,
+		};
 		total_read += 5;
 
 		return total_read;
@@ -141,10 +151,12 @@ size_t chess_move_from_algebraic(const ChessPosition *position, ChessMove *move,
 		}
 
 		if (is_check || is_checkmate) {
-			ChessPosition position_after_move = *position;
-			if (!chess_move_do(&position_after_move, *move)) {
+			if (!chess_move_is_legal(position, *move)) {
 				return 0;
 			}
+
+			ChessPosition position_after_move = *position;
+			chess_move_do_unchecked(&position_after_move, *move);
 
 			if (is_check && !chess_position_is_check(&position_after_move)) {
 				return 0;
@@ -186,9 +198,7 @@ size_t chess_move_from_algebraic(const ChessPosition *position, ChessMove *move,
 
 		if (is_check || is_checkmate) {
 			ChessPosition position_after_move = *position;
-			if (!chess_move_do(&position_after_move, moves.moves[i])) {
-				continue;
-			}
+			chess_move_do_unchecked(&position_after_move, moves.moves[i]);
 
 			if (is_check && !chess_position_is_check(&position_after_move)) {
 				continue;
@@ -276,8 +286,9 @@ size_t chess_move_to_algebraic(const ChessPosition *position, ChessMove move, ch
 		CHESS_WRITE(chess_piece_type_to_algebraic, move.promotion_type);
 	}
 
-	ChessPosition position_after_move = *position;
-	if (chess_move_do(&position_after_move, move)) {
+	if (chess_move_is_legal(position, move)) {
+		ChessPosition position_after_move = *position;
+		chess_move_do_unchecked(&position_after_move, move);
 		if (chess_position_is_check(&position_after_move)) {
 			if (chess_position_is_checkmate(&position_after_move)) {
 				CHESS_WRITE_FORMATTED("#");
@@ -419,6 +430,12 @@ bool chess_move_do(ChessPosition *position, ChessMove move) {
 	}
 
 	chess_move_do_unchecked(position, move);
+
+	if (position->half_move_clock == 0) {
+		chess_position_counter_clear(&position->position_counter);
+	} else {
+		chess_position_counter_increment(&position->position_counter, position);
+	}
 
 	assert(chess_position_is_valid(position));
 

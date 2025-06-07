@@ -7,6 +7,7 @@ extern "C" {
 
 #include <chess/types.h>
 
+#include <chess/castling_rights.h>
 #include <chess/color.h>
 #include <chess/file.h>
 #include <chess/move.h>
@@ -14,6 +15,7 @@ extern "C" {
 #include <chess/piece.h>
 #include <chess/piece_type.h>
 #include <chess/position.h>
+#include <chess/position_counter.h>
 #include <chess/rank.h>
 #include <chess/square.h>
 

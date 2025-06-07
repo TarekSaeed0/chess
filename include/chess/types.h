@@ -167,6 +167,17 @@ CHESS_ENUM(uint8_t, ChessCastlingRights) {
 	CHESS_CASTLING_RIGHTS_ALL             = CHESS_CASTLING_RIGHTS_WHITE | CHESS_CASTLING_RIGHTS_BLACK,
 };
 
+typedef struct ChessPositionCounterEntry {
+	uint64_t key;
+	unsigned int value;
+} ChessPositionCounterEntry;
+
+typedef struct ChessPositionCounter {
+	ChessPositionCounterEntry *entries;
+	size_t size;
+	size_t count;
+} ChessPositionCounter;
+
 typedef struct ChessPosition {
 	ChessPiece board[256];
 	ChessColor side_to_move;
@@ -175,6 +186,7 @@ typedef struct ChessPosition {
 	unsigned int half_move_clock;
 	unsigned int full_move_number;
 	ChessSquare king_squares[3];
+	ChessPositionCounter position_counter;
 } ChessPosition;
 
 typedef struct ChessMove {

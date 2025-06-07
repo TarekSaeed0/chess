@@ -112,4 +112,6 @@ int main(void) {
 		}
 		chess_position_print(&position);
 	}
+
+	chess_position_drop(&position);
 }
