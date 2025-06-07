@@ -32,16 +32,19 @@ Creating a new position and generating moves
 #include <stdio.h>
 
 int main(void) {
-    ChessPosition position = chess_position_new();
-    ChessMoves moves = chess_moves_generate(&position);
+  ChessPosition position = chess_position_new();
+  ChessMoves moves = chess_moves_generate(&position);
 
-    printf("There is %zu legal moves:\n", moves.count);
-    for (size_t i = 0; i < moves.count; ++i) {
-        char buffer[16];
-        chess_move_to_algebraic(&position, moves.moves[i], buffer, sizeof(buffer));
-        printf("%s\n", buffer);
-    }
-    return 0;
+  printf("There is %zu legal moves:\n", moves.count);
+  for (size_t i = 0; i < moves.count; ++i) {
+    char buffer[16];
+    chess_move_to_algebraic(&position, moves.moves[i], buffer, sizeof(buffer));
+    printf("%s\n", buffer);
+  }
+
+  ChessPosition_drop(&position);
+
+  return 0;
 }
 ```
 
@@ -57,6 +60,7 @@ cmake --build build
 ## API Overview
 
 - `chess_position_new()`: Create a new position with the standard starting position
+- `chess_position_drop()`: Destroy the position, freeing all resources held by it.
 - `chess_moves_generate()`: Generate all legal moves
 - `chess_move_do()`: Make a move on a position
 - `chess_position_from_fen()`, `chess_position_to_fen()`: convert to and from FEN
