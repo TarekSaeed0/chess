@@ -131,16 +131,19 @@ Example</h2>
 <div class="line"><span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">void</span>) {</div>
-<div class="line">    <a class="code hl_struct" href="structChessPosition.html">ChessPosition</a> position = chess_position_new();</div>
-<div class="line">    <a class="code hl_struct" href="structChessMoves.html">ChessMoves</a> moves = chess_moves_generate(&amp;position);</div>
+<div class="line">  <a class="code hl_struct" href="structChessPosition.html">ChessPosition</a> position = chess_position_new();</div>
+<div class="line">  <a class="code hl_struct" href="structChessMoves.html">ChessMoves</a> moves = chess_moves_generate(&amp;position);</div>
 <div class="line"> </div>
-<div class="line">    printf(<span class="stringliteral">&quot;There is %zu legal moves:\n&quot;</span>, moves.count);</div>
-<div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; moves.count; ++i) {</div>
-<div class="line">        <span class="keywordtype">char</span> buffer[16];</div>
-<div class="line">        chess_move_to_algebraic(&amp;position, moves.moves[i], buffer, <span class="keyword">sizeof</span>(buffer));</div>
-<div class="line">        printf(<span class="stringliteral">&quot;%s\n&quot;</span>, buffer);</div>
-<div class="line">    }</div>
-<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">  printf(<span class="stringliteral">&quot;There is %zu legal moves:\n&quot;</span>, moves.count);</div>
+<div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; moves.count; ++i) {</div>
+<div class="line">    <span class="keywordtype">char</span> buffer[16];</div>
+<div class="line">    chess_move_to_algebraic(&amp;position, moves.moves[i], buffer, <span class="keyword">sizeof</span>(buffer));</div>
+<div class="line">    printf(<span class="stringliteral">&quot;%s\n&quot;</span>, buffer);</div>
+<div class="line">  }</div>
+<div class="line"> </div>
+<div class="line">  ChessPosition_drop(&amp;position);</div>
+<div class="line"> </div>
+<div class="line">  <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
 <div class="ttc" id="astructChessMoves_html"><div class="ttname"><a href="structChessMoves.html">ChessMoves</a></div><div class="ttdef"><b>Definition</b> types.h:198</div></div>
 <div class="ttc" id="astructChessPosition_html"><div class="ttname"><a href="structChessPosition.html">ChessPosition</a></div><div class="ttdef"><b>Definition</b> types.h:181</div></div>
@@ -153,6 +156,7 @@ Building</h1>
 API Overview</h1>
 <ul>
 <li><code>chess_position_new()</code>: Create a new position with the standard starting position</li>
+<li><code>chess_position_drop()</code>: Destroy the position, freeing all resources held by it.</li>
 <li><code>chess_moves_generate()</code>: Generate all legal moves</li>
 <li><code>chess_move_do()</code>: Make a move on a position</li>
 <li><code>chess_position_from_fen()</code>, <code>chess_position_to_fen()</code>: convert to and from FEN</li>
