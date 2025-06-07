@@ -20,8 +20,22 @@
 void chess_position_debug(const ChessPosition *position) {
 	printf("(ChessPosition) {\n");
 
-	printf("\t.board = { ");
-	printf("},");
+	printf("\t.board = {\n");
+	for (ChessRank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
+		for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
+			ChessSquare square = chess_square_new(file, rank);
+			ChessPiece piece   = position->board[square];
+			if (piece == CHESS_PIECE_NONE) {
+				continue;
+			}
+			printf("\t\t[");
+			chess_square_debug(square);
+			printf("] = ");
+			chess_piece_debug(piece);
+			printf(",\n");
+		}
+	}
+	printf("\t},\n");
 
 	printf("\t.side_to_move = ");
 	chess_color_debug(position->side_to_move);
@@ -39,14 +53,14 @@ void chess_position_debug(const ChessPosition *position) {
 
 	printf("\t.full_move_number = %u,\n", position->full_move_number);
 
-	printf("\t.king_squares = { ");
+	printf("\t.king_squares = {\n");
 	printf("\t\t[CHESS_COLOR_WHITE] = ");
 	chess_square_debug(position->king_squares[CHESS_COLOR_WHITE]);
 	printf(",\n");
 	printf("\t\t[CHESS_COLOR_BLACK] = ");
 	chess_square_debug(position->king_squares[CHESS_COLOR_BLACK]);
 	printf(",\n");
-	printf("},");
+	printf("\t},\n");
 
 	printf("}");
 }

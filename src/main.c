@@ -1,3 +1,4 @@
+#include "chess/position.h"
 #include <assert.h>
 #include <chess.h>
 #include <stdio.h>
@@ -97,7 +98,7 @@ int main(void) {
 		printf("\n");
 
 		char string[64];
-		if (scanf("%63s", string) != 1) {
+		if (fgets(string, sizeof(string), stdin) == NULL) {
 			(void)fprintf(stderr, "Failed to read move.\n");
 			continue;
 		}
