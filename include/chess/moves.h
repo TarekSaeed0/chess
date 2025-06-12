@@ -7,6 +7,7 @@ extern "C" {
 
 #include <chess/types.h>
 
+ChessMoves chess_moves_generate_from(const ChessPosition *position, ChessSquare from);
 ChessMoves chess_moves_generate(const ChessPosition *position);
 
 #ifdef __cplusplus

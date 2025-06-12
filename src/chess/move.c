@@ -377,9 +377,9 @@ bool chess_move_is_legal(const ChessPosition *position, ChessMove move) {
 	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
 
 	// TODO: implement actual move legality checking
-	ChessMoves moves = chess_moves_generate(position);
+	ChessMoves moves = chess_moves_generate_from(position, move.from);
 	for (size_t i = 0; i < moves.count; i++) {
-		if (moves.moves[i].from == move.from && moves.moves[i].to == move.to &&
+		if (moves.moves[i].to == move.to &&
 		    moves.moves[i].promotion_type == move.promotion_type &&
 		    moves.moves[i].captured_piece == move.captured_piece &&
 		    moves.moves[i].previous_castling_rights == move.previous_castling_rights &&

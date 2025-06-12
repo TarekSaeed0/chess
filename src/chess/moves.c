@@ -1,3 +1,4 @@
+#include "chess/types.h"
 #include <chess/moves.h>
 
 #include <chess/color.h>
@@ -288,6 +289,94 @@ static void chess_moves_generate_castlings(ChessMoves *moves, const ChessPositio
 		}
 	}
 }
+static void chess_moves_generate_from_(ChessMoves *moves, const ChessPosition *position, ChessSquare from) {
+	assert(moves != CHESS_NULL && chess_position_is_valid(position) && chess_square_is_valid(from));
+
+	ChessPiece piece = position->board[from];
+
+	ChessColor color = chess_piece_color(piece);
+	if (color != position->side_to_move) {
+		return;
+	}
+
+	ChessPieceType type = chess_piece_type(piece);
+	switch (type) {
+		case CHESS_PIECE_TYPE_PAWN: {
+			chess_moves_generate_pawn(moves, position, from);
+		} break;
+		case CHESS_PIECE_TYPE_KNIGHT: {
+			static CHESS_CONSTEXPR ChessOffset offsets[] = {
+				2 * CHESS_OFFSET_NORTH + CHESS_OFFSET_EAST,
+				2 * CHESS_OFFSET_NORTH + CHESS_OFFSET_WEST,
+				2 * CHESS_OFFSET_EAST + CHESS_OFFSET_NORTH,
+				2 * CHESS_OFFSET_EAST + CHESS_OFFSET_SOUTH,
+				2 * CHESS_OFFSET_SOUTH + CHESS_OFFSET_EAST,
+				2 * CHESS_OFFSET_SOUTH + CHESS_OFFSET_WEST,
+				2 * CHESS_OFFSET_WEST + CHESS_OFFSET_NORTH,
+				2 * CHESS_OFFSET_WEST + CHESS_OFFSET_SOUTH,
+			};
+			chess_moves_generate_offsets(moves, position, from, offsets, CHESS_ARRAY_LENGTH(offsets));
+		} break;
+		case CHESS_PIECE_TYPE_BISHOP: {
+			static CHESS_CONSTEXPR ChessOffset directions[] = {
+				CHESS_OFFSET_NORTH_EAST,
+				CHESS_OFFSET_SOUTH_EAST,
+				CHESS_OFFSET_SOUTH_WEST,
+				CHESS_OFFSET_NORTH_WEST,
+			};
+			chess_moves_generate_directions(moves, position, from, directions, CHESS_ARRAY_LENGTH(directions));
+		} break;
+		case CHESS_PIECE_TYPE_ROOK: {
+			static CHESS_CONSTEXPR ChessOffset directions[] = {
+				CHESS_OFFSET_NORTH,
+				CHESS_OFFSET_EAST,
+				CHESS_OFFSET_SOUTH,
+				CHESS_OFFSET_WEST,
+			};
+			chess_moves_generate_directions(moves, position, from, directions, CHESS_ARRAY_LENGTH(directions));
+		} break;
+		case CHESS_PIECE_TYPE_QUEEN: {
+			static CHESS_CONSTEXPR ChessOffset directions[] = {
+				CHESS_OFFSET_NORTH,
+				CHESS_OFFSET_EAST,
+				CHESS_OFFSET_SOUTH,
+				CHESS_OFFSET_WEST,
+				CHESS_OFFSET_NORTH_EAST,
+				CHESS_OFFSET_SOUTH_EAST,
+				CHESS_OFFSET_SOUTH_WEST,
+				CHESS_OFFSET_NORTH_WEST,
+			};
+			chess_moves_generate_directions(moves, position, from, directions, CHESS_ARRAY_LENGTH(directions));
+		} break;
+		case CHESS_PIECE_TYPE_KING: {
+			static CHESS_CONSTEXPR ChessOffset offsets[] = {
+				CHESS_OFFSET_NORTH,
+				CHESS_OFFSET_EAST,
+				CHESS_OFFSET_SOUTH,
+				CHESS_OFFSET_WEST,
+				CHESS_OFFSET_NORTH_EAST,
+				CHESS_OFFSET_SOUTH_EAST,
+				CHESS_OFFSET_SOUTH_WEST,
+				CHESS_OFFSET_NORTH_WEST,
+			};
+			chess_moves_generate_offsets(moves, position, from, offsets, CHESS_ARRAY_LENGTH(offsets));
+		} break;
+		default: assert(false);
+	}
+}
+ChessMoves chess_moves_generate_from(const ChessPosition *position, ChessSquare from) {
+	assert(chess_position_is_valid(position) && chess_square_is_valid(from));
+
+	ChessMoves moves = { 0 };
+
+	chess_moves_generate_from_(&moves, position, from);
+
+	if (from == position->king_squares[position->side_to_move]) {
+		chess_moves_generate_castlings(&moves, position);
+	}
+
+	return moves;
+}
 ChessMoves chess_moves_generate(const ChessPosition *position) {
 	assert(chess_position_is_valid(position));
 
@@ -296,78 +385,7 @@ ChessMoves chess_moves_generate(const ChessPosition *position) {
 	for (ChessRank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
 		for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
 			ChessSquare from = chess_square_new(file, rank);
-
-			ChessPiece piece = position->board[from];
-
-			ChessColor color = chess_piece_color(piece);
-			if (color != position->side_to_move) {
-				continue;
-			}
-
-			ChessPieceType type = chess_piece_type(piece);
-			switch (type) {
-				case CHESS_PIECE_TYPE_PAWN: {
-					chess_moves_generate_pawn(&moves, position, from);
-				} break;
-				case CHESS_PIECE_TYPE_KNIGHT: {
-					static CHESS_CONSTEXPR ChessOffset offsets[] = {
-						2 * CHESS_OFFSET_NORTH + CHESS_OFFSET_EAST,
-						2 * CHESS_OFFSET_NORTH + CHESS_OFFSET_WEST,
-						2 * CHESS_OFFSET_EAST + CHESS_OFFSET_NORTH,
-						2 * CHESS_OFFSET_EAST + CHESS_OFFSET_SOUTH,
-						2 * CHESS_OFFSET_SOUTH + CHESS_OFFSET_EAST,
-						2 * CHESS_OFFSET_SOUTH + CHESS_OFFSET_WEST,
-						2 * CHESS_OFFSET_WEST + CHESS_OFFSET_NORTH,
-						2 * CHESS_OFFSET_WEST + CHESS_OFFSET_SOUTH,
-					};
-					chess_moves_generate_offsets(&moves, position, from, offsets, CHESS_ARRAY_LENGTH(offsets));
-				} break;
-				case CHESS_PIECE_TYPE_BISHOP: {
-					static CHESS_CONSTEXPR ChessOffset directions[] = {
-						CHESS_OFFSET_NORTH_EAST,
-						CHESS_OFFSET_SOUTH_EAST,
-						CHESS_OFFSET_SOUTH_WEST,
-						CHESS_OFFSET_NORTH_WEST,
-					};
-					chess_moves_generate_directions(&moves, position, from, directions, CHESS_ARRAY_LENGTH(directions));
-				} break;
-				case CHESS_PIECE_TYPE_ROOK: {
-					static CHESS_CONSTEXPR ChessOffset directions[] = {
-						CHESS_OFFSET_NORTH,
-						CHESS_OFFSET_EAST,
-						CHESS_OFFSET_SOUTH,
-						CHESS_OFFSET_WEST,
-					};
-					chess_moves_generate_directions(&moves, position, from, directions, CHESS_ARRAY_LENGTH(directions));
-				} break;
-				case CHESS_PIECE_TYPE_QUEEN: {
-					static CHESS_CONSTEXPR ChessOffset directions[] = {
-						CHESS_OFFSET_NORTH,
-						CHESS_OFFSET_EAST,
-						CHESS_OFFSET_SOUTH,
-						CHESS_OFFSET_WEST,
-						CHESS_OFFSET_NORTH_EAST,
-						CHESS_OFFSET_SOUTH_EAST,
-						CHESS_OFFSET_SOUTH_WEST,
-						CHESS_OFFSET_NORTH_WEST,
-					};
-					chess_moves_generate_directions(&moves, position, from, directions, CHESS_ARRAY_LENGTH(directions));
-				} break;
-				case CHESS_PIECE_TYPE_KING: {
-					static CHESS_CONSTEXPR ChessOffset offsets[] = {
-						CHESS_OFFSET_NORTH,
-						CHESS_OFFSET_EAST,
-						CHESS_OFFSET_SOUTH,
-						CHESS_OFFSET_WEST,
-						CHESS_OFFSET_NORTH_EAST,
-						CHESS_OFFSET_SOUTH_EAST,
-						CHESS_OFFSET_SOUTH_WEST,
-						CHESS_OFFSET_NORTH_WEST,
-					};
-					chess_moves_generate_offsets(&moves, position, from, offsets, CHESS_ARRAY_LENGTH(offsets));
-				} break;
-				default: assert(false);
-			}
+			chess_moves_generate_from_(&moves, position, from);
 		}
 	}
 
