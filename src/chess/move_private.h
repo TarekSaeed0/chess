@@ -8,6 +8,7 @@ extern "C" {
 #include <chess/types.h>
 
 void chess_move_do_unchecked(ChessPosition *position, ChessMove move);
+void chess_move_undo_unchecked(ChessPosition *position, ChessMove move);
 
 #ifdef __cplusplus
 }

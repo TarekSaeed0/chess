@@ -8,7 +8,7 @@ extern "C" {
 #include <chess/macros.h>
 #include <chess/types.h>
 
-CHESS_ENUM(int8_t, chess_offset) {
+CHESS_ENUM(int8_t, ChessOffset) {
 	CHESS_OFFSET_NORTH      = CHESS_SQUARE_A2 - CHESS_SQUARE_A1,
 	CHESS_OFFSET_EAST       = CHESS_SQUARE_B1 - CHESS_SQUARE_A1,
 	CHESS_OFFSET_SOUTH      = -CHESS_OFFSET_NORTH,

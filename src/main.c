@@ -9,11 +9,15 @@ void chess_position_print(const ChessPosition *chess) {
 
 	printf("\033[38;5;254;48;5;233m   ");
 	for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
-		printf(" %c ", 'a' + (file - CHESS_FILE_A));
+		char string[2];
+		chess_file_to_algebraic(file, string, sizeof(string));
+		printf(" %s ", string);
 	}
 	printf("   \033[0m\n");
 	for (ChessRank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
-		printf("\033[38;5;254;48;5;233m %c ", '1' + (rank - CHESS_RANK_1));
+		char string[2];
+		chess_rank_to_algebraic(rank, string, sizeof(string));
+		printf("\033[38;5;254;48;5;233m %s ", string);
 		for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
 			ChessSquare square      = chess_square_new(file, rank);
 			ChessColor square_color = chess_square_color(square);
@@ -56,14 +60,17 @@ void chess_position_print(const ChessPosition *chess) {
 				printf(" %s ", chess_symbols[chess_piece_type(piece)][chess_piece_color(piece) == square_color]);
 			}
 		}
-		printf("\033[38;5;254;48;5;233m %c ", '1' + (rank - CHESS_RANK_1));
+		chess_rank_to_algebraic(rank, string, sizeof(string));
+		printf("\033[38;5;254;48;5;233m %s ", string);
 		if (rank != CHESS_RANK_1) {
 			printf("\033[0m\n");
 		}
 	}
 	printf("\033[0m\n\033[38;5;254;48;5;233m   ");
 	for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
-		printf(" %c ", 'a' + (file - CHESS_FILE_A));
+		char string[2];
+		chess_file_to_algebraic(file, string, sizeof(string));
+		printf(" %s ", string);
 	}
 	printf("   \033[0m\n");
 }
@@ -87,7 +94,7 @@ int main(void) {
 		if (chess_position_is_check(&position)) {
 			printf("Check!\n");
 		}
-		printf("%s to move.\n", position.side_to_move == CHESS_COLOR_WHITE ? "White" : "Black");
+		printf("%s to move.\n", chess_position_side_to_move(&position) == CHESS_COLOR_WHITE ? "White" : "Black");
 		printf("Available moves: ");
 		ChessMoves moves = chess_moves_generate(&position);
 		for (size_t i = 0; i < moves.count; i++) {

@@ -16,26 +16,24 @@ extern "C" {
 CHESS_DEFINE_INTEGRAL_CONSTANT(size_t, CHESS_MOVES_MAXIMUM_COUNT, 256);
 
 CHESS_ENUM(uint8_t, ChessColor) {
-	CHESS_COLOR_NONE  = 0U,
+	CHESS_COLOR_WHITE = 0,
+	CHESS_COLOR_BLACK = 1,
 
-	CHESS_COLOR_WHITE = 1U,
-	CHESS_COLOR_BLACK = 2U,
+	CHESS_COLOR_NONE  = 2,
 };
 
 CHESS_ENUM(uint8_t, ChessPieceType) {
-	CHESS_PIECE_TYPE_NONE   = 0U,
+	CHESS_PIECE_TYPE_PAWN   = 0,
+	CHESS_PIECE_TYPE_KNIGHT = 1,
+	CHESS_PIECE_TYPE_BISHOP = 2,
+	CHESS_PIECE_TYPE_ROOK   = 3,
+	CHESS_PIECE_TYPE_QUEEN  = 4,
+	CHESS_PIECE_TYPE_KING   = 5,
 
-	CHESS_PIECE_TYPE_PAWN   = 1U,
-	CHESS_PIECE_TYPE_KNIGHT = 2U,
-	CHESS_PIECE_TYPE_BISHOP = 3U,
-	CHESS_PIECE_TYPE_ROOK   = 4U,
-	CHESS_PIECE_TYPE_QUEEN  = 5U,
-	CHESS_PIECE_TYPE_KING   = 6U,
+	CHESS_PIECE_TYPE_NONE   = 6,
 };
 
 CHESS_ENUM(uint8_t, ChessPiece) {
-	CHESS_PIECE_NONE         = CHESS_COLOR_NONE << 3U | CHESS_PIECE_TYPE_NONE,
-
 	CHESS_PIECE_WHITE_PAWN   = CHESS_COLOR_WHITE << 3U | CHESS_PIECE_TYPE_PAWN,
 	CHESS_PIECE_WHITE_KNIGHT = CHESS_COLOR_WHITE << 3U | CHESS_PIECE_TYPE_KNIGHT,
 	CHESS_PIECE_WHITE_BISHOP = CHESS_COLOR_WHITE << 3U | CHESS_PIECE_TYPE_BISHOP,
@@ -49,37 +47,37 @@ CHESS_ENUM(uint8_t, ChessPiece) {
 	CHESS_PIECE_BLACK_ROOK   = CHESS_COLOR_BLACK << 3U | CHESS_PIECE_TYPE_ROOK,
 	CHESS_PIECE_BLACK_QUEEN  = CHESS_COLOR_BLACK << 3U | CHESS_PIECE_TYPE_QUEEN,
 	CHESS_PIECE_BLACK_KING   = CHESS_COLOR_BLACK << 3U | CHESS_PIECE_TYPE_KING,
+
+	CHESS_PIECE_NONE         = CHESS_COLOR_NONE << 3U | CHESS_PIECE_TYPE_NONE,
 };
 
-CHESS_ENUM(uint8_t, ChessFile) {
-	CHESS_FILE_NONE = 0U,
+CHESS_ENUM(int8_t, ChessFile) {
+	CHESS_FILE_A    = 0,
+	CHESS_FILE_B    = 1,
+	CHESS_FILE_C    = 2,
+	CHESS_FILE_D    = 3,
+	CHESS_FILE_E    = 4,
+	CHESS_FILE_F    = 5,
+	CHESS_FILE_G    = 6,
+	CHESS_FILE_H    = 7,
 
-	CHESS_FILE_A    = 8U,
-	CHESS_FILE_B    = 9U,
-	CHESS_FILE_C    = 10U,
-	CHESS_FILE_D    = 11U,
-	CHESS_FILE_E    = 12U,
-	CHESS_FILE_F    = 13U,
-	CHESS_FILE_G    = 14U,
-	CHESS_FILE_H    = 15U,
+	CHESS_FILE_NONE = 8,
 };
 
-CHESS_ENUM(uint8_t, ChessRank) {
-	CHESS_RANK_NONE = 0U,
+CHESS_ENUM(int8_t, ChessRank) {
+	CHESS_RANK_1    = 0,
+	CHESS_RANK_2    = 1,
+	CHESS_RANK_3    = 2,
+	CHESS_RANK_4    = 3,
+	CHESS_RANK_5    = 4,
+	CHESS_RANK_6    = 5,
+	CHESS_RANK_7    = 6,
+	CHESS_RANK_8    = 7,
 
-	CHESS_RANK_1    = 8U,
-	CHESS_RANK_2    = 9U,
-	CHESS_RANK_3    = 10U,
-	CHESS_RANK_4    = 11U,
-	CHESS_RANK_5    = 12U,
-	CHESS_RANK_6    = 13U,
-	CHESS_RANK_7    = 14U,
-	CHESS_RANK_8    = 15U,
+	CHESS_RANK_NONE = 8,
 };
 
 CHESS_ENUM(uint8_t, ChessSquare) {
-	CHESS_SQUARE_NONE = CHESS_FILE_NONE | CHESS_RANK_NONE << 4U,
-
 	CHESS_SQUARE_A1   = CHESS_FILE_A | CHESS_RANK_1 << 4U,
 	CHESS_SQUARE_B1   = CHESS_FILE_B | CHESS_RANK_1 << 4U,
 	CHESS_SQUARE_C1   = CHESS_FILE_C | CHESS_RANK_1 << 4U,
@@ -151,6 +149,8 @@ CHESS_ENUM(uint8_t, ChessSquare) {
 	CHESS_SQUARE_F8   = CHESS_FILE_F | CHESS_RANK_8 << 4U,
 	CHESS_SQUARE_G8   = CHESS_FILE_G | CHESS_RANK_8 << 4U,
 	CHESS_SQUARE_H8   = CHESS_FILE_H | CHESS_RANK_8 << 4U,
+
+	CHESS_SQUARE_NONE = CHESS_FILE_NONE | CHESS_RANK_NONE << 4U,
 };
 
 CHESS_ENUM(uint8_t, ChessCastlingRights) {
@@ -179,13 +179,13 @@ typedef struct ChessPositionCounter {
 } ChessPositionCounter;
 
 typedef struct ChessPosition {
-	ChessPiece board[256];
+	ChessPiece board[128];
 	ChessColor side_to_move;
 	ChessCastlingRights castling_rights;
 	ChessSquare en_passant_square;
 	unsigned int half_move_clock;
 	unsigned int full_move_number;
-	ChessSquare king_squares[3];
+	ChessSquare king_squares[CHESS_COLOR_BLACK + 1];
 	ChessPositionCounter position_counter;
 } ChessPosition;
 
@@ -193,6 +193,10 @@ typedef struct ChessMove {
 	ChessSquare from;
 	ChessSquare to;
 	ChessPieceType promotion_type;
+	ChessPiece captured_piece;
+	ChessCastlingRights previous_castling_rights;
+	ChessSquare previous_en_passant_square;
+	unsigned int previous_half_move_clock;
 } ChessMove;
 
 typedef struct ChessMoves {

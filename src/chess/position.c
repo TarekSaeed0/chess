@@ -126,7 +126,7 @@ bool chess_position_is_valid(const ChessPosition *position) {
 	return chess_position_counter_is_valid(&position->position_counter);
 }
 ChessPosition chess_position_new(void) {
-	return (ChessPosition){
+	ChessPosition positon = {
 		.board = {
 		    [CHESS_SQUARE_A8] = CHESS_PIECE_BLACK_ROOK,
 		    [CHESS_SQUARE_B8] = CHESS_PIECE_BLACK_KNIGHT,
@@ -145,6 +145,42 @@ ChessPosition chess_position_new(void) {
 		    [CHESS_SQUARE_F7] = CHESS_PIECE_BLACK_PAWN,
 		    [CHESS_SQUARE_G7] = CHESS_PIECE_BLACK_PAWN,
 		    [CHESS_SQUARE_H7] = CHESS_PIECE_BLACK_PAWN,
+
+		    [CHESS_SQUARE_A6] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_B6] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_C6] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_D6] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_E6] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_F6] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_G6] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_H6] = CHESS_PIECE_NONE,
+
+		    [CHESS_SQUARE_A5] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_B5] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_C5] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_D5] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_E5] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_F5] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_G5] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_H5] = CHESS_PIECE_NONE,
+
+		    [CHESS_SQUARE_A4] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_B4] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_C4] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_D4] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_E4] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_F4] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_G4] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_H4] = CHESS_PIECE_NONE,
+
+		    [CHESS_SQUARE_A3] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_B3] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_C3] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_D3] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_E3] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_F3] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_G3] = CHESS_PIECE_NONE,
+		    [CHESS_SQUARE_H3] = CHESS_PIECE_NONE,
 
 		    [CHESS_SQUARE_A2] = CHESS_PIECE_WHITE_PAWN,
 		    [CHESS_SQUARE_B2] = CHESS_PIECE_WHITE_PAWN,
@@ -175,11 +211,25 @@ ChessPosition chess_position_new(void) {
     },
 		.position_counter = chess_position_counter_new(),
 	};
+
+	assert(chess_position_is_valid(&positon));
+
+	return positon;
 }
 void chess_position_drop(ChessPosition *position) {
 	assert(chess_position_is_valid(position));
 
 	chess_position_counter_drop(&position->position_counter);
+}
+ChessPiece chess_position_piece_at_square(const ChessPosition *position, ChessSquare square) {
+	assert(chess_position_is_valid(position) && chess_square_is_valid(square));
+
+	return position->board[square];
+}
+ChessColor chess_position_side_to_move(const ChessPosition *position) {
+	assert(chess_position_is_valid(position));
+
+	return position->side_to_move;
 }
 size_t chess_position_from_fen(ChessPosition *position, const char *string) {
 	assert(position != CHESS_NULL && string != CHESS_NULL);
@@ -453,7 +503,6 @@ bool chess_position_is_insufficient_material(const ChessPosition *position) {
 
 	return false;
 }
-
 uint64_t chess_random(uint64_t *state) {
 	assert(state != CHESS_NULL && *state != 0);
 

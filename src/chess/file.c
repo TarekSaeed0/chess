@@ -37,6 +37,9 @@ void chess_file_debug(ChessFile file) {
 			break;
 	}
 }
+bool chess_file_is_valid(ChessFile file) {
+	return (file & 0x8U) == 0;
+}
 size_t chess_file_from_algebraic(ChessFile *file, const char *string) {
 	assert(file != CHESS_NULL && string != CHESS_NULL);
 

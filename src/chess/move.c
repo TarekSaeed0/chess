@@ -1,6 +1,7 @@
 #include <chess/move.h>
 #include <chess/move_private.h>
 
+#include <chess/castling_rights.h>
 #include <chess/color.h>
 #include <chess/file.h>
 #include <chess/macros_private.h>
@@ -33,6 +34,20 @@ void chess_move_debug(ChessMove move) {
 	chess_piece_type_debug(move.promotion_type);
 	printf(",\n");
 
+	printf("\t.captured_piece = ");
+	chess_piece_debug(move.captured_piece);
+	printf(",\n");
+
+	printf("\t.castling_rights = ");
+	chess_castling_rights_debug(move.previous_castling_rights);
+	printf(",\n");
+
+	printf("\t.en_passant_square = ");
+	chess_square_debug(move.previous_en_passant_square);
+	printf(",\n");
+
+	printf("\t.half_move_clock = %u,\n", move.previous_half_move_clock);
+
 	printf("}");
 }
 bool chess_move_is_valid(ChessMove move) {
@@ -48,6 +63,41 @@ bool chess_move_is_valid(ChessMove move) {
 		case CHESS_PIECE_TYPE_QUEEN: return true;
 		default: return false;
 	}
+
+	if ((!chess_piece_is_valid(move.captured_piece) && move.captured_piece != CHESS_PIECE_NONE) || chess_piece_type(move.captured_piece) == CHESS_PIECE_TYPE_KING) {
+		return false;
+	}
+
+	if (!chess_castling_rights_is_valid(move.previous_castling_rights)) {
+		return false;
+	}
+
+	if (!chess_square_is_valid(move.previous_en_passant_square) && move.previous_en_passant_square != CHESS_SQUARE_NONE) {
+		return false;
+	}
+
+	return true;
+}
+ChessMove chess_move_new(const ChessPosition *position, ChessSquare from, ChessSquare to, ChessPieceType promotion_type) {
+	assert(chess_position_is_valid(position) && chess_square_is_valid(from) && chess_square_is_valid(to) && chess_piece_type_is_valid(promotion_type));
+
+	ChessMove move = {
+		.from                       = from,
+		.to                         = to,
+		.promotion_type             = promotion_type,
+		.captured_piece             = position->board[to],
+		.previous_castling_rights   = position->castling_rights,
+		.previous_en_passant_square = position->en_passant_square,
+		.previous_half_move_clock   = position->half_move_clock,
+	};
+
+	if (chess_move_is_en_passant(position, move)) {
+		move.captured_piece = position->board[position->en_passant_square];
+	}
+
+	assert(chess_move_is_valid(move));
+
+	return move;
 }
 size_t chess_move_from_algebraic(const ChessPosition *position, ChessMove *move, const char *string) {
 	assert(chess_position_is_valid(position) && move != CHESS_NULL && string != CHESS_NULL);
@@ -66,11 +116,17 @@ size_t chess_move_from_algebraic(const ChessPosition *position, ChessMove *move,
 		}
 
 		*move = (ChessMove){
-			.from           = from,
-			.to             = (ChessSquare)(from + 2 * CHESS_OFFSET_EAST),
-			.promotion_type = CHESS_PIECE_TYPE_NONE,
+			.from                       = from,
+			.to                         = (ChessSquare)(from + 2 * CHESS_OFFSET_EAST),
+			.promotion_type             = CHESS_PIECE_TYPE_NONE,
+			.captured_piece             = CHESS_PIECE_NONE,
+			.previous_castling_rights   = position->castling_rights,
+			.previous_en_passant_square = position->en_passant_square,
+			.previous_half_move_clock   = position->half_move_clock,
 		};
 		total_read += 3;
+
+		assert(chess_move_is_valid(*move));
 
 		return total_read;
 	}
@@ -82,11 +138,17 @@ size_t chess_move_from_algebraic(const ChessPosition *position, ChessMove *move,
 		}
 
 		*move = (ChessMove){
-			.from           = from,
-			.to             = (ChessSquare)(from + 2 * CHESS_OFFSET_WEST),
-			.promotion_type = CHESS_PIECE_TYPE_NONE,
+			.from                       = from,
+			.to                         = (ChessSquare)(from + 2 * CHESS_OFFSET_WEST),
+			.promotion_type             = CHESS_PIECE_TYPE_NONE,
+			.captured_piece             = CHESS_PIECE_NONE,
+			.previous_castling_rights   = position->castling_rights,
+			.previous_en_passant_square = position->en_passant_square,
+			.previous_half_move_clock   = position->half_move_clock,
 		};
 		total_read += 5;
+
+		assert(chess_move_is_valid(*move));
 
 		return total_read;
 	}
@@ -141,10 +203,17 @@ size_t chess_move_from_algebraic(const ChessPosition *position, ChessMove *move,
 		}
 
 		*move = (ChessMove){
-			.from           = from,
-			.to             = to,
-			.promotion_type = promotion_type,
+			.from                       = from,
+			.to                         = to,
+			.promotion_type             = promotion_type,
+			.captured_piece             = position->board[to],
+			.previous_castling_rights   = position->castling_rights,
+			.previous_en_passant_square = position->en_passant_square,
+			.previous_half_move_clock   = position->half_move_clock,
 		};
+		if (chess_move_is_en_passant(position, *move)) {
+			move->captured_piece = position->board[position->en_passant_square];
+		}
 
 		if (is_capture && !chess_move_is_capture(position, *move)) {
 			return 0;
@@ -166,6 +235,8 @@ size_t chess_move_from_algebraic(const ChessPosition *position, ChessMove *move,
 				return 0;
 			}
 		}
+
+		assert(chess_move_is_valid(*move));
 
 		return total_read;
 	}
@@ -216,6 +287,8 @@ size_t chess_move_from_algebraic(const ChessPosition *position, ChessMove *move,
 	if (matches != 1) {
 		return 0;
 	}
+
+	assert(chess_move_is_valid(*move));
 
 	return total_read;
 }
@@ -307,7 +380,11 @@ bool chess_move_is_legal(const ChessPosition *position, ChessMove move) {
 	ChessMoves moves = chess_moves_generate(position);
 	for (size_t i = 0; i < moves.count; i++) {
 		if (moves.moves[i].from == move.from && moves.moves[i].to == move.to &&
-		    moves.moves[i].promotion_type == move.promotion_type) {
+		    moves.moves[i].promotion_type == move.promotion_type &&
+		    moves.moves[i].captured_piece == move.captured_piece &&
+		    moves.moves[i].previous_castling_rights == move.previous_castling_rights &&
+		    moves.moves[i].previous_en_passant_square == move.previous_en_passant_square &&
+		    moves.moves[i].previous_half_move_clock == move.previous_half_move_clock) {
 			return true;
 		}
 	}
@@ -330,11 +407,9 @@ bool chess_move_is_en_passant(const ChessPosition *position, ChessMove move) {
 bool chess_move_is_capture(const ChessPosition *position, ChessMove move) {
 	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
 
-	if (position->board[move.to] != CHESS_PIECE_NONE) {
-		return true;
-	}
+	(void)position;
 
-	return chess_move_is_en_passant(position, move);
+	return move.captured_piece != CHESS_PIECE_NONE;
 }
 bool chess_move_is_kingside_castling(const ChessPosition *position, ChessMove move) {
 	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
@@ -350,38 +425,33 @@ bool chess_move_is_queenside_castling(const ChessPosition *position, ChessMove m
 void chess_move_do_unchecked(ChessPosition *position, ChessMove move) {
 	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
 
-	ChessPiece piece              = position->board[move.from];
-	ChessPieceType type           = chess_piece_type(piece);
-	ChessPiece captured_piece     = position->board[move.to];
-	ChessPieceType captured_type  = chess_piece_type(captured_piece);
-	ChessColor side_to_move       = position->side_to_move;
-	ChessSquare en_passant_square = position->en_passant_square;
+	ChessPiece moving_piece       = position->board[move.from];
+	ChessPieceType moving_type    = chess_piece_type(moving_piece);
 
-	position->board[move.to]      = piece;
+	position->board[move.to]      = moving_piece;
 	position->board[move.from]    = CHESS_PIECE_NONE;
 
-	position->side_to_move        = chess_color_opposite(side_to_move);
-
+	ChessSquare en_passant_square = position->en_passant_square;
 	position->en_passant_square   = CHESS_SQUARE_NONE;
 
-	if (captured_type != CHESS_PIECE_TYPE_NONE) {
+	if (move.captured_piece != CHESS_PIECE_NONE) {
 		position->half_move_clock = 0;
 	} else {
 		position->half_move_clock++;
 	}
 
-	if (side_to_move == CHESS_COLOR_BLACK) {
+	if (position->side_to_move == CHESS_COLOR_BLACK) {
 		position->full_move_number++;
 	}
 
 	if (move.promotion_type != CHESS_PIECE_TYPE_NONE) {
-		position->board[move.to] = chess_piece_new(side_to_move, move.promotion_type);
+		position->board[move.to] = chess_piece_new(position->side_to_move, move.promotion_type);
 	}
 
-	if (type == CHESS_PIECE_TYPE_PAWN) {
+	if (moving_type == CHESS_PIECE_TYPE_PAWN) {
 		position->half_move_clock = 0;
 
-		chess_offset direction    = side_to_move == CHESS_COLOR_WHITE ? CHESS_OFFSET_NORTH : CHESS_OFFSET_SOUTH;
+		ChessOffset direction     = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_OFFSET_NORTH : CHESS_OFFSET_SOUTH;
 		if (move.to - move.from == 2 * direction) {
 			position->en_passant_square = (ChessSquare)(move.from + direction);
 		} else if (move.to == en_passant_square) {
@@ -389,8 +459,8 @@ void chess_move_do_unchecked(ChessPosition *position, ChessMove move) {
 		}
 	}
 
-	if (type == CHESS_PIECE_TYPE_KING) {
-		position->king_squares[chess_piece_color(piece)] = move.to;
+	if (moving_type == CHESS_PIECE_TYPE_KING) {
+		position->king_squares[chess_piece_color(moving_piece)] = move.to;
 
 		if (move.to - move.from == 2 * CHESS_OFFSET_EAST) {
 			position->board[move.to + CHESS_OFFSET_WEST] = position->board[move.to + CHESS_OFFSET_EAST];
@@ -400,10 +470,10 @@ void chess_move_do_unchecked(ChessPosition *position, ChessMove move) {
 			position->board[move.to + 2 * CHESS_OFFSET_WEST] = CHESS_PIECE_NONE;
 		}
 
-		position->castling_rights &= ~(side_to_move == CHESS_COLOR_WHITE ? CHESS_CASTLING_RIGHTS_WHITE : CHESS_CASTLING_RIGHTS_BLACK);
+		position->castling_rights &= ~(position->side_to_move == CHESS_COLOR_WHITE ? CHESS_CASTLING_RIGHTS_WHITE : CHESS_CASTLING_RIGHTS_BLACK);
 	}
 
-	if (type == CHESS_PIECE_TYPE_ROOK) {
+	if (moving_type == CHESS_PIECE_TYPE_ROOK) {
 		switch (move.from) {
 			case CHESS_SQUARE_H1: position->castling_rights &= ~(CHESS_CASTLING_RIGHTS_WHITE_KINGSIDE); break;
 			case CHESS_SQUARE_A1: position->castling_rights &= ~(CHESS_CASTLING_RIGHTS_WHITE_QUEENSIDE); break;
@@ -412,7 +482,7 @@ void chess_move_do_unchecked(ChessPosition *position, ChessMove move) {
 			default:;
 		}
 	}
-	if (captured_type == CHESS_PIECE_TYPE_ROOK) {
+	if (chess_piece_type(move.captured_piece) == CHESS_PIECE_TYPE_ROOK) {
 		switch (move.to) {
 			case CHESS_SQUARE_H1: position->castling_rights &= ~(CHESS_CASTLING_RIGHTS_WHITE_KINGSIDE); break;
 			case CHESS_SQUARE_A1: position->castling_rights &= ~(CHESS_CASTLING_RIGHTS_WHITE_QUEENSIDE); break;
@@ -421,6 +491,8 @@ void chess_move_do_unchecked(ChessPosition *position, ChessMove move) {
 			default:;
 		}
 	}
+
+	position->side_to_move = chess_color_opposite(position->side_to_move);
 }
 bool chess_move_do(ChessPosition *position, ChessMove move) {
 	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
@@ -431,13 +503,65 @@ bool chess_move_do(ChessPosition *position, ChessMove move) {
 
 	chess_move_do_unchecked(position, move);
 
-	if (position->half_move_clock == 0) {
-		chess_position_counter_clear(&position->position_counter);
-	} else {
-		chess_position_counter_increment(&position->position_counter, position);
-	}
+	chess_position_counter_increment(&position->position_counter, position);
 
 	assert(chess_position_is_valid(position));
+
+	return true;
+}
+void chess_move_undo_unchecked(ChessPosition *position, ChessMove move) {
+	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
+
+	position->side_to_move      = chess_color_opposite(position->side_to_move);
+	position->castling_rights   = move.previous_castling_rights;
+	position->en_passant_square = move.previous_en_passant_square;
+	position->half_move_clock   = move.previous_half_move_clock;
+
+	if (position->side_to_move == CHESS_COLOR_BLACK) {
+		position->full_move_number--;
+	}
+
+	ChessPiece moving_piece    = position->board[move.to];
+	ChessPieceType moving_type = chess_piece_type(moving_piece);
+
+	position->board[move.from] = moving_piece;
+	position->board[move.to]   = move.captured_piece;
+
+	if (move.promotion_type != CHESS_PIECE_TYPE_NONE) {
+		position->board[move.to] = chess_piece_new(position->side_to_move, CHESS_PIECE_TYPE_PAWN);
+	}
+
+	if (moving_type == CHESS_PIECE_TYPE_PAWN && move.to == position->en_passant_square) {
+		ChessOffset direction                = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_OFFSET_NORTH : CHESS_OFFSET_SOUTH;
+		position->board[move.to - direction] = move.captured_piece;
+		position->board[move.to]             = CHESS_PIECE_NONE;
+	}
+
+	if (moving_type == CHESS_PIECE_TYPE_KING) {
+		position->king_squares[chess_piece_color(moving_piece)] = move.from;
+
+		if (move.to - move.from == 2 * CHESS_OFFSET_EAST) {
+			position->board[move.to + CHESS_OFFSET_EAST] = position->board[move.to + CHESS_OFFSET_WEST];
+			position->board[move.to + CHESS_OFFSET_WEST] = CHESS_PIECE_NONE;
+		} else if (move.to - move.from == 2 * CHESS_OFFSET_WEST) {
+			position->board[move.to + CHESS_OFFSET_WEST]     = position->board[move.to + 2 * CHESS_OFFSET_EAST];
+			position->board[move.to + 2 * CHESS_OFFSET_EAST] = CHESS_PIECE_NONE;
+		}
+	}
+}
+bool chess_move_undo(ChessPosition *position, ChessMove move) {
+	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
+
+	ChessPosition position_before_move = *position;
+	chess_move_undo_unchecked(&position_before_move, move);
+
+	if (!chess_position_is_valid(&position_before_move) || !chess_move_is_legal(&position_before_move, move)) {
+		return false;
+	}
+
+	*position = position_before_move;
+
+	chess_position_counter_decrement(&position->position_counter, position);
 
 	return true;
 }

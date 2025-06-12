@@ -37,6 +37,9 @@ void chess_rank_debug(ChessRank rank) {
 			break;
 	}
 }
+bool chess_rank_is_valid(ChessRank rank) {
+	return (rank & 0x8U) == 0;
+}
 size_t chess_rank_from_algebraic(ChessRank *rank, const char *string) {
 	assert(rank != CHESS_NULL && string != CHESS_NULL);
 

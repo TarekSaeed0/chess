@@ -9,6 +9,7 @@ extern "C" {
 
 void chess_move_debug(ChessMove move);
 bool chess_move_is_valid(ChessMove move);
+ChessMove chess_move_new(const ChessPosition *position, ChessSquare from, ChessSquare to, ChessPieceType promotion_type);
 size_t chess_move_from_algebraic(const ChessPosition *position, ChessMove *move, const char *string);
 size_t chess_move_to_algebraic(const ChessPosition *position, ChessMove move, char *string, size_t string_size);
 bool chess_move_is_legal(const ChessPosition *position, ChessMove move);
@@ -18,6 +19,7 @@ bool chess_move_is_capture(const ChessPosition *position, ChessMove move);
 bool chess_move_is_kingside_castling(const ChessPosition *position, ChessMove move);
 bool chess_move_is_queenside_castling(const ChessPosition *position, ChessMove move);
 bool chess_move_do(ChessPosition *position, ChessMove move);
+bool chess_move_undo(ChessPosition *position, ChessMove move);
 
 #ifdef __cplusplus
 }

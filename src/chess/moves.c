@@ -45,9 +45,13 @@ static void chess_moves_generate_pawn_promotions(
 		    moves,
 		    position,
 		    (ChessMove){
-		        .from           = from,
-		        .to             = to,
-		        .promotion_type = promotion_types[i],
+		        .from                       = from,
+		        .to                         = to,
+		        .promotion_type             = promotion_types[i],
+		        .captured_piece             = position->board[to],
+		        .previous_castling_rights   = position->castling_rights,
+		        .previous_en_passant_square = position->en_passant_square,
+		        .previous_half_move_clock   = position->half_move_clock,
 		    }
 		);
 	}
@@ -59,7 +63,7 @@ static void chess_moves_generate_pawn(
 ) {
 	assert(moves != CHESS_NULL && chess_position_is_valid(position) && chess_square_is_valid(from));
 
-	chess_offset direction   = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_OFFSET_NORTH : CHESS_OFFSET_SOUTH;
+	ChessOffset direction    = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_OFFSET_NORTH : CHESS_OFFSET_SOUTH;
 
 	ChessRank promotion_rank = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_RANK_8 : CHESS_RANK_1;
 
@@ -72,9 +76,13 @@ static void chess_moves_generate_pawn(
 			    moves,
 			    position,
 			    (ChessMove){
-			        .from           = from,
-			        .to             = to,
-			        .promotion_type = CHESS_PIECE_TYPE_NONE,
+			        .from                       = from,
+			        .to                         = to,
+			        .promotion_type             = CHESS_PIECE_TYPE_NONE,
+			        .captured_piece             = CHESS_PIECE_NONE,
+			        .previous_castling_rights   = position->castling_rights,
+			        .previous_en_passant_square = position->en_passant_square,
+			        .previous_half_move_clock   = position->half_move_clock,
 			    }
 			);
 
@@ -86,9 +94,13 @@ static void chess_moves_generate_pawn(
 					    moves,
 					    position,
 					    (ChessMove){
-					        .from           = from,
-					        .to             = to,
-					        .promotion_type = CHESS_PIECE_TYPE_NONE,
+					        .from                       = from,
+					        .to                         = to,
+					        .promotion_type             = CHESS_PIECE_TYPE_NONE,
+					        .captured_piece             = CHESS_PIECE_NONE,
+					        .previous_castling_rights   = position->castling_rights,
+					        .previous_en_passant_square = position->en_passant_square,
+					        .previous_half_move_clock   = position->half_move_clock,
 					    }
 					);
 				}
@@ -96,7 +108,7 @@ static void chess_moves_generate_pawn(
 		}
 	}
 
-	static CHESS_CONSTEXPR chess_offset offsets[] = {
+	static CHESS_CONSTEXPR ChessOffset offsets[] = {
 		CHESS_OFFSET_EAST,
 		CHESS_OFFSET_WEST,
 	};
@@ -107,9 +119,13 @@ static void chess_moves_generate_pawn(
 			    moves,
 			    position,
 			    (ChessMove){
-			        .from           = from,
-			        .to             = to,
-			        .promotion_type = CHESS_PIECE_TYPE_NONE,
+			        .from                       = from,
+			        .to                         = to,
+			        .promotion_type             = CHESS_PIECE_TYPE_NONE,
+			        .captured_piece             = position->board[position->en_passant_square],
+			        .previous_castling_rights   = position->castling_rights,
+			        .previous_en_passant_square = position->en_passant_square,
+			        .previous_half_move_clock   = position->half_move_clock,
 			    }
 			);
 		} else if (chess_square_is_valid(to) &&
@@ -121,9 +137,13 @@ static void chess_moves_generate_pawn(
 				    moves,
 				    position,
 				    (ChessMove){
-				        .from           = from,
-				        .to             = to,
-				        .promotion_type = CHESS_PIECE_TYPE_NONE,
+				        .from                       = from,
+				        .to                         = to,
+				        .promotion_type             = CHESS_PIECE_TYPE_NONE,
+				        .captured_piece             = position->board[to],
+				        .previous_castling_rights   = position->castling_rights,
+				        .previous_en_passant_square = position->en_passant_square,
+				        .previous_half_move_clock   = position->half_move_clock,
 				    }
 				);
 			}
@@ -134,14 +154,14 @@ static void chess_moves_generate_directions(
     ChessMoves *moves,
     const ChessPosition *position,
     ChessSquare from,
-    const chess_offset *directions,
+    const ChessOffset *directions,
     size_t direction_count
 ) {
 	assert(moves != CHESS_NULL && chess_position_is_valid(position) && (directions != CHESS_NULL || direction_count == 0));
 
 	for (size_t i = 0; i < direction_count; i++) {
-		chess_offset direction = directions[i];
-		ChessSquare to         = from;
+		ChessOffset direction = directions[i];
+		ChessSquare to        = from;
 		while (true) {
 			to += direction;
 			if (!chess_square_is_valid(to)) {
@@ -153,9 +173,13 @@ static void chess_moves_generate_directions(
 				    moves,
 				    position,
 				    (ChessMove){
-				        .from           = from,
-				        .to             = to,
-				        .promotion_type = CHESS_PIECE_TYPE_NONE,
+				        .from                       = from,
+				        .to                         = to,
+				        .promotion_type             = CHESS_PIECE_TYPE_NONE,
+				        .captured_piece             = CHESS_PIECE_NONE,
+				        .previous_castling_rights   = position->castling_rights,
+				        .previous_en_passant_square = position->en_passant_square,
+				        .previous_half_move_clock   = position->half_move_clock,
 				    }
 				);
 			} else {
@@ -164,9 +188,13 @@ static void chess_moves_generate_directions(
 					    moves,
 					    position,
 					    (ChessMove){
-					        .from           = from,
-					        .to             = to,
-					        .promotion_type = CHESS_PIECE_TYPE_NONE,
+					        .from                       = from,
+					        .to                         = to,
+					        .promotion_type             = CHESS_PIECE_TYPE_NONE,
+					        .captured_piece             = position->board[to],
+					        .previous_castling_rights   = position->castling_rights,
+					        .previous_en_passant_square = position->en_passant_square,
+					        .previous_half_move_clock   = position->half_move_clock,
 					    }
 					);
 				}
@@ -179,7 +207,7 @@ static void chess_moves_generate_offsets(
     ChessMoves *moves,
     const ChessPosition *position,
     ChessSquare from,
-    const chess_offset *offsets,
+    const ChessOffset *offsets,
     size_t offset_count
 ) {
 	assert(moves != CHESS_NULL && chess_position_is_valid(position) && (offsets != CHESS_NULL || offset_count == 0));
@@ -191,9 +219,13 @@ static void chess_moves_generate_offsets(
 			    moves,
 			    position,
 			    (ChessMove){
-			        .from           = from,
-			        .to             = to,
-			        .promotion_type = CHESS_PIECE_TYPE_NONE,
+			        .from                       = from,
+			        .to                         = to,
+			        .promotion_type             = CHESS_PIECE_TYPE_NONE,
+			        .captured_piece             = position->board[to],
+			        .previous_castling_rights   = position->castling_rights,
+			        .previous_en_passant_square = position->en_passant_square,
+			        .previous_half_move_clock   = position->half_move_clock,
 			    }
 			);
 		}
@@ -222,9 +254,13 @@ static void chess_moves_generate_castlings(ChessMoves *moves, const ChessPositio
 			    moves,
 			    position,
 			    (ChessMove){
-			        .from           = from,
-			        .to             = (ChessSquare)(from + 2 * CHESS_OFFSET_EAST),
-			        .promotion_type = CHESS_PIECE_TYPE_NONE,
+			        .from                       = from,
+			        .to                         = (ChessSquare)(from + 2 * CHESS_OFFSET_EAST),
+			        .promotion_type             = CHESS_PIECE_TYPE_NONE,
+			        .captured_piece             = CHESS_PIECE_NONE,
+			        .previous_castling_rights   = position->castling_rights,
+			        .previous_en_passant_square = position->en_passant_square,
+			        .previous_half_move_clock   = position->half_move_clock,
 			    }
 			);
 		}
@@ -240,9 +276,13 @@ static void chess_moves_generate_castlings(ChessMoves *moves, const ChessPositio
 			    moves,
 			    position,
 			    (ChessMove){
-			        .from           = from,
-			        .to             = (ChessSquare)(from + 2 * CHESS_OFFSET_WEST),
-			        .promotion_type = CHESS_PIECE_TYPE_NONE,
+			        .from                       = from,
+			        .to                         = (ChessSquare)(from + 2 * CHESS_OFFSET_WEST),
+			        .promotion_type             = CHESS_PIECE_TYPE_NONE,
+			        .captured_piece             = CHESS_PIECE_NONE,
+			        .previous_castling_rights   = position->castling_rights,
+			        .previous_en_passant_square = position->en_passant_square,
+			        .previous_half_move_clock   = position->half_move_clock,
 			    }
 			);
 		}
@@ -270,7 +310,7 @@ ChessMoves chess_moves_generate(const ChessPosition *position) {
 					chess_moves_generate_pawn(&moves, position, from);
 				} break;
 				case CHESS_PIECE_TYPE_KNIGHT: {
-					static CHESS_CONSTEXPR chess_offset offsets[] = {
+					static CHESS_CONSTEXPR ChessOffset offsets[] = {
 						2 * CHESS_OFFSET_NORTH + CHESS_OFFSET_EAST,
 						2 * CHESS_OFFSET_NORTH + CHESS_OFFSET_WEST,
 						2 * CHESS_OFFSET_EAST + CHESS_OFFSET_NORTH,
@@ -283,7 +323,7 @@ ChessMoves chess_moves_generate(const ChessPosition *position) {
 					chess_moves_generate_offsets(&moves, position, from, offsets, CHESS_ARRAY_LENGTH(offsets));
 				} break;
 				case CHESS_PIECE_TYPE_BISHOP: {
-					static CHESS_CONSTEXPR chess_offset directions[] = {
+					static CHESS_CONSTEXPR ChessOffset directions[] = {
 						CHESS_OFFSET_NORTH_EAST,
 						CHESS_OFFSET_SOUTH_EAST,
 						CHESS_OFFSET_SOUTH_WEST,
@@ -292,7 +332,7 @@ ChessMoves chess_moves_generate(const ChessPosition *position) {
 					chess_moves_generate_directions(&moves, position, from, directions, CHESS_ARRAY_LENGTH(directions));
 				} break;
 				case CHESS_PIECE_TYPE_ROOK: {
-					static CHESS_CONSTEXPR chess_offset directions[] = {
+					static CHESS_CONSTEXPR ChessOffset directions[] = {
 						CHESS_OFFSET_NORTH,
 						CHESS_OFFSET_EAST,
 						CHESS_OFFSET_SOUTH,
@@ -301,7 +341,7 @@ ChessMoves chess_moves_generate(const ChessPosition *position) {
 					chess_moves_generate_directions(&moves, position, from, directions, CHESS_ARRAY_LENGTH(directions));
 				} break;
 				case CHESS_PIECE_TYPE_QUEEN: {
-					static CHESS_CONSTEXPR chess_offset directions[] = {
+					static CHESS_CONSTEXPR ChessOffset directions[] = {
 						CHESS_OFFSET_NORTH,
 						CHESS_OFFSET_EAST,
 						CHESS_OFFSET_SOUTH,
@@ -314,7 +354,7 @@ ChessMoves chess_moves_generate(const ChessPosition *position) {
 					chess_moves_generate_directions(&moves, position, from, directions, CHESS_ARRAY_LENGTH(directions));
 				} break;
 				case CHESS_PIECE_TYPE_KING: {
-					static CHESS_CONSTEXPR chess_offset offsets[] = {
+					static CHESS_CONSTEXPR ChessOffset offsets[] = {
 						CHESS_OFFSET_NORTH,
 						CHESS_OFFSET_EAST,
 						CHESS_OFFSET_SOUTH,
