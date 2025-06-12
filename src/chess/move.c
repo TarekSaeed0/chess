@@ -60,7 +60,7 @@ bool chess_move_is_valid(ChessMove move) {
 		case CHESS_PIECE_TYPE_KNIGHT:
 		case CHESS_PIECE_TYPE_BISHOP:
 		case CHESS_PIECE_TYPE_ROOK:
-		case CHESS_PIECE_TYPE_QUEEN: return true;
+		case CHESS_PIECE_TYPE_QUEEN:;
 		default: return false;
 	}
 
