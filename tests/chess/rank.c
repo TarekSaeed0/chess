@@ -10,10 +10,12 @@
 static void test_chess_rank_is_valid(void **state) {
 	(void)state;
 
-	static CHESS_CONSTEXPR struct {
+	typedef struct TestCase {
 		ChessRank rank;
 		bool is_valid;
-	} test_cases[] = {
+	} TestCase;
+
+	static CHESS_CONSTEXPR TestCase test_cases[] = {
 		{ .rank = CHESS_RANK_NONE, .is_valid = false },
 
 		{ .rank = CHESS_RANK_1, .is_valid = true },
@@ -38,11 +40,13 @@ static void test_chess_rank_is_valid(void **state) {
 static void test_chess_rank_from_algebraic(void **state) {
 	(void)state;
 
-	static const struct {
+	typedef struct TestCase {
 		const char *string;
 		ChessRank rank;
 		size_t read;
-	} test_cases[] = {
+	} TestCase;
+
+	static const TestCase test_cases[] = {
 		{ .string = "1", .rank = CHESS_RANK_1, .read = 1 },
 		{ .string = "2", .rank = CHESS_RANK_2, .read = 1 },
 		{ .string = "3", .rank = CHESS_RANK_3, .read = 1 },
@@ -63,11 +67,13 @@ static void test_chess_rank_from_algebraic(void **state) {
 static void test_chess_rank_to_algebraic(void **state) {
 	(void)state;
 
-	static const struct {
+	typedef struct TestCase {
 		ChessRank rank;
 		const char *string;
 		size_t written;
-	} test_cases[] = {
+	} TestCase;
+
+	static const TestCase test_cases[] = {
 		{ .rank = CHESS_RANK_1, .string = "1", .written = 1 },
 		{ .rank = CHESS_RANK_2, .string = "2", .written = 1 },
 		{ .rank = CHESS_RANK_3, .string = "3", .written = 1 },

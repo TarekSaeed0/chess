@@ -10,11 +10,13 @@
 static void test_chess_square_new(void **state) {
 	(void)state;
 
-	static CHESS_CONSTEXPR struct {
+	typedef struct TestCase {
 		ChessFile file;
 		ChessRank rank;
 		ChessSquare square;
-	} test_cases[] = {
+	} TestCase;
+
+	static CHESS_CONSTEXPR TestCase test_cases[] = {
 		{ .file = CHESS_FILE_A, .rank = CHESS_RANK_1, .square = CHESS_SQUARE_A1 },
 		{ .file = CHESS_FILE_B, .rank = CHESS_RANK_1, .square = CHESS_SQUARE_B1 },
 		{ .file = CHESS_FILE_C, .rank = CHESS_RANK_1, .square = CHESS_SQUARE_C1 },
@@ -96,10 +98,12 @@ static void test_chess_square_new(void **state) {
 static void test_chess_square_file(void **state) {
 	(void)state;
 
-	static CHESS_CONSTEXPR struct {
+	typedef struct TestCase {
 		ChessSquare square;
 		ChessFile file;
-	} test_cases[] = {
+	} TestCase;
+
+	static CHESS_CONSTEXPR TestCase test_cases[] = {
 		{ .square = CHESS_SQUARE_A1, .file = CHESS_FILE_A },
 		{ .square = CHESS_SQUARE_B1, .file = CHESS_FILE_B },
 		{ .square = CHESS_SQUARE_C1, .file = CHESS_FILE_C },
@@ -181,10 +185,12 @@ static void test_chess_square_file(void **state) {
 static void test_chess_square_rank(void **state) {
 	(void)state;
 
-	static CHESS_CONSTEXPR struct {
+	typedef struct TestCase {
 		ChessSquare square;
 		ChessRank rank;
-	} test_cases[] = {
+	} TestCase;
+
+	static CHESS_CONSTEXPR TestCase test_cases[] = {
 		{ .square = CHESS_SQUARE_A1, .rank = CHESS_RANK_1 },
 		{ .square = CHESS_SQUARE_B1, .rank = CHESS_RANK_1 },
 		{ .square = CHESS_SQUARE_C1, .rank = CHESS_RANK_1 },
@@ -266,10 +272,12 @@ static void test_chess_square_rank(void **state) {
 static void test_chess_square_is_valid(void **state) {
 	(void)state;
 
-	static CHESS_CONSTEXPR struct {
+	typedef struct TestCase {
 		ChessSquare square;
 		bool is_valid;
-	} test_cases[] = {
+	} TestCase;
+
+	static CHESS_CONSTEXPR TestCase test_cases[] = {
 		{ .square = CHESS_SQUARE_NONE, .is_valid = false },
 
 		{ .square = CHESS_SQUARE_A1, .is_valid = true },
@@ -357,11 +365,13 @@ static void test_chess_square_is_valid(void **state) {
 static void test_chess_square_from_algebraic(void **state) {
 	(void)state;
 
-	static const struct {
+	typedef struct TestCase {
 		const char *string;
 		ChessSquare square;
 		size_t read;
-	} test_cases[] = {
+	} TestCase;
+
+	static const TestCase test_cases[] = {
 		{ .string = "a1", .square = CHESS_SQUARE_A1, .read = 2 },
 		{ .string = "b1", .square = CHESS_SQUARE_B1, .read = 2 },
 		{ .string = "c1", .square = CHESS_SQUARE_C1, .read = 2 },
@@ -445,11 +455,13 @@ static void test_chess_square_from_algebraic(void **state) {
 static void test_chess_square_to_algebraic(void **state) {
 	(void)state;
 
-	static const struct {
+	typedef struct TestCase {
 		ChessSquare square;
 		const char *string;
 		size_t written;
-	} test_cases[] = {
+	} TestCase;
+
+	static const TestCase test_cases[] = {
 		{ .square = CHESS_SQUARE_A1, .string = "a1", .written = 2 },
 		{ .square = CHESS_SQUARE_B1, .string = "b1", .written = 2 },
 		{ .square = CHESS_SQUARE_C1, .string = "c1", .written = 2 },

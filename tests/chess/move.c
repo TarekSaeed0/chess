@@ -10,10 +10,12 @@
 static void test_chess_move_is_valid(void **state) {
 	(void)state;
 
-	static CHESS_CONSTEXPR struct {
+	typedef struct TestCase {
 		ChessMove move;
 		bool is_valid;
-	} test_cases[] = {
+	} TestCase;
+
+	static CHESS_CONSTEXPR TestCase test_cases[] = {
 		{
 		    .move = {
 		        .from                       = CHESS_SQUARE_NONE,

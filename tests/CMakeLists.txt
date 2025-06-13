@@ -1,4 +1,4 @@
-set(CMOCKA_TESTS color piece_type piece file rank square move moves)
+set(CMOCKA_TESTS color piece_type piece file rank square position_counter move moves)
 
 foreach(_CMOCKA_TEST ${CMOCKA_TESTS})
 	add_cmocka_test(

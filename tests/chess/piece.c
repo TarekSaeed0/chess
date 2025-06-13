@@ -10,11 +10,13 @@
 static void test_chess_piece_new(void **state) {
 	(void)state;
 
-	static CHESS_CONSTEXPR struct {
+	typedef struct TestCase {
 		ChessColor color;
 		ChessPieceType type;
 		ChessPiece piece;
-	} test_cases[] = {
+	} TestCase;
+
+	static CHESS_CONSTEXPR TestCase test_cases[] = {
 		{ .color = CHESS_COLOR_NONE, .type = CHESS_PIECE_TYPE_NONE, .piece = CHESS_PIECE_NONE },
 
 		{ .color = CHESS_COLOR_WHITE, .type = CHESS_PIECE_TYPE_PAWN, .piece = CHESS_PIECE_WHITE_PAWN },
@@ -40,10 +42,12 @@ static void test_chess_piece_new(void **state) {
 static void test_chess_piece_color(void **state) {
 	(void)state;
 
-	static CHESS_CONSTEXPR struct {
+	typedef struct TestCase {
 		ChessPiece piece;
 		ChessColor color;
-	} test_cases[] = {
+	} TestCase;
+
+	static CHESS_CONSTEXPR TestCase test_cases[] = {
 		{ .piece = CHESS_PIECE_NONE, .color = CHESS_COLOR_NONE },
 
 		{ .piece = CHESS_PIECE_WHITE_PAWN, .color = CHESS_COLOR_WHITE },
@@ -69,10 +73,12 @@ static void test_chess_piece_color(void **state) {
 static void test_chess_piece_type(void **state) {
 	(void)state;
 
-	static CHESS_CONSTEXPR struct {
+	typedef struct TestCase {
 		ChessPiece piece;
 		ChessPieceType type;
-	} test_cases[] = {
+	} TestCase;
+
+	static CHESS_CONSTEXPR TestCase test_cases[] = {
 		{ .piece = CHESS_PIECE_NONE, .type = CHESS_PIECE_TYPE_NONE },
 
 		{ .piece = CHESS_PIECE_WHITE_PAWN, .type = CHESS_PIECE_TYPE_PAWN },
@@ -98,10 +104,12 @@ static void test_chess_piece_type(void **state) {
 static void test_chess_piece_is_valid(void **state) {
 	(void)state;
 
-	static CHESS_CONSTEXPR struct {
+	typedef struct TestCase {
 		ChessPiece piece;
 		bool is_valid;
-	} test_cases[] = {
+	} TestCase;
+
+	static CHESS_CONSTEXPR TestCase test_cases[] = {
 		{ .piece = CHESS_PIECE_NONE, .is_valid = false },
 
 		{ .piece = CHESS_PIECE_WHITE_PAWN, .is_valid = true },
@@ -131,11 +139,13 @@ static void test_chess_piece_is_valid(void **state) {
 static void test_chess_piece_from_algebraic(void **state) {
 	(void)state;
 
-	static const struct {
+	typedef struct TestCase {
 		const char *string;
 		ChessPiece piece;
 		size_t read;
-	} test_cases[] = {
+	} TestCase;
+
+	static const TestCase test_cases[] = {
 		{ .string = "P", .piece = CHESS_PIECE_WHITE_PAWN, .read = 1 },
 		{ .string = "N", .piece = CHESS_PIECE_WHITE_KNIGHT, .read = 1 },
 		{ .string = "B", .piece = CHESS_PIECE_WHITE_BISHOP, .read = 1 },
@@ -161,11 +171,13 @@ static void test_chess_piece_from_algebraic(void **state) {
 static void test_chess_piece_to_algebraic(void **state) {
 	(void)state;
 
-	static const struct {
+	typedef struct TestCase {
 		ChessPiece piece;
 		const char *string;
 		size_t written;
-	} test_cases[] = {
+	} TestCase;
+
+	static const TestCase test_cases[] = {
 		{ .piece = CHESS_PIECE_WHITE_PAWN, .string = "P", .written = 1 },
 		{ .piece = CHESS_PIECE_WHITE_KNIGHT, .string = "N", .written = 1 },
 		{ .piece = CHESS_PIECE_WHITE_BISHOP, .string = "B", .written = 1 },

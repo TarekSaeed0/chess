@@ -11,10 +11,6 @@
 #include <chess/position.h>
 
 static unsigned long chess_moves_perft_recursive(const ChessPosition *position, unsigned int depth) {
-	if (depth == 0) {
-		return 1;
-	}
-
 	ChessMoves moves = chess_moves_generate(position);
 	if (depth == 1) {
 		return moves.count;
@@ -35,17 +31,27 @@ static inline unsigned long chess_moves_perft(const char *fen, unsigned int dept
 		return 0;
 	}
 
-	return chess_moves_perft_recursive(&position, depth);
+	if (depth == 0) {
+		return 1;
+	}
+
+	unsigned long result = chess_moves_perft_recursive(&position, depth);
+
+	chess_position_drop(&position);
+
+	return result;
 }
 
 static void test_chess_moves_preft(void **state) {
 	(void)state;
 
-	static const struct {
+	typedef struct TestCase {
 		const char *fen;
-		unsigned long results[5];
+		unsigned long results[6];
 		size_t results_count;
-	} test_cases[] = {
+	} TestCase;
+
+	static const TestCase test_cases[] = {
 		{
 		    .fen     = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
 		    .results = {
@@ -54,8 +60,9 @@ static void test_chess_moves_preft(void **state) {
 		        400,
 		        8902,
 		        197281,
+		        4865609,
 		    },
-		    .results_count = 5,
+		    .results_count = 6,
 		},
 		{
 		    .fen     = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1",
@@ -64,8 +71,9 @@ static void test_chess_moves_preft(void **state) {
 		        48,
 		        2039,
 		        97862,
+		        4085603,
 		    },
-		    .results_count = 4,
+		    .results_count = 5,
 		},
 		{
 		    .fen     = "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1",
@@ -75,8 +83,9 @@ static void test_chess_moves_preft(void **state) {
 		        191,
 		        2812,
 		        43238,
+		        674624,
 		    },
-		    .results_count = 5,
+		    .results_count = 6,
 		},
 		{
 		    .fen     = "r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1",
@@ -96,8 +105,9 @@ static void test_chess_moves_preft(void **state) {
 		        44,
 		        1486,
 		        62379,
+		        2103487,
 		    },
-		    .results_count = 4,
+		    .results_count = 5,
 		},
 		{
 		    .fen     = "r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10",
@@ -106,8 +116,9 @@ static void test_chess_moves_preft(void **state) {
 		        46,
 		        2079,
 		        89890,
+		        3894594,
 		    },
-		    .results_count = 4,
+		    .results_count = 5,
 		}
 	};
 	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(test_cases); i++) {

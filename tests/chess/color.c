@@ -10,10 +10,12 @@
 static void test_chess_color_is_valid(void **state) {
 	(void)state;
 
-	static CHESS_CONSTEXPR struct {
+	typedef struct TestCase {
 		ChessColor color;
 		bool is_valid;
-	} test_cases[] = {
+	} TestCase;
+
+	static CHESS_CONSTEXPR TestCase test_cases[] = {
 		{ .color = CHESS_COLOR_NONE, .is_valid = false },
 
 		{ .color = CHESS_COLOR_WHITE, .is_valid = true },
@@ -32,10 +34,12 @@ static void test_chess_color_is_valid(void **state) {
 static void test_chess_color_opposite(void **state) {
 	(void)state;
 
-	static CHESS_CONSTEXPR struct {
+	typedef struct TestCase {
 		ChessColor color;
 		ChessColor opposite;
-	} test_cases[] = {
+	} TestCase;
+
+	static CHESS_CONSTEXPR TestCase test_cases[] = {
 		{ .color = CHESS_COLOR_WHITE, .opposite = CHESS_COLOR_BLACK },
 		{ .color = CHESS_COLOR_BLACK, .opposite = CHESS_COLOR_WHITE },
 	};

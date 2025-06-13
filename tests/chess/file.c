@@ -10,10 +10,12 @@
 static void test_chess_file_is_valid(void **state) {
 	(void)state;
 
-	static CHESS_CONSTEXPR struct {
+	typedef struct TestCase {
 		ChessFile file;
 		bool is_valid;
-	} test_cases[] = {
+	} TestCase;
+
+	static CHESS_CONSTEXPR TestCase test_cases[] = {
 		{ .file = CHESS_FILE_NONE, .is_valid = false },
 
 		{ .file = CHESS_FILE_A, .is_valid = true },
@@ -38,11 +40,13 @@ static void test_chess_file_is_valid(void **state) {
 static void test_chess_file_from_algebraic(void **state) {
 	(void)state;
 
-	static const struct {
+	typedef struct TestCase {
 		const char *string;
 		ChessFile file;
 		size_t read;
-	} test_cases[] = {
+	} TestCase;
+
+	static const TestCase test_cases[] = {
 		{ .string = "a", .file = CHESS_FILE_A, .read = 1 },
 		{ .string = "b", .file = CHESS_FILE_B, .read = 1 },
 		{ .string = "c", .file = CHESS_FILE_C, .read = 1 },
@@ -63,11 +67,13 @@ static void test_chess_file_from_algebraic(void **state) {
 static void test_chess_file_to_algebraic(void **state) {
 	(void)state;
 
-	static const struct {
+	typedef struct TestCase {
 		ChessFile file;
 		const char *string;
 		size_t written;
-	} test_cases[] = {
+	} TestCase;
+
+	static const TestCase test_cases[] = {
 		{ .file = CHESS_FILE_A, .string = "a", .written = 1 },
 		{ .file = CHESS_FILE_B, .string = "b", .written = 1 },
 		{ .file = CHESS_FILE_C, .string = "c", .written = 1 },
