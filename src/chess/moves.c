@@ -123,7 +123,7 @@ static void chess_moves_generate_pawn(
 			        .from                       = from,
 			        .to                         = to,
 			        .promotion_type             = CHESS_PIECE_TYPE_NONE,
-			        .captured_piece             = position->board[position->en_passant_square],
+			        .captured_piece             = position->board[to - direction],
 			        .previous_castling_rights   = position->castling_rights,
 			        .previous_en_passant_square = position->en_passant_square,
 			        .previous_half_move_clock   = position->half_move_clock,

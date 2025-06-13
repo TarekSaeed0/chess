@@ -79,7 +79,7 @@ bool chess_move_is_valid(ChessMove move) {
 	return true;
 }
 ChessMove chess_move_new(const ChessPosition *position, ChessSquare from, ChessSquare to, ChessPieceType promotion_type) {
-	assert(chess_position_is_valid(position) && chess_square_is_valid(from) && chess_square_is_valid(to) && chess_piece_type_is_valid(promotion_type));
+	assert(chess_position_is_valid(position) && chess_square_is_valid(from) && chess_square_is_valid(to) && (chess_piece_type_is_valid(promotion_type) || promotion_type == CHESS_PIECE_TYPE_NONE));
 
 	ChessMove move = {
 		.from                       = from,
@@ -92,7 +92,8 @@ ChessMove chess_move_new(const ChessPosition *position, ChessSquare from, ChessS
 	};
 
 	if (chess_move_is_en_passant(position, move)) {
-		move.captured_piece = position->board[position->en_passant_square];
+		ChessOffset direction = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_OFFSET_NORTH : CHESS_OFFSET_SOUTH;
+		move.captured_piece   = position->board[to - direction];
 	}
 
 	assert(chess_move_is_valid(move));
@@ -212,7 +213,8 @@ size_t chess_move_from_algebraic(const ChessPosition *position, ChessMove *move,
 			.previous_half_move_clock   = position->half_move_clock,
 		};
 		if (chess_move_is_en_passant(position, *move)) {
-			move->captured_piece = position->board[position->en_passant_square];
+			ChessOffset direction = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_OFFSET_NORTH : CHESS_OFFSET_SOUTH;
+			move->captured_piece  = position->board[to - direction];
 		}
 
 		if (is_capture && !chess_move_is_capture(position, *move)) {
