@@ -36,6 +36,5 @@ var NAVTREEINDEX0 =
 "structChessMoves.html":[5,0,1],
 "structChessPosition.html":[5,0,2],
 "structChessPositionCounter.html":[5,0,3],
-"structChessPositionCounterEntry.html":[5,0,4],
-"types_8h_source.html":[6,0,0,0,12]
+"structChessPositionCounterEntry.html":[5,0,4]
 };

@@ -11,6 +11,5 @@ var dir_e0aef313599eac671f160072b95549f2 =
     [ "position.h", "position_8h_source.html", null ],
     [ "position_counter.h", "position__counter_8h_source.html", null ],
     [ "rank.h", "rank_8h_source.html", null ],
-    [ "square.h", "square_8h_source.html", null ],
-    [ "types.h", "types_8h_source.html", null ]
+    [ "square.h", "square_8h_source.html", null ]
 ];
