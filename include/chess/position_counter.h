@@ -1,7 +1,24 @@
 #ifndef CHESS_POSITION_COUNTER_H_INCLUDED
 #define CHESS_POSITION_COUNTER_H_INCLUDED
 
-#include <chess/types.h>
+#if !defined(__STDC_VERSION__) || __STDC_VERSION__ < 202311L
+	#include <stdbool.h>
+#endif
+#include <stddef.h>
+#include <stdint.h>
+
+typedef struct ChessPosition ChessPosition;
+
+typedef struct ChessPositionCounterEntry {
+	uint64_t key;
+	unsigned int value;
+} ChessPositionCounterEntry;
+
+typedef struct ChessPositionCounter {
+	ChessPositionCounterEntry *entries;
+	size_t size;
+	size_t count;
+} ChessPositionCounter;
 
 bool chess_position_counter_is_valid(const ChessPositionCounter *counter);
 ChessPositionCounter chess_position_counter_new(void);

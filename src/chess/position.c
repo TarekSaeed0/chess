@@ -21,19 +21,20 @@ void chess_position_debug(const ChessPosition *position) {
 	printf("(ChessPosition) {\n");
 
 	printf("\t.board = {\n");
-	for (ChessRank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
-		for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
-			ChessSquare square = chess_square_new(file, rank);
-			ChessPiece piece   = position->board[square];
-			if (piece == CHESS_PIECE_NONE) {
-				continue;
-			}
-			printf("\t\t[");
-			chess_square_debug(square);
-			printf("] = ");
-			chess_piece_debug(piece);
-			printf(",\n");
+	for (ChessSquare square = CHESS_SQUARE_A1; square <= CHESS_SQUARE_H8; square++) {
+		if (!chess_square_is_valid(square)) {
+			square += CHESS_SQUARE_A2 - (CHESS_SQUARE_H1 + 1) - 1;
 		}
+
+		ChessPiece piece = position->board[square];
+		if (piece == CHESS_PIECE_NONE) {
+			continue;
+		}
+		printf("\t\t[");
+		chess_square_debug(square);
+		printf("] = ");
+		chess_piece_debug(piece);
+		printf(",\n");
 	}
 	printf("\t},\n");
 
@@ -107,19 +108,21 @@ bool chess_position_is_valid(const ChessPosition *position) {
 		return false;
 	}
 
-	for (ChessRank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
-		for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
-			ChessSquare square = chess_square_new(file, rank);
-			ChessPiece piece   = position->board[square];
-			if (piece != CHESS_PIECE_NONE && !chess_piece_is_valid(piece)) {
-				return false;
-			}
+	for (ChessSquare square = CHESS_SQUARE_A1; square <= CHESS_SQUARE_H8; square++) {
+		if (!chess_square_is_valid(square)) {
+			square += CHESS_SQUARE_A2 - (CHESS_SQUARE_H1 + 1) - 1;
+			continue;
+		}
 
-			ChessColor color    = chess_piece_color(piece);
-			ChessPieceType type = chess_piece_type(piece);
-			if (type == CHESS_PIECE_TYPE_KING && square != position->king_squares[color]) {
-				return false;
-			}
+		ChessPiece piece = position->board[square];
+		if (piece != CHESS_PIECE_NONE && !chess_piece_is_valid(piece)) {
+			return false;
+		}
+
+		ChessColor color    = chess_piece_color(piece);
+		ChessPieceType type = chess_piece_type(piece);
+		if (type == CHESS_PIECE_TYPE_KING && square != position->king_squares[color]) {
+			return false;
 		}
 	}
 
@@ -454,35 +457,35 @@ bool chess_position_is_insufficient_material(const ChessPosition *position) {
 	unsigned int black_knights           = 0;
 	ChessColor white_bishop_square_color = CHESS_COLOR_NONE;
 	ChessColor black_bishop_square_color = CHESS_COLOR_NONE;
-	for (ChessRank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
-		for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
-			ChessSquare square  = chess_square_new(file, rank);
-			ChessPiece piece    = position->board[square];
+	for (ChessSquare square = CHESS_SQUARE_A1; square <= CHESS_SQUARE_H8; square++) {
+		if (!chess_square_is_valid(square)) {
+			square += CHESS_SQUARE_A2 - (CHESS_SQUARE_H1 + 1) - 1;
+		}
 
-			ChessPieceType type = chess_piece_type(piece);
-			if (type == CHESS_PIECE_TYPE_NONE || type == CHESS_PIECE_TYPE_KING) {
-				continue;
-			}
+		ChessPiece piece    = position->board[square];
+		ChessPieceType type = chess_piece_type(piece);
+		if (type == CHESS_PIECE_TYPE_NONE || type == CHESS_PIECE_TYPE_KING) {
+			continue;
+		}
 
-			if (type == CHESS_PIECE_TYPE_BISHOP) {
-				ChessColor color = chess_piece_color(piece);
-				if (color == CHESS_COLOR_WHITE) {
-					white_bishops++;
-					white_bishop_square_color = chess_square_color(square);
-				} else if (color == CHESS_COLOR_BLACK) {
-					black_bishops++;
-					black_bishop_square_color = chess_square_color(square);
-				}
-			} else if (type == CHESS_PIECE_TYPE_KNIGHT) {
-				ChessColor color = chess_piece_color(piece);
-				if (color == CHESS_COLOR_WHITE) {
-					white_knights++;
-				} else if (color == CHESS_COLOR_BLACK) {
-					black_knights++;
-				}
-			} else {
-				return false;
+		if (type == CHESS_PIECE_TYPE_BISHOP) {
+			ChessColor color = chess_piece_color(piece);
+			if (color == CHESS_COLOR_WHITE) {
+				white_bishops++;
+				white_bishop_square_color = chess_square_color(square);
+			} else if (color == CHESS_COLOR_BLACK) {
+				black_bishops++;
+				black_bishop_square_color = chess_square_color(square);
 			}
+		} else if (type == CHESS_PIECE_TYPE_KNIGHT) {
+			ChessColor color = chess_piece_color(piece);
+			if (color == CHESS_COLOR_WHITE) {
+				white_knights++;
+			} else if (color == CHESS_COLOR_BLACK) {
+				black_knights++;
+			}
+		} else {
+			return false;
 		}
 	}
 
@@ -529,12 +532,16 @@ uint64_t chess_position_hash(const ChessPosition *position) {
 		for (ChessPiece piece = CHESS_PIECE_WHITE_PAWN; piece <= CHESS_PIECE_BLACK_KING; piece++) {
 			if (!chess_piece_is_valid(piece)) {
 				piece = CHESS_PIECE_BLACK_PAWN - 1;
+				continue;
 			}
-			for (ChessRank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
-				for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
-					ChessSquare square                  = chess_square_new(file, rank);
-					piece_at_square_hash[piece][square] = chess_random(&random_state);
+
+			for (ChessSquare square = CHESS_SQUARE_A1; square <= CHESS_SQUARE_H8; square++) {
+				if (!chess_square_is_valid(square)) {
+					square += CHESS_SQUARE_A2 - (CHESS_SQUARE_H1 + 1) - 1;
+					continue;
 				}
+
+				piece_at_square_hash[piece][square] = chess_random(&random_state);
 			}
 		}
 
@@ -553,17 +560,18 @@ uint64_t chess_position_hash(const ChessPosition *position) {
 
 	uint64_t hash = 0;
 
-	for (ChessRank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
-		for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
-			ChessSquare square = chess_square_new(file, rank);
-
-			ChessPiece piece   = position->board[square];
-			if (piece == CHESS_PIECE_NONE) {
-				continue;
-			}
-
-			hash ^= piece_at_square_hash[piece][square];
+	for (ChessSquare square = CHESS_SQUARE_A1; square <= CHESS_SQUARE_H8; square++) {
+		if (!chess_square_is_valid(square)) {
+			square += CHESS_SQUARE_A2 - (CHESS_SQUARE_H1 + 1) - 1;
+			continue;
 		}
+
+		ChessPiece piece = position->board[square];
+		if (piece == CHESS_PIECE_NONE) {
+			continue;
+		}
+
+		hash ^= piece_at_square_hash[piece][square];
 	}
 
 	if (position->side_to_move == CHESS_COLOR_BLACK) {

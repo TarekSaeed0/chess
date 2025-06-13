@@ -5,7 +5,27 @@
 extern "C" {
 #endif
 
-#include <chess/types.h>
+#include <chess/castling_rights.h>
+#include <chess/color.h>
+#include <chess/piece.h>
+#include <chess/position_counter.h>
+#include <chess/square.h>
+
+#if !defined(__STDC_VERSION__) || __STDC_VERSION__ < 202311L
+	#include <stdbool.h>
+#endif
+#include <stdint.h>
+
+typedef struct ChessPosition {
+	ChessPiece board[128];
+	ChessColor side_to_move;
+	ChessCastlingRights castling_rights;
+	ChessSquare en_passant_square;
+	unsigned int half_move_clock;
+	unsigned int full_move_number;
+	ChessSquare king_squares[CHESS_COLOR_BLACK + 1];
+	ChessPositionCounter position_counter;
+} ChessPosition;
 
 void chess_position_debug(const ChessPosition *position);
 bool chess_position_is_valid(const ChessPosition *position);

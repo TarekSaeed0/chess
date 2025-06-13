@@ -55,13 +55,8 @@ bool chess_move_is_valid(ChessMove move) {
 		return false;
 	}
 
-	switch (move.promotion_type) {
-		case CHESS_PIECE_TYPE_NONE:
-		case CHESS_PIECE_TYPE_KNIGHT:
-		case CHESS_PIECE_TYPE_BISHOP:
-		case CHESS_PIECE_TYPE_ROOK:
-		case CHESS_PIECE_TYPE_QUEEN: break;
-		default: return false;
+	if (move.promotion_type != CHESS_PIECE_TYPE_NONE && (move.promotion_type < CHESS_PIECE_TYPE_KNIGHT || move.promotion_type > CHESS_PIECE_TYPE_QUEEN)) {
+		return false;
 	}
 
 	if ((!chess_piece_is_valid(move.captured_piece) && move.captured_piece != CHESS_PIECE_NONE) || chess_piece_type(move.captured_piece) == CHESS_PIECE_TYPE_KING) {
@@ -184,6 +179,10 @@ size_t chess_move_from_algebraic(const ChessPosition *position, ChessMove *move,
 	if (string[total_read] == '=') {
 		total_read++;
 		CHESS_READ(chess_piece_type_from_algebraic, &promotion_type);
+
+		if (promotion_type < CHESS_PIECE_TYPE_KNIGHT || promotion_type > CHESS_PIECE_TYPE_QUEEN) {
+			return 0;
+		}
 	}
 
 	bool is_check     = false;

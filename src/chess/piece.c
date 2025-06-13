@@ -1,3 +1,5 @@
+#include "chess/color.h"
+#include "chess/piece_type.h"
 #include <chess/piece.h>
 
 #include <assert.h>
@@ -66,6 +68,21 @@ bool chess_piece_is_valid(ChessPiece piece) {
 		default: return false;
 	}
 }
+ChessPiece chess_piece_new(ChessColor color, ChessPieceType type) {
+	assert(chess_color_is_valid(color) && chess_piece_type_is_valid(type));
+
+	return (ChessPiece)(color << 3U | type);
+}
+ChessColor chess_piece_color(ChessPiece piece) {
+	assert(chess_piece_is_valid(piece) || piece == CHESS_PIECE_NONE);
+
+	return (ChessColor)(piece >> 3U);
+}
+ChessPieceType chess_piece_type(ChessPiece piece) {
+	assert(chess_piece_is_valid(piece) || piece == CHESS_PIECE_NONE);
+
+	return (ChessPieceType)(piece & 0x7U);
+}
 size_t chess_piece_from_algebraic(ChessPiece *piece, const char *string) {
 	assert(piece != CHESS_NULL && string != CHESS_NULL);
 
@@ -84,6 +101,8 @@ size_t chess_piece_from_algebraic(ChessPiece *piece, const char *string) {
 		case 'k': *piece = CHESS_PIECE_BLACK_KING; break;
 		default: return 0;
 	}
+
+	assert(chess_piece_is_valid(*piece));
 
 	return 1;
 }

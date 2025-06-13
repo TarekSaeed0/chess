@@ -5,8 +5,6 @@
 extern "C" {
 #endif
 
-#include <chess/types.h>
-
 #include <chess/castling_rights.h>
 #include <chess/color.h>
 #include <chess/file.h>

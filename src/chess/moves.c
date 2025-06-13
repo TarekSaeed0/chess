@@ -1,4 +1,3 @@
-#include "chess/types.h"
 #include <chess/moves.h>
 
 #include <chess/color.h>
@@ -35,20 +34,14 @@ static void chess_moves_generate_pawn_promotions(
 ) {
 	assert(moves != CHESS_NULL && chess_position_is_valid(position) && chess_square_is_valid(from) && chess_square_is_valid(to));
 
-	static CHESS_CONSTEXPR ChessPieceType promotion_types[] = {
-		CHESS_PIECE_TYPE_KNIGHT,
-		CHESS_PIECE_TYPE_BISHOP,
-		CHESS_PIECE_TYPE_ROOK,
-		CHESS_PIECE_TYPE_QUEEN,
-	};
-	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(promotion_types); i++) {
+	for (ChessPieceType promotion_type = CHESS_PIECE_TYPE_KNIGHT; promotion_type <= CHESS_PIECE_TYPE_QUEEN; promotion_type++) {
 		chess_moves_add(
 		    moves,
 		    position,
 		    (ChessMove){
 		        .from                       = from,
 		        .to                         = to,
-		        .promotion_type             = promotion_types[i],
+		        .promotion_type             = promotion_type,
 		        .captured_piece             = position->board[to],
 		        .previous_castling_rights   = position->castling_rights,
 		        .previous_en_passant_square = position->en_passant_square,
@@ -382,11 +375,13 @@ ChessMoves chess_moves_generate(const ChessPosition *position) {
 
 	ChessMoves moves = { 0 };
 
-	for (ChessRank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
-		for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
-			ChessSquare from = chess_square_new(file, rank);
-			chess_moves_generate_from_(&moves, position, from);
+	for (ChessSquare square = CHESS_SQUARE_A1; square <= CHESS_SQUARE_H8; square++) {
+		if (!chess_square_is_valid(square)) {
+			square += CHESS_SQUARE_A2 - (CHESS_SQUARE_H1 + 1) - 1;
+			continue;
 		}
+
+		chess_moves_generate_from_(&moves, position, square);
 	}
 
 	chess_moves_generate_castlings(&moves, position);

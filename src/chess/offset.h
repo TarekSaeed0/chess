@@ -6,7 +6,9 @@ extern "C" {
 #endif
 
 #include <chess/macros.h>
-#include <chess/types.h>
+#include <chess/square.h>
+
+#include <stdint.h>
 
 CHESS_ENUM(int8_t, ChessOffset) {
 	CHESS_OFFSET_NORTH      = CHESS_SQUARE_A2 - CHESS_SQUARE_A1,
