@@ -1,3 +1,10 @@
+/**
+ * @file chess/position.h
+ * @brief Defines the chess position type and related utility functions for representing and manipulating chess positions.
+ * @author Tarek Saeed
+ * @date 2025-06-14
+ */
+
 #ifndef CHESS_POSITION_H_INCLUDED
 #define CHESS_POSITION_H_INCLUDED
 

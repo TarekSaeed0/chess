@@ -17,10 +17,6 @@ AllowShortLoopsOnASingleLine: false
 IndentCaseLabels: true
 IndentPPDirectives: BeforeHash
 
-# just to put a space after the macro
-ForEachMacros: [CHESS_ENUM]
-SpaceBeforeParens: ControlStatementsExceptControlMacros
-
 Cpp11BracedListStyle: false
 
 AllowAllArgumentsOnNextLine: false

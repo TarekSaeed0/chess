@@ -36,7 +36,7 @@ int main(void) {
   ChessMoves moves = chess_moves_generate(&position);
 
   printf("There is %zu legal moves:\n", moves.count);
-  for (size_t i = 0; i < moves.count; ++i) {
+  for (size_t i = 0; i < moves.count; i++) {
     char buffer[16];
     chess_move_to_algebraic(&position, moves.moves[i], buffer, sizeof(buffer));
     printf("%s\n", buffer);
