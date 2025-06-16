@@ -2,7 +2,7 @@
 
 [![Build Status](https://img.shields.io/github/actions/workflow/status/TarekSaeed0/chess/cmake-multi-platform.yml)](https://github.com/TarekSaeed0/chess/actions?query=workflow%3A%22%22CMake%20on%20multiple%20platforms%22%22%20%20)
 [![GitHub Stars](https://img.shields.io/github/stars/TarekSaeed0/chess?style=flat&label=stars)](https://github.com/TarekSaeed0/chess/stargazers)
-[![Github License](https://img.shields.io/github/license/TarekSaeed0/chess)](LICENSE)
+[![Github License](https://img.shields.io/github/license/TarekSaeed0/chess)](https://github.com/TarekSaeed0/chess/blob/main/LICENSE)
 
 A portable C library for representing and manipulating chess positions, and generating legal moves. This library provides a clean API for chess engines, GUIs, and tools.
 
@@ -70,4 +70,4 @@ See the `include/chess/` headers for full API documentation.
 
 ## License
 
-MIT License. See [LICENSE](LICENSE) for details.
+MIT License. See [LICENSE](https://github.com/TarekSaeed0/chess/blob/main/LICENSE) for details.
