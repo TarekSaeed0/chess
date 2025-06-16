@@ -42,7 +42,7 @@ int main(void) {
     printf("%s\n", buffer);
   }
 
-  ChessPosition_drop(&position);
+  chess_position_drop(&position);
 
   return 0;
 }
