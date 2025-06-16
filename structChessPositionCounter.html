@@ -111,19 +111,70 @@ $(document).ready(function(){initNavTree('structChessPositionCounter.html',''); 
   <div class="headertitle"><div class="title">ChessPositionCounter Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Hash table for counting chess positions.  
+ <a href="structChessPositionCounter.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="position__counter_8h_source.html">position_counter.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a9c2fa754e5c7c8c3716ec9c443e18e05" id="r_a9c2fa754e5c7c8c3716ec9c443e18e05"><td class="memItemLeft" align="right" valign="top"><a id="a9c2fa754e5c7c8c3716ec9c443e18e05" name="a9c2fa754e5c7c8c3716ec9c443e18e05"></a>
-<a class="el" href="structChessPositionCounterEntry.html">ChessPositionCounterEntry</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>entries</b></td></tr>
+<tr class="memitem:a9c2fa754e5c7c8c3716ec9c443e18e05" id="r_a9c2fa754e5c7c8c3716ec9c443e18e05"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structChessPositionCounterEntry.html">ChessPositionCounterEntry</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChessPositionCounter.html#a9c2fa754e5c7c8c3716ec9c443e18e05">entries</a></td></tr>
 <tr class="separator:a9c2fa754e5c7c8c3716ec9c443e18e05"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ff45dda6daebefbac09e47fe78aaadd" id="r_a6ff45dda6daebefbac09e47fe78aaadd"><td class="memItemLeft" align="right" valign="top"><a id="a6ff45dda6daebefbac09e47fe78aaadd" name="a6ff45dda6daebefbac09e47fe78aaadd"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><b>size</b></td></tr>
+<tr class="memitem:a6ff45dda6daebefbac09e47fe78aaadd" id="r_a6ff45dda6daebefbac09e47fe78aaadd"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChessPositionCounter.html#a6ff45dda6daebefbac09e47fe78aaadd">size</a></td></tr>
 <tr class="separator:a6ff45dda6daebefbac09e47fe78aaadd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7e7340f6de06271fdd243a28176d5745" id="r_a7e7340f6de06271fdd243a28176d5745"><td class="memItemLeft" align="right" valign="top"><a id="a7e7340f6de06271fdd243a28176d5745" name="a7e7340f6de06271fdd243a28176d5745"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><b>count</b></td></tr>
+<tr class="memitem:a7e7340f6de06271fdd243a28176d5745" id="r_a7e7340f6de06271fdd243a28176d5745"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChessPositionCounter.html#a7e7340f6de06271fdd243a28176d5745">count</a></td></tr>
 <tr class="separator:a7e7340f6de06271fdd243a28176d5745"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Hash table for counting chess positions. </p>
+<p>Used to track the number of times each position has occurred, typically for threefold repetition detection. </p>
+</div><h2 class="groupheader">Member Data Documentation</h2>
+<a id="a7e7340f6de06271fdd243a28176d5745" name="a7e7340f6de06271fdd243a28176d5745"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e7340f6de06271fdd243a28176d5745">&#9670;&#160;</a></span>count</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t ChessPositionCounter::count</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Number of entries in use. </p>
+
+</div>
+</div>
+<a id="a9c2fa754e5c7c8c3716ec9c443e18e05" name="a9c2fa754e5c7c8c3716ec9c443e18e05"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c2fa754e5c7c8c3716ec9c443e18e05">&#9670;&#160;</a></span>entries</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structChessPositionCounterEntry.html">ChessPositionCounterEntry</a>* ChessPositionCounter::entries</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Array of entries. </p>
+
+</div>
+</div>
+<a id="a6ff45dda6daebefbac09e47fe78aaadd" name="a6ff45dda6daebefbac09e47fe78aaadd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ff45dda6daebefbac09e47fe78aaadd">&#9670;&#160;</a></span>size</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t ChessPositionCounter::size</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Allocated size of the table. </p>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>/github/workspace/include/chess/<a class="el" href="position__counter_8h_source.html">position_counter.h</a></li>
 </ul>

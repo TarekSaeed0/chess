@@ -135,7 +135,7 @@ Example</h2>
 <div class="line">  <a class="code hl_struct" href="structChessMoves.html">ChessMoves</a> moves = chess_moves_generate(&amp;position);</div>
 <div class="line"> </div>
 <div class="line">  printf(<span class="stringliteral">&quot;There is %zu legal moves:\n&quot;</span>, moves.count);</div>
-<div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; moves.count; ++i) {</div>
+<div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; moves.count; i++) {</div>
 <div class="line">    <span class="keywordtype">char</span> buffer[16];</div>
 <div class="line">    chess_move_to_algebraic(&amp;position, moves.moves[i], buffer, <span class="keyword">sizeof</span>(buffer));</div>
 <div class="line">    printf(<span class="stringliteral">&quot;%s\n&quot;</span>, buffer);</div>
@@ -146,7 +146,7 @@ Example</h2>
 <div class="line">  <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
 <div class="ttc" id="astructChessMoves_html"><div class="ttname"><a href="structChessMoves.html">ChessMoves</a></div><div class="ttdef"><b>Definition</b> moves.h:15</div></div>
-<div class="ttc" id="astructChessPosition_html"><div class="ttname"><a href="structChessPosition.html">ChessPosition</a></div><div class="ttdef"><b>Definition</b> position.h:19</div></div>
+<div class="ttc" id="astructChessPosition_html"><div class="ttname"><a href="structChessPosition.html">ChessPosition</a></div><div class="ttdef"><b>Definition</b> position.h:26</div></div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md4"></a>
 Building</h1>
 <p>This library is written in standard C and should compile with any modern C compiler. It requires at least C11 support. To build using cmake:</p>

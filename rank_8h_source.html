@@ -113,50 +113,71 @@ $(document).ready(function(){initNavTree('rank_8h_source.html',''); initResizabl
   <div class="headertitle"><div class="title">rank.h</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef CHESS_RANK_H_INCLUDED</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define CHESS_RANK_H_INCLUDED</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;chess/macros.h&gt;</span></div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#if !defined(__STDC_VERSION__) || __STDC_VERSION__ &lt; 202311L</span></div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">    #include &lt;stdbool.h&gt;</span></div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &lt;stddef.h&gt;</span></div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>CHESS_ENUM(int8_t, ChessRank) {</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    CHESS_RANK_1    = 0,</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    CHESS_RANK_2    = 1,</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    CHESS_RANK_3    = 2,</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    CHESS_RANK_4    = 3,</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    CHESS_RANK_5    = 4,</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    CHESS_RANK_6    = 5,</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    CHESS_RANK_7    = 6,</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    CHESS_RANK_8    = 7,</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    CHESS_RANK_NONE = 8,</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>};</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="keywordtype">void</span> chess_rank_debug(ChessRank rank);</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="keywordtype">bool</span> chess_rank_is_valid(ChessRank rank);</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="keywordtype">size_t</span> chess_rank_from_algebraic(ChessRank *rank, <span class="keyword">const</span> <span class="keywordtype">char</span> *<span class="keywordtype">string</span>);</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="keywordtype">size_t</span> chess_rank_to_algebraic(ChessRank rank, <span class="keywordtype">char</span> *<span class="keywordtype">string</span>, <span class="keywordtype">size_t</span> string_size);</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>}</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="preprocessor">#endif </span><span class="comment">// CHESS_RANK_H_INCLUDED</span></div>
+<a href="rank_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span> </div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#ifndef CHESS_RANK_H_INCLUDED</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#define CHESS_RANK_H_INCLUDED</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &lt;<a class="code" href="macros_8h.html">chess/macros.h</a>&gt;</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#if !defined(__STDC_VERSION__) || __STDC_VERSION__ &lt; 202311L</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">    #include &lt;stdbool.h&gt;</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#include &lt;stddef.h&gt;</span></div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
+<div class="foldopen" id="foldopen00027" data-start="{" data-end="};">
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6ded">   27</a></span><a class="code hl_define" href="macros_8h.html#aeca84d3a1ccb2979dea56fb11adb2d20">CHESS_ENUM</a>(int8_t, <a class="code hl_enumeration" href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6ded">ChessRank</a>){</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6deda6f0e22ec0d18cc9372b4360e40056e63">   28</a></span>    <a class="code hl_enumvalue" href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6deda6f0e22ec0d18cc9372b4360e40056e63">CHESS_RANK_1</a>    = 0, </div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6deda0b2206624b62e8a9832acf0368ef4c3b">   29</a></span>    <a class="code hl_enumvalue" href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6deda0b2206624b62e8a9832acf0368ef4c3b">CHESS_RANK_2</a>    = 1, </div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6deda8125f915d02ca8cb39a2523a1dccc3af">   30</a></span>    <a class="code hl_enumvalue" href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6deda8125f915d02ca8cb39a2523a1dccc3af">CHESS_RANK_3</a>    = 2, </div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6dedae874fae8087a4d05bf05f400188e5b90">   31</a></span>    <a class="code hl_enumvalue" href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6dedae874fae8087a4d05bf05f400188e5b90">CHESS_RANK_4</a>    = 3, </div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6dedacbf4e0877558bc3abcc040d11a20043e">   32</a></span>    <a class="code hl_enumvalue" href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6dedacbf4e0877558bc3abcc040d11a20043e">CHESS_RANK_5</a>    = 4, </div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6dedade00b0fb0290db9cbc41aa907f6d3f9e">   33</a></span>    <a class="code hl_enumvalue" href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6dedade00b0fb0290db9cbc41aa907f6d3f9e">CHESS_RANK_6</a>    = 5, </div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6deda71a062e038dbc5bf5abf1722c0ba0d6f">   34</a></span>    <a class="code hl_enumvalue" href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6deda71a062e038dbc5bf5abf1722c0ba0d6f">CHESS_RANK_7</a>    = 6, </div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6deda2ed87a8c3f7531f3e1aa6353a4e669df">   35</a></span>    <a class="code hl_enumvalue" href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6deda2ed87a8c3f7531f3e1aa6353a4e669df">CHESS_RANK_8</a>    = 7, </div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6dedaae38c459d865f56649eb20ac756bd040">   37</a></span>    <a class="code hl_enumvalue" href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6dedaae38c459d865f56649eb20ac756bd040">CHESS_RANK_NONE</a> = 8, </div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>};</div>
+</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="keywordtype">void</span> <a class="code hl_function" href="rank_8h.html#a571312dfc7f91b9d45cba217f5b9168b">chess_rank_debug</a>(<a class="code hl_enumeration" href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6ded">ChessRank</a> rank);</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><span class="keywordtype">bool</span> <a class="code hl_function" href="rank_8h.html#a166b2948ccf3f890303df47ef3898053">chess_rank_is_valid</a>(<a class="code hl_enumeration" href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6ded">ChessRank</a> rank);</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span><span class="keywordtype">size_t</span> <a class="code hl_function" href="rank_8h.html#ab102ea395c1b049cd4ecc7987b31fe9b">chess_rank_from_algebraic</a>(<a class="code hl_enumeration" href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6ded">ChessRank</a> *rank, <span class="keyword">const</span> <span class="keywordtype">char</span> *<span class="keywordtype">string</span>);</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="keywordtype">size_t</span> <a class="code hl_function" href="rank_8h.html#af6d5fa52b2f583159274a0f658b553f0">chess_rank_to_algebraic</a>(<a class="code hl_enumeration" href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6ded">ChessRank</a> rank, <span class="keywordtype">char</span> *<span class="keywordtype">string</span>, <span class="keywordtype">size_t</span> string_size);</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>}</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span><span class="preprocessor">#endif </span><span class="comment">// CHESS_RANK_H_INCLUDED</span></div>
+<div class="ttc" id="amacros_8h_html"><div class="ttname"><a href="macros_8h.html">macros.h</a></div><div class="ttdoc">Defines macros and constants for the library.</div></div>
+<div class="ttc" id="amacros_8h_html_aeca84d3a1ccb2979dea56fb11adb2d20"><div class="ttname"><a href="macros_8h.html#aeca84d3a1ccb2979dea56fb11adb2d20">CHESS_ENUM</a></div><div class="ttdeci">#define CHESS_ENUM(type, name)</div><div class="ttdoc">Defines a typed enum or a typedef enum based on the availability of typed enums in the compiler.</div><div class="ttdef"><b>Definition</b> macros.h:84</div></div>
+<div class="ttc" id="arank_8h_html_a166b2948ccf3f890303df47ef3898053"><div class="ttname"><a href="rank_8h.html#a166b2948ccf3f890303df47ef3898053">chess_rank_is_valid</a></div><div class="ttdeci">bool chess_rank_is_valid(ChessRank rank)</div><div class="ttdoc">Checks if the given rank is valid (1-8).</div><div class="ttdef"><b>Definition</b> rank.c:40</div></div>
+<div class="ttc" id="arank_8h_html_a571312dfc7f91b9d45cba217f5b9168b"><div class="ttname"><a href="rank_8h.html#a571312dfc7f91b9d45cba217f5b9168b">chess_rank_debug</a></div><div class="ttdeci">void chess_rank_debug(ChessRank rank)</div><div class="ttdoc">Prints a debug representation of the given rank.</div><div class="ttdef"><b>Definition</b> rank.c:6</div></div>
+<div class="ttc" id="arank_8h_html_aae22e7ea479926fb0b316a77f5dd6ded"><div class="ttname"><a href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6ded">ChessRank</a></div><div class="ttdeci">ChessRank</div><div class="ttdoc">Represents the ranks (rows) on a chessboard, from 1 to 8.</div><div class="ttdef"><b>Definition</b> rank.h:27</div></div>
+<div class="ttc" id="arank_8h_html_aae22e7ea479926fb0b316a77f5dd6deda0b2206624b62e8a9832acf0368ef4c3b"><div class="ttname"><a href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6deda0b2206624b62e8a9832acf0368ef4c3b">CHESS_RANK_2</a></div><div class="ttdeci">@ CHESS_RANK_2</div><div class="ttdef"><b>Definition</b> rank.h:29</div></div>
+<div class="ttc" id="arank_8h_html_aae22e7ea479926fb0b316a77f5dd6deda2ed87a8c3f7531f3e1aa6353a4e669df"><div class="ttname"><a href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6deda2ed87a8c3f7531f3e1aa6353a4e669df">CHESS_RANK_8</a></div><div class="ttdeci">@ CHESS_RANK_8</div><div class="ttdef"><b>Definition</b> rank.h:35</div></div>
+<div class="ttc" id="arank_8h_html_aae22e7ea479926fb0b316a77f5dd6deda6f0e22ec0d18cc9372b4360e40056e63"><div class="ttname"><a href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6deda6f0e22ec0d18cc9372b4360e40056e63">CHESS_RANK_1</a></div><div class="ttdeci">@ CHESS_RANK_1</div><div class="ttdef"><b>Definition</b> rank.h:28</div></div>
+<div class="ttc" id="arank_8h_html_aae22e7ea479926fb0b316a77f5dd6deda71a062e038dbc5bf5abf1722c0ba0d6f"><div class="ttname"><a href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6deda71a062e038dbc5bf5abf1722c0ba0d6f">CHESS_RANK_7</a></div><div class="ttdeci">@ CHESS_RANK_7</div><div class="ttdef"><b>Definition</b> rank.h:34</div></div>
+<div class="ttc" id="arank_8h_html_aae22e7ea479926fb0b316a77f5dd6deda8125f915d02ca8cb39a2523a1dccc3af"><div class="ttname"><a href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6deda8125f915d02ca8cb39a2523a1dccc3af">CHESS_RANK_3</a></div><div class="ttdeci">@ CHESS_RANK_3</div><div class="ttdef"><b>Definition</b> rank.h:30</div></div>
+<div class="ttc" id="arank_8h_html_aae22e7ea479926fb0b316a77f5dd6dedaae38c459d865f56649eb20ac756bd040"><div class="ttname"><a href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6dedaae38c459d865f56649eb20ac756bd040">CHESS_RANK_NONE</a></div><div class="ttdeci">@ CHESS_RANK_NONE</div><div class="ttdef"><b>Definition</b> rank.h:37</div></div>
+<div class="ttc" id="arank_8h_html_aae22e7ea479926fb0b316a77f5dd6dedacbf4e0877558bc3abcc040d11a20043e"><div class="ttname"><a href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6dedacbf4e0877558bc3abcc040d11a20043e">CHESS_RANK_5</a></div><div class="ttdeci">@ CHESS_RANK_5</div><div class="ttdef"><b>Definition</b> rank.h:32</div></div>
+<div class="ttc" id="arank_8h_html_aae22e7ea479926fb0b316a77f5dd6dedade00b0fb0290db9cbc41aa907f6d3f9e"><div class="ttname"><a href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6dedade00b0fb0290db9cbc41aa907f6d3f9e">CHESS_RANK_6</a></div><div class="ttdeci">@ CHESS_RANK_6</div><div class="ttdef"><b>Definition</b> rank.h:33</div></div>
+<div class="ttc" id="arank_8h_html_aae22e7ea479926fb0b316a77f5dd6dedae874fae8087a4d05bf05f400188e5b90"><div class="ttname"><a href="rank_8h.html#aae22e7ea479926fb0b316a77f5dd6dedae874fae8087a4d05bf05f400188e5b90">CHESS_RANK_4</a></div><div class="ttdeci">@ CHESS_RANK_4</div><div class="ttdef"><b>Definition</b> rank.h:31</div></div>
+<div class="ttc" id="arank_8h_html_ab102ea395c1b049cd4ecc7987b31fe9b"><div class="ttname"><a href="rank_8h.html#ab102ea395c1b049cd4ecc7987b31fe9b">chess_rank_from_algebraic</a></div><div class="ttdeci">size_t chess_rank_from_algebraic(ChessRank *rank, const char *string)</div><div class="ttdoc">Parses a rank from algebraic notation (e.g., &quot;1&quot;, &quot;2&quot;, ..., &quot;8&quot;).</div><div class="ttdef"><b>Definition</b> rank.c:43</div></div>
+<div class="ttc" id="arank_8h_html_af6d5fa52b2f583159274a0f658b553f0"><div class="ttname"><a href="rank_8h.html#af6d5fa52b2f583159274a0f658b553f0">chess_rank_to_algebraic</a></div><div class="ttdeci">size_t chess_rank_to_algebraic(ChessRank rank, char *string, size_t string_size)</div><div class="ttdoc">Converts a rank to algebraic notation (e.g., &quot;1&quot;, &quot;2&quot;, ..., &quot;8&quot;).</div><div class="ttdef"><b>Definition</b> rank.c:56</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_e0aef313599eac671f160072b95549f2.html">chess</a></li><li class="navelem"><b>rank.h</b></li>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_e0aef313599eac671f160072b95549f2.html">chess</a></li><li class="navelem"><a class="el" href="rank_8h.html">rank.h</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>

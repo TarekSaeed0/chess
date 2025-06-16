@@ -120,14 +120,14 @@ $(document).ready(function(){initNavTree('offset_8h_source.html',''); initResiza
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;chess/macros.h&gt;</span></div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;chess/square.h&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;<a class="code" href="macros_8h.html">chess/macros.h</a>&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;<a class="code" href="square_8h.html">chess/square.h</a>&gt;</span></div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>CHESS_ENUM(int8_t, ChessOffset) {</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    CHESS_OFFSET_NORTH      = CHESS_SQUARE_A2 - CHESS_SQUARE_A1,</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    CHESS_OFFSET_EAST       = CHESS_SQUARE_B1 - CHESS_SQUARE_A1,</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><a class="code hl_define" href="macros_8h.html#aeca84d3a1ccb2979dea56fb11adb2d20">CHESS_ENUM</a>(int8_t, ChessOffset) {</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    CHESS_OFFSET_NORTH      = <a class="code hl_enumvalue" href="square_8h.html#a4857b635806ef3a14364c33dc4b4637ea94e61ea47c7c866a7d5568812c138bb7">CHESS_SQUARE_A2</a> - <a class="code hl_enumvalue" href="square_8h.html#a4857b635806ef3a14364c33dc4b4637eaed1d917dfa9aa4207c84034b0e4e71bf">CHESS_SQUARE_A1</a>,</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    CHESS_OFFSET_EAST       = <a class="code hl_enumvalue" href="square_8h.html#a4857b635806ef3a14364c33dc4b4637ea88dceda3cf8c79a0ad504e036500f068">CHESS_SQUARE_B1</a> - <a class="code hl_enumvalue" href="square_8h.html#a4857b635806ef3a14364c33dc4b4637eaed1d917dfa9aa4207c84034b0e4e71bf">CHESS_SQUARE_A1</a>,</div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    CHESS_OFFSET_SOUTH      = -CHESS_OFFSET_NORTH,</div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    CHESS_OFFSET_WEST       = -CHESS_OFFSET_EAST,</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span> </div>
@@ -142,6 +142,12 @@ $(document).ready(function(){initNavTree('offset_8h_source.html',''); initResiza
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#endif </span><span class="comment">// CHESS_OFFSET_H_INCLUDED</span></div>
+<div class="ttc" id="amacros_8h_html"><div class="ttname"><a href="macros_8h.html">macros.h</a></div><div class="ttdoc">Defines macros and constants for the library.</div></div>
+<div class="ttc" id="amacros_8h_html_aeca84d3a1ccb2979dea56fb11adb2d20"><div class="ttname"><a href="macros_8h.html#aeca84d3a1ccb2979dea56fb11adb2d20">CHESS_ENUM</a></div><div class="ttdeci">#define CHESS_ENUM(type, name)</div><div class="ttdoc">Defines a typed enum or a typedef enum based on the availability of typed enums in the compiler.</div><div class="ttdef"><b>Definition</b> macros.h:84</div></div>
+<div class="ttc" id="asquare_8h_html"><div class="ttname"><a href="square_8h.html">square.h</a></div><div class="ttdoc">Defines the chess square type and related utility functions for representing and manipulating chess s...</div></div>
+<div class="ttc" id="asquare_8h_html_a4857b635806ef3a14364c33dc4b4637ea88dceda3cf8c79a0ad504e036500f068"><div class="ttname"><a href="square_8h.html#a4857b635806ef3a14364c33dc4b4637ea88dceda3cf8c79a0ad504e036500f068">CHESS_SQUARE_B1</a></div><div class="ttdeci">@ CHESS_SQUARE_B1</div><div class="ttdef"><b>Definition</b> square.h:37</div></div>
+<div class="ttc" id="asquare_8h_html_a4857b635806ef3a14364c33dc4b4637ea94e61ea47c7c866a7d5568812c138bb7"><div class="ttname"><a href="square_8h.html#a4857b635806ef3a14364c33dc4b4637ea94e61ea47c7c866a7d5568812c138bb7">CHESS_SQUARE_A2</a></div><div class="ttdeci">@ CHESS_SQUARE_A2</div><div class="ttdef"><b>Definition</b> square.h:45</div></div>
+<div class="ttc" id="asquare_8h_html_a4857b635806ef3a14364c33dc4b4637eaed1d917dfa9aa4207c84034b0e4e71bf"><div class="ttname"><a href="square_8h.html#a4857b635806ef3a14364c33dc4b4637eaed1d917dfa9aa4207c84034b0e4e71bf">CHESS_SQUARE_A1</a></div><div class="ttdeci">@ CHESS_SQUARE_A1</div><div class="ttdef"><b>Definition</b> square.h:36</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
