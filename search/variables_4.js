@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['value_0',['value',['../structChessPositionCounterEntry.html#a0b977b6ae94d74e00e37241c0371c2a2',1,'ChessPositionCounterEntry']]]
+  ['half_5fmove_5fclock_0',['half_move_clock',['../structChessPosition.html#a925cf995629fcd8b16d32081b9675bc1',1,'ChessPosition']]]
 ];

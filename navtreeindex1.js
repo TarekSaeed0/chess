@@ -1,0 +1,21 @@
+var NAVTREEINDEX1 =
+{
+"structChessMove.html#ad3b8a4322162a6cd7ea454da1a300731":[5,0,0,1],
+"structChessMoves.html":[5,0,1],
+"structChessPosition.html":[5,0,2],
+"structChessPosition.html#a3407749412597dcc76b5ecee29691c4a":[5,0,2,2],
+"structChessPosition.html#a368f8ed7615f801d30b49ad3b3c974e9":[5,0,2,1],
+"structChessPosition.html#a5f89e53ecbc8abd0ddabc2573a6982bc":[5,0,2,5],
+"structChessPosition.html#a69935229252d01288bdb10bd11974539":[5,0,2,3],
+"structChessPosition.html#a770ccc59423e549f4c835d433cf78036":[5,0,2,6],
+"structChessPosition.html#a925cf995629fcd8b16d32081b9675bc1":[5,0,2,4],
+"structChessPosition.html#ac3327b502d8c7d9540f323a0c8a30ff6":[5,0,2,7],
+"structChessPosition.html#adc784db8e80a0d457cfb3303e1fdf2aa":[5,0,2,0],
+"structChessPositionCounter.html":[5,0,3],
+"structChessPositionCounter.html#a6ff45dda6daebefbac09e47fe78aaadd":[5,0,3,2],
+"structChessPositionCounter.html#a7e7340f6de06271fdd243a28176d5745":[5,0,3,0],
+"structChessPositionCounter.html#a9c2fa754e5c7c8c3716ec9c443e18e05":[5,0,3,1],
+"structChessPositionCounterEntry.html":[5,0,4],
+"structChessPositionCounterEntry.html#a0b977b6ae94d74e00e37241c0371c2a2":[5,0,4,1],
+"structChessPositionCounterEntry.html#aa71180332a8c7eeeac981e3d13d8696f":[5,0,4,0]
+};

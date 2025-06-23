@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('position__counter_8h.html',''); initRe
 
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
+<a href="#nested-classes">Data Structures</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">position_counter.h File Reference</div></div>
@@ -122,7 +122,7 @@ $(document).ready(function(){initNavTree('position__counter_8h.html',''); initRe
 <p><a href="position__counter_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
-Classes</h2></td></tr>
+Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChessPositionCounterEntry.html">ChessPositionCounterEntry</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Entry in the position counter hash table.  <a href="structChessPositionCounterEntry.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -134,7 +134,7 @@ Classes</h2></td></tr>
 Typedefs</h2></td></tr>
 <tr class="memitem:a730343ac8eb732e2c3d9a53bcea34bac" id="r_a730343ac8eb732e2c3d9a53bcea34bac"><td class="memItemLeft" align="right" valign="top"><a id="a730343ac8eb732e2c3d9a53bcea34bac" name="a730343ac8eb732e2c3d9a53bcea34bac"></a>
 typedef struct <a class="el" href="structChessPosition.html">ChessPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><b>ChessPosition</b></td></tr>
-<tr class="memdesc:a730343ac8eb732e2c3d9a53bcea34bac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Forward declaration of <a class="el" href="structChessPosition.html">ChessPosition</a>. <br /></td></tr>
+<tr class="memdesc:a730343ac8eb732e2c3d9a53bcea34bac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Forward declaration of <a class="el" href="structChessPosition.html" title="Represents the position in a chess game.">ChessPosition</a>. <br /></td></tr>
 <tr class="separator:a730343ac8eb732e2c3d9a53bcea34bac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a47ee15bb1abf60828017d5e8a9b7ac32" id="r_a47ee15bb1abf60828017d5e8a9b7ac32"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structChessPositionCounterEntry.html">ChessPositionCounterEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="position__counter_8h.html#a47ee15bb1abf60828017d5e8a9b7ac32">ChessPositionCounterEntry</a></td></tr>
 <tr class="memdesc:a47ee15bb1abf60828017d5e8a9b7ac32"><td class="mdescLeft">&#160;</td><td class="mdescRight">Entry in the position counter hash table.  <br /></td></tr>
@@ -146,16 +146,16 @@ typedef struct <a class="el" href="structChessPosition.html">ChessPosition</a>&#
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a81742b6fde41b50e30a74077978994e2" id="r_a81742b6fde41b50e30a74077978994e2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="position__counter_8h.html#a81742b6fde41b50e30a74077978994e2">chess_position_counter_is_valid</a> (const <a class="el" href="structChessPositionCounter.html">ChessPositionCounter</a> *counter)</td></tr>
-<tr class="memdesc:a81742b6fde41b50e30a74077978994e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the position counter is valid.  <br /></td></tr>
+<tr class="memdesc:a81742b6fde41b50e30a74077978994e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the given position counter is valid.  <br /></td></tr>
 <tr class="separator:a81742b6fde41b50e30a74077978994e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a785b9e79b1844b1cf1c91d06cc1a3125" id="r_a785b9e79b1844b1cf1c91d06cc1a3125"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structChessPositionCounter.html">ChessPositionCounter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="position__counter_8h.html#a785b9e79b1844b1cf1c91d06cc1a3125">chess_position_counter_new</a> (void)</td></tr>
 <tr class="memdesc:a785b9e79b1844b1cf1c91d06cc1a3125"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new, empty position counter.  <br /></td></tr>
 <tr class="separator:a785b9e79b1844b1cf1c91d06cc1a3125"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb12fa9baf79ebbed948306a8ad4ce64" id="r_afb12fa9baf79ebbed948306a8ad4ce64"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="position__counter_8h.html#afb12fa9baf79ebbed948306a8ad4ce64">chess_position_counter_drop</a> (<a class="el" href="structChessPositionCounter.html">ChessPositionCounter</a> *counter)</td></tr>
-<tr class="memdesc:afb12fa9baf79ebbed948306a8ad4ce64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Releases resources held by the position counter.  <br /></td></tr>
+<tr class="memdesc:afb12fa9baf79ebbed948306a8ad4ce64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Releases resources held by the given position counter.  <br /></td></tr>
 <tr class="separator:afb12fa9baf79ebbed948306a8ad4ce64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43827b4c9547f6a11884fad0213cecc2" id="r_a43827b4c9547f6a11884fad0213cecc2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="position__counter_8h.html#a43827b4c9547f6a11884fad0213cecc2">chess_position_counter_clear</a> (<a class="el" href="structChessPositionCounter.html">ChessPositionCounter</a> *counter)</td></tr>
-<tr class="memdesc:a43827b4c9547f6a11884fad0213cecc2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears all entries from the position counter.  <br /></td></tr>
+<tr class="memdesc:a43827b4c9547f6a11884fad0213cecc2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears all entries from the given position counter.  <br /></td></tr>
 <tr class="separator:a43827b4c9547f6a11884fad0213cecc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af2fa5fe0041faa26a57a54a3faee24f1" id="r_af2fa5fe0041faa26a57a54a3faee24f1"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="position__counter_8h.html#af2fa5fe0041faa26a57a54a3faee24f1">chess_position_counter_count</a> (const <a class="el" href="structChessPositionCounter.html">ChessPositionCounter</a> *counter, const <a class="el" href="structChessPosition.html">ChessPosition</a> *position)</td></tr>
 <tr class="memdesc:af2fa5fe0041faa26a57a54a3faee24f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the count for a given position.  <br /></td></tr>
@@ -223,7 +223,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Clears all entries from the position counter. </p>
+<p>Clears all entries from the given position counter. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">counter</td><td>Pointer to the position counter to clear. </td></tr>
@@ -325,7 +325,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Releases resources held by the position counter. </p>
+<p>Releases resources held by the given position counter. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">counter</td><td>Pointer to the position counter to drop. </td></tr>
@@ -389,10 +389,10 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Checks if the position counter is valid. </p>
+<p>Checks if the given position counter is valid. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">counter</td><td>Pointer to the position counter. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">counter</td><td>Pointer to the position counter to check. </td></tr>
   </table>
   </dd>
 </dl>

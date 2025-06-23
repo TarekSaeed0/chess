@@ -1,8 +1,8 @@
 var annotated_dup =
 [
-    [ "ChessMove", "structChessMove.html", null ],
+    [ "ChessMove", "structChessMove.html", "structChessMove" ],
     [ "ChessMoves", "structChessMoves.html", null ],
-    [ "ChessPosition", "structChessPosition.html", null ],
+    [ "ChessPosition", "structChessPosition.html", "structChessPosition" ],
     [ "ChessPositionCounter", "structChessPositionCounter.html", "structChessPositionCounter" ],
     [ "ChessPositionCounterEntry", "structChessPositionCounterEntry.html", "structChessPositionCounterEntry" ]
 ];

@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('position_8h.html',''); initResizable()
 
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
+<a href="#nested-classes">Data Structures</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">position.h File Reference</div></div>
@@ -126,8 +126,9 @@ $(document).ready(function(){initNavTree('position_8h.html',''); initResizable()
 <p><a href="position_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
-Classes</h2></td></tr>
+Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChessPosition.html">ChessPosition</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents the position in a chess game.  <a href="structChessPosition.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
@@ -138,57 +139,495 @@ typedef struct <a class="el" href="structChessPosition.html">ChessPosition</a>&#
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a1709de7d96c060d184feeb10bce7751a" id="r_a1709de7d96c060d184feeb10bce7751a"><td class="memItemLeft" align="right" valign="top"><a id="a1709de7d96c060d184feeb10bce7751a" name="a1709de7d96c060d184feeb10bce7751a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>chess_position_debug</b> (const <a class="el" href="structChessPosition.html">ChessPosition</a> *position)</td></tr>
+<tr class="memitem:a1709de7d96c060d184feeb10bce7751a" id="r_a1709de7d96c060d184feeb10bce7751a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="position_8h.html#a1709de7d96c060d184feeb10bce7751a">chess_position_debug</a> (const <a class="el" href="structChessPosition.html">ChessPosition</a> *position)</td></tr>
+<tr class="memdesc:a1709de7d96c060d184feeb10bce7751a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints a debug representation of the given position.  <br /></td></tr>
 <tr class="separator:a1709de7d96c060d184feeb10bce7751a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac77260c53950959b7c33efe0e726138a" id="r_ac77260c53950959b7c33efe0e726138a"><td class="memItemLeft" align="right" valign="top"><a id="ac77260c53950959b7c33efe0e726138a" name="ac77260c53950959b7c33efe0e726138a"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>chess_position_is_valid</b> (const <a class="el" href="structChessPosition.html">ChessPosition</a> *position)</td></tr>
+<tr class="memitem:ac77260c53950959b7c33efe0e726138a" id="r_ac77260c53950959b7c33efe0e726138a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="position_8h.html#ac77260c53950959b7c33efe0e726138a">chess_position_is_valid</a> (const <a class="el" href="structChessPosition.html">ChessPosition</a> *position)</td></tr>
+<tr class="memdesc:ac77260c53950959b7c33efe0e726138a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the given position is valid.  <br /></td></tr>
 <tr class="separator:ac77260c53950959b7c33efe0e726138a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abbdb35ef1053ef816f336f61cd20b8c2" id="r_abbdb35ef1053ef816f336f61cd20b8c2"><td class="memItemLeft" align="right" valign="top"><a id="abbdb35ef1053ef816f336f61cd20b8c2" name="abbdb35ef1053ef816f336f61cd20b8c2"></a>
-<a class="el" href="structChessPosition.html">ChessPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><b>chess_position_new</b> (void)</td></tr>
+<tr class="memitem:abbdb35ef1053ef816f336f61cd20b8c2" id="r_abbdb35ef1053ef816f336f61cd20b8c2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structChessPosition.html">ChessPosition</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="position_8h.html#abbdb35ef1053ef816f336f61cd20b8c2">chess_position_new</a> (void)</td></tr>
+<tr class="memdesc:abbdb35ef1053ef816f336f61cd20b8c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new position initialized to the standard starting position.  <br /></td></tr>
 <tr class="separator:abbdb35ef1053ef816f336f61cd20b8c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0010f4a37c6b145b465852497b442834" id="r_a0010f4a37c6b145b465852497b442834"><td class="memItemLeft" align="right" valign="top"><a id="a0010f4a37c6b145b465852497b442834" name="a0010f4a37c6b145b465852497b442834"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>chess_position_drop</b> (<a class="el" href="structChessPosition.html">ChessPosition</a> *position)</td></tr>
+<tr class="memitem:a0010f4a37c6b145b465852497b442834" id="r_a0010f4a37c6b145b465852497b442834"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="position_8h.html#a0010f4a37c6b145b465852497b442834">chess_position_drop</a> (<a class="el" href="structChessPosition.html">ChessPosition</a> *position)</td></tr>
+<tr class="memdesc:a0010f4a37c6b145b465852497b442834"><td class="mdescLeft">&#160;</td><td class="mdescRight">Releases resources held by the given position.  <br /></td></tr>
 <tr class="separator:a0010f4a37c6b145b465852497b442834"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c3a1a7c99340dc0018a557b1e0b50ed" id="r_a3c3a1a7c99340dc0018a557b1e0b50ed"><td class="memItemLeft" align="right" valign="top"><a id="a3c3a1a7c99340dc0018a557b1e0b50ed" name="a3c3a1a7c99340dc0018a557b1e0b50ed"></a>
-<a class="el" href="piece_8h.html#ab1a47af939287eb4b0206fff42479171">ChessPiece</a>&#160;</td><td class="memItemRight" valign="bottom"><b>chess_position_piece_at_square</b> (const <a class="el" href="structChessPosition.html">ChessPosition</a> *position, <a class="el" href="square_8h.html#a4857b635806ef3a14364c33dc4b4637e">ChessSquare</a> square)</td></tr>
+<tr class="memitem:a3c3a1a7c99340dc0018a557b1e0b50ed" id="r_a3c3a1a7c99340dc0018a557b1e0b50ed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="piece_8h.html#ab1a47af939287eb4b0206fff42479171">ChessPiece</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="position_8h.html#a3c3a1a7c99340dc0018a557b1e0b50ed">chess_position_piece_at_square</a> (const <a class="el" href="structChessPosition.html">ChessPosition</a> *position, <a class="el" href="square_8h.html#a4857b635806ef3a14364c33dc4b4637e">ChessSquare</a> square)</td></tr>
+<tr class="memdesc:a3c3a1a7c99340dc0018a557b1e0b50ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the piece at the given square in the given position.  <br /></td></tr>
 <tr class="separator:a3c3a1a7c99340dc0018a557b1e0b50ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a538625237785872e8e7e982e0be4004a" id="r_a538625237785872e8e7e982e0be4004a"><td class="memItemLeft" align="right" valign="top"><a id="a538625237785872e8e7e982e0be4004a" name="a538625237785872e8e7e982e0be4004a"></a>
-<a class="el" href="color_8h.html#a60efa98c0c8a123187662e31475dfb2a">ChessColor</a>&#160;</td><td class="memItemRight" valign="bottom"><b>chess_position_side_to_move</b> (const <a class="el" href="structChessPosition.html">ChessPosition</a> *position)</td></tr>
+<tr class="memitem:a538625237785872e8e7e982e0be4004a" id="r_a538625237785872e8e7e982e0be4004a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="color_8h.html#a60efa98c0c8a123187662e31475dfb2a">ChessColor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="position_8h.html#a538625237785872e8e7e982e0be4004a">chess_position_side_to_move</a> (const <a class="el" href="structChessPosition.html">ChessPosition</a> *position)</td></tr>
+<tr class="memdesc:a538625237785872e8e7e982e0be4004a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the side to move in the given position.  <br /></td></tr>
 <tr class="separator:a538625237785872e8e7e982e0be4004a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8fc73d8777bfdc34dfd8e1cfcd3b3b17" id="r_a8fc73d8777bfdc34dfd8e1cfcd3b3b17"><td class="memItemLeft" align="right" valign="top"><a id="a8fc73d8777bfdc34dfd8e1cfcd3b3b17" name="a8fc73d8777bfdc34dfd8e1cfcd3b3b17"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><b>chess_position_from_fen</b> (<a class="el" href="structChessPosition.html">ChessPosition</a> *position, const char *string)</td></tr>
+<tr class="memitem:a8fc73d8777bfdc34dfd8e1cfcd3b3b17" id="r_a8fc73d8777bfdc34dfd8e1cfcd3b3b17"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="position_8h.html#a8fc73d8777bfdc34dfd8e1cfcd3b3b17">chess_position_from_fen</a> (<a class="el" href="structChessPosition.html">ChessPosition</a> *position, const char *string)</td></tr>
+<tr class="memdesc:a8fc73d8777bfdc34dfd8e1cfcd3b3b17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parses a position from FEN notation (e.g., "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1").  <br /></td></tr>
 <tr class="separator:a8fc73d8777bfdc34dfd8e1cfcd3b3b17"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3521828d88aee0fe7848536dd2e09f12" id="r_a3521828d88aee0fe7848536dd2e09f12"><td class="memItemLeft" align="right" valign="top"><a id="a3521828d88aee0fe7848536dd2e09f12" name="a3521828d88aee0fe7848536dd2e09f12"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><b>chess_position_to_fen</b> (const <a class="el" href="structChessPosition.html">ChessPosition</a> *position, char *string, size_t string_size)</td></tr>
+<tr class="memitem:a3521828d88aee0fe7848536dd2e09f12" id="r_a3521828d88aee0fe7848536dd2e09f12"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="position_8h.html#a3521828d88aee0fe7848536dd2e09f12">chess_position_to_fen</a> (const <a class="el" href="structChessPosition.html">ChessPosition</a> *position, char *string, size_t string_size)</td></tr>
+<tr class="memdesc:a3521828d88aee0fe7848536dd2e09f12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts a position to FEN notation (e.g., "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1").  <br /></td></tr>
 <tr class="separator:a3521828d88aee0fe7848536dd2e09f12"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a4988da72b357668745205dff4a7c83" id="r_a2a4988da72b357668745205dff4a7c83"><td class="memItemLeft" align="right" valign="top"><a id="a2a4988da72b357668745205dff4a7c83" name="a2a4988da72b357668745205dff4a7c83"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>chess_position_is_check</b> (const <a class="el" href="structChessPosition.html">ChessPosition</a> *position)</td></tr>
+<tr class="memitem:a2a4988da72b357668745205dff4a7c83" id="r_a2a4988da72b357668745205dff4a7c83"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="position_8h.html#a2a4988da72b357668745205dff4a7c83">chess_position_is_check</a> (const <a class="el" href="structChessPosition.html">ChessPosition</a> *position)</td></tr>
+<tr class="memdesc:a2a4988da72b357668745205dff4a7c83"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the current side to move is in check.  <br /></td></tr>
 <tr class="separator:a2a4988da72b357668745205dff4a7c83"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa92b18b89d8ba59cb348c42a84bb03e4" id="r_aa92b18b89d8ba59cb348c42a84bb03e4"><td class="memItemLeft" align="right" valign="top"><a id="aa92b18b89d8ba59cb348c42a84bb03e4" name="aa92b18b89d8ba59cb348c42a84bb03e4"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>chess_position_is_checkmate</b> (const <a class="el" href="structChessPosition.html">ChessPosition</a> *position)</td></tr>
+<tr class="memitem:aa92b18b89d8ba59cb348c42a84bb03e4" id="r_aa92b18b89d8ba59cb348c42a84bb03e4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="position_8h.html#aa92b18b89d8ba59cb348c42a84bb03e4">chess_position_is_checkmate</a> (const <a class="el" href="structChessPosition.html">ChessPosition</a> *position)</td></tr>
+<tr class="memdesc:aa92b18b89d8ba59cb348c42a84bb03e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the current side to move is in checkmate.  <br /></td></tr>
 <tr class="separator:aa92b18b89d8ba59cb348c42a84bb03e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a941c4a1d2719b732037bbddb421566ff" id="r_a941c4a1d2719b732037bbddb421566ff"><td class="memItemLeft" align="right" valign="top"><a id="a941c4a1d2719b732037bbddb421566ff" name="a941c4a1d2719b732037bbddb421566ff"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>chess_position_is_stalemate</b> (const <a class="el" href="structChessPosition.html">ChessPosition</a> *position)</td></tr>
+<tr class="memitem:a941c4a1d2719b732037bbddb421566ff" id="r_a941c4a1d2719b732037bbddb421566ff"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="position_8h.html#a941c4a1d2719b732037bbddb421566ff">chess_position_is_stalemate</a> (const <a class="el" href="structChessPosition.html">ChessPosition</a> *position)</td></tr>
+<tr class="memdesc:a941c4a1d2719b732037bbddb421566ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the current position is a stalemate.  <br /></td></tr>
 <tr class="separator:a941c4a1d2719b732037bbddb421566ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74536dbff5410996d965b3cca8285e94" id="r_a74536dbff5410996d965b3cca8285e94"><td class="memItemLeft" align="right" valign="top"><a id="a74536dbff5410996d965b3cca8285e94" name="a74536dbff5410996d965b3cca8285e94"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>chess_position_is_fifty_move_rule</b> (const <a class="el" href="structChessPosition.html">ChessPosition</a> *position)</td></tr>
+<tr class="memitem:a74536dbff5410996d965b3cca8285e94" id="r_a74536dbff5410996d965b3cca8285e94"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="position_8h.html#a74536dbff5410996d965b3cca8285e94">chess_position_is_fifty_move_rule</a> (const <a class="el" href="structChessPosition.html">ChessPosition</a> *position)</td></tr>
+<tr class="memdesc:a74536dbff5410996d965b3cca8285e94"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the fifty-move rule applies to the current position.  <br /></td></tr>
 <tr class="separator:a74536dbff5410996d965b3cca8285e94"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad24d837694fc936d55c02e9cf5f1ffe8" id="r_ad24d837694fc936d55c02e9cf5f1ffe8"><td class="memItemLeft" align="right" valign="top"><a id="ad24d837694fc936d55c02e9cf5f1ffe8" name="ad24d837694fc936d55c02e9cf5f1ffe8"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>chess_position_is_threefold_repetition</b> (const <a class="el" href="structChessPosition.html">ChessPosition</a> *position)</td></tr>
+<tr class="memitem:ad24d837694fc936d55c02e9cf5f1ffe8" id="r_ad24d837694fc936d55c02e9cf5f1ffe8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="position_8h.html#ad24d837694fc936d55c02e9cf5f1ffe8">chess_position_is_threefold_repetition</a> (const <a class="el" href="structChessPosition.html">ChessPosition</a> *position)</td></tr>
+<tr class="memdesc:ad24d837694fc936d55c02e9cf5f1ffe8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the current position has occurred three or more times (threefold repetition).  <br /></td></tr>
 <tr class="separator:ad24d837694fc936d55c02e9cf5f1ffe8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a963dedc11e002aa279ac609693f27ab5" id="r_a963dedc11e002aa279ac609693f27ab5"><td class="memItemLeft" align="right" valign="top"><a id="a963dedc11e002aa279ac609693f27ab5" name="a963dedc11e002aa279ac609693f27ab5"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>chess_position_is_insufficient_material</b> (const <a class="el" href="structChessPosition.html">ChessPosition</a> *position)</td></tr>
+<tr class="memitem:a963dedc11e002aa279ac609693f27ab5" id="r_a963dedc11e002aa279ac609693f27ab5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="position_8h.html#a963dedc11e002aa279ac609693f27ab5">chess_position_is_insufficient_material</a> (const <a class="el" href="structChessPosition.html">ChessPosition</a> *position)</td></tr>
+<tr class="memdesc:a963dedc11e002aa279ac609693f27ab5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if there is insufficient material to checkmate.  <br /></td></tr>
 <tr class="separator:a963dedc11e002aa279ac609693f27ab5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af88c291ca2525ee4b47e04034c86f4d4" id="r_af88c291ca2525ee4b47e04034c86f4d4"><td class="memItemLeft" align="right" valign="top"><a id="af88c291ca2525ee4b47e04034c86f4d4" name="af88c291ca2525ee4b47e04034c86f4d4"></a>
-uint64_t&#160;</td><td class="memItemRight" valign="bottom"><b>chess_position_hash</b> (const <a class="el" href="structChessPosition.html">ChessPosition</a> *position)</td></tr>
+<tr class="memitem:af88c291ca2525ee4b47e04034c86f4d4" id="r_af88c291ca2525ee4b47e04034c86f4d4"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="position_8h.html#af88c291ca2525ee4b47e04034c86f4d4">chess_position_hash</a> (const <a class="el" href="structChessPosition.html">ChessPosition</a> *position)</td></tr>
+<tr class="memdesc:af88c291ca2525ee4b47e04034c86f4d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes a hash value for the given position.  <br /></td></tr>
 <tr class="separator:af88c291ca2525ee4b47e04034c86f4d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Defines the chess position type and related utility functions for representing and manipulating chess positions. </p>
 <dl class="section author"><dt>Author</dt><dd>Tarek Saeed </dd></dl>
 <dl class="section date"><dt>Date</dt><dd>2025-06-14 </dd></dl>
-</div></div><!-- contents -->
+</div><h2 class="groupheader">Function Documentation</h2>
+<a id="a1709de7d96c060d184feeb10bce7751a" name="a1709de7d96c060d184feeb10bce7751a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1709de7d96c060d184feeb10bce7751a">&#9670;&#160;</a></span>chess_position_debug()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void chess_position_debug </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structChessPosition.html">ChessPosition</a> *&#160;</td>
+          <td class="paramname"><em>position</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Prints a debug representation of the given position. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">position</td><td>Pointer to the position to print. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0010f4a37c6b145b465852497b442834" name="a0010f4a37c6b145b465852497b442834"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0010f4a37c6b145b465852497b442834">&#9670;&#160;</a></span>chess_position_drop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void chess_position_drop </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structChessPosition.html">ChessPosition</a> *&#160;</td>
+          <td class="paramname"><em>position</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Releases resources held by the given position. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">position</td><td>Pointer to the position to drop. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8fc73d8777bfdc34dfd8e1cfcd3b3b17" name="a8fc73d8777bfdc34dfd8e1cfcd3b3b17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8fc73d8777bfdc34dfd8e1cfcd3b3b17">&#9670;&#160;</a></span>chess_position_from_fen()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t chess_position_from_fen </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structChessPosition.html">ChessPosition</a> *&#160;</td>
+          <td class="paramname"><em>position</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>string</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Parses a position from FEN notation (e.g., "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">position</td><td>Pointer to store the parsed position. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">string</td><td>The string containing the FEN notation. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The number of characters read if successful, 0 otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="af88c291ca2525ee4b47e04034c86f4d4" name="af88c291ca2525ee4b47e04034c86f4d4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af88c291ca2525ee4b47e04034c86f4d4">&#9670;&#160;</a></span>chess_position_hash()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint64_t chess_position_hash </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structChessPosition.html">ChessPosition</a> *&#160;</td>
+          <td class="paramname"><em>position</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Computes a hash value for the given position. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">position</td><td>Pointer to the position. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The hash value of the position. </dd></dl>
+
+</div>
+</div>
+<a id="a2a4988da72b357668745205dff4a7c83" name="a2a4988da72b357668745205dff4a7c83"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a4988da72b357668745205dff4a7c83">&#9670;&#160;</a></span>chess_position_is_check()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool chess_position_is_check </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structChessPosition.html">ChessPosition</a> *&#160;</td>
+          <td class="paramname"><em>position</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks if the current side to move is in check. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">position</td><td>Pointer to the position. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the side to move is in check, false otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="aa92b18b89d8ba59cb348c42a84bb03e4" name="aa92b18b89d8ba59cb348c42a84bb03e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa92b18b89d8ba59cb348c42a84bb03e4">&#9670;&#160;</a></span>chess_position_is_checkmate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool chess_position_is_checkmate </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structChessPosition.html">ChessPosition</a> *&#160;</td>
+          <td class="paramname"><em>position</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks if the current side to move is in checkmate. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">position</td><td>Pointer to the position. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the side to move is in checkmate, false otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="a74536dbff5410996d965b3cca8285e94" name="a74536dbff5410996d965b3cca8285e94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74536dbff5410996d965b3cca8285e94">&#9670;&#160;</a></span>chess_position_is_fifty_move_rule()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool chess_position_is_fifty_move_rule </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structChessPosition.html">ChessPosition</a> *&#160;</td>
+          <td class="paramname"><em>position</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks if the fifty-move rule applies to the current position. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">position</td><td>Pointer to the position. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the fifty-move rule applies, false otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="a963dedc11e002aa279ac609693f27ab5" name="a963dedc11e002aa279ac609693f27ab5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a963dedc11e002aa279ac609693f27ab5">&#9670;&#160;</a></span>chess_position_is_insufficient_material()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool chess_position_is_insufficient_material </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structChessPosition.html">ChessPosition</a> *&#160;</td>
+          <td class="paramname"><em>position</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks if there is insufficient material to checkmate. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">position</td><td>Pointer to the position. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if there is insufficient material, false otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="a941c4a1d2719b732037bbddb421566ff" name="a941c4a1d2719b732037bbddb421566ff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a941c4a1d2719b732037bbddb421566ff">&#9670;&#160;</a></span>chess_position_is_stalemate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool chess_position_is_stalemate </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structChessPosition.html">ChessPosition</a> *&#160;</td>
+          <td class="paramname"><em>position</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks if the current position is a stalemate. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">position</td><td>Pointer to the position. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the position is a stalemate, false otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="ad24d837694fc936d55c02e9cf5f1ffe8" name="ad24d837694fc936d55c02e9cf5f1ffe8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad24d837694fc936d55c02e9cf5f1ffe8">&#9670;&#160;</a></span>chess_position_is_threefold_repetition()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool chess_position_is_threefold_repetition </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structChessPosition.html">ChessPosition</a> *&#160;</td>
+          <td class="paramname"><em>position</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks if the current position has occurred three or more times (threefold repetition). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">position</td><td>Pointer to the position. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the position has occurred three or more times, false otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="ac77260c53950959b7c33efe0e726138a" name="ac77260c53950959b7c33efe0e726138a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac77260c53950959b7c33efe0e726138a">&#9670;&#160;</a></span>chess_position_is_valid()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool chess_position_is_valid </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structChessPosition.html">ChessPosition</a> *&#160;</td>
+          <td class="paramname"><em>position</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks if the given position is valid. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">position</td><td>Pointer to the position to check. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the position is valid, false otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="abbdb35ef1053ef816f336f61cd20b8c2" name="abbdb35ef1053ef816f336f61cd20b8c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abbdb35ef1053ef816f336f61cd20b8c2">&#9670;&#160;</a></span>chess_position_new()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structChessPosition.html">ChessPosition</a> chess_position_new </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Creates a new position initialized to the standard starting position. </p>
+<dl class="section return"><dt>Returns</dt><dd>The created position. </dd></dl>
+
+</div>
+</div>
+<a id="a3c3a1a7c99340dc0018a557b1e0b50ed" name="a3c3a1a7c99340dc0018a557b1e0b50ed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c3a1a7c99340dc0018a557b1e0b50ed">&#9670;&#160;</a></span>chess_position_piece_at_square()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="piece_8h.html#ab1a47af939287eb4b0206fff42479171">ChessPiece</a> chess_position_piece_at_square </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structChessPosition.html">ChessPosition</a> *&#160;</td>
+          <td class="paramname"><em>position</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="square_8h.html#a4857b635806ef3a14364c33dc4b4637e">ChessSquare</a>&#160;</td>
+          <td class="paramname"><em>square</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the piece at the given square in the given position. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">position</td><td>Pointer to the position. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">square</td><td>The square. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The piece at the square. </dd></dl>
+
+</div>
+</div>
+<a id="a538625237785872e8e7e982e0be4004a" name="a538625237785872e8e7e982e0be4004a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a538625237785872e8e7e982e0be4004a">&#9670;&#160;</a></span>chess_position_side_to_move()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="color_8h.html#a60efa98c0c8a123187662e31475dfb2a">ChessColor</a> chess_position_side_to_move </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structChessPosition.html">ChessPosition</a> *&#160;</td>
+          <td class="paramname"><em>position</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the side to move in the given position. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">position</td><td>Pointer to the position. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The color of the side to move. </dd></dl>
+
+</div>
+</div>
+<a id="a3521828d88aee0fe7848536dd2e09f12" name="a3521828d88aee0fe7848536dd2e09f12"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3521828d88aee0fe7848536dd2e09f12">&#9670;&#160;</a></span>chess_position_to_fen()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t chess_position_to_fen </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structChessPosition.html">ChessPosition</a> *&#160;</td>
+          <td class="paramname"><em>position</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>string</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>string_size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Converts a position to FEN notation (e.g., "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">position</td><td>Pointer to the position to convert. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">string</td><td>The buffer to store the FEN notation. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">string_size</td><td>The size of the output buffer. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The number of characters written. </dd></dl>
+
+</div>
+</div>
+</div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

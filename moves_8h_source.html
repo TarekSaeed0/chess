@@ -121,7 +121,7 @@ $(document).ready(function(){initNavTree('moves_8h_source.html',''); initResizab
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;<a class="code" href="macros_8h.html">chess/macros.h</a>&gt;</span></div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;chess/move.h&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;<a class="code" href="move_8h.html">chess/move.h</a>&gt;</span></div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &lt;stddef.h&gt;</span></div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
@@ -129,12 +129,12 @@ $(document).ready(function(){initNavTree('moves_8h_source.html',''); initResizab
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
 <div class="foldopen" id="foldopen00015" data-start="{" data-end="};">
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="structChessMoves.html">   15</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structChessMoves.html">ChessMoves</a> {</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    <span class="keyword">struct </span><a class="code hl_struct" href="structChessMove.html">ChessMove</a> moves[CHESS_MOVES_MAXIMUM_COUNT];</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    <span class="keywordtype">size_t</span> count;</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>  <span class="keyword">struct </span><a class="code hl_struct" href="structChessMove.html">ChessMove</a> moves[CHESS_MOVES_MAXIMUM_COUNT];</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>  <span class="keywordtype">size_t</span> count;</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>} <a class="code hl_struct" href="structChessMoves.html">ChessMoves</a>;</div>
 </div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><a class="code hl_struct" href="structChessMoves.html">ChessMoves</a> chess_moves_generate_from(<span class="keyword">const</span> <a class="code hl_struct" href="structChessPosition.html">ChessPosition</a> *position, <a class="code hl_enumeration" href="square_8h.html#a4857b635806ef3a14364c33dc4b4637e">ChessSquare</a> from);</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><a class="code hl_struct" href="structChessMoves.html">ChessMoves</a> chess_moves_generate_from(<span class="keyword">const</span> <a class="code hl_struct" href="structChessPosition.html">ChessPosition</a> *position, <a class="code hl_enumeration" href="square_8h.html#a4857b635806ef3a14364c33dc4b4637e">ChessSquare</a> <a class="code hl_variable" href="structChessMove.html#ad3b8a4322162a6cd7ea454da1a300731">from</a>);</div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><a class="code hl_struct" href="structChessMoves.html">ChessMoves</a> chess_moves_generate(<span class="keyword">const</span> <a class="code hl_struct" href="structChessPosition.html">ChessPosition</a> *position);</div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#ifdef __cplusplus</span></div>
@@ -144,10 +144,12 @@ $(document).ready(function(){initNavTree('moves_8h_source.html',''); initResizab
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#endif </span><span class="comment">// CHESS_MOVES_H_INCLUDED</span></div>
 <div class="ttc" id="amacros_8h_html"><div class="ttname"><a href="macros_8h.html">macros.h</a></div><div class="ttdoc">Defines macros and constants for the library.</div></div>
 <div class="ttc" id="amacros_8h_html_a7b8d0e470e4d6c12c846da721432c029"><div class="ttname"><a href="macros_8h.html#a7b8d0e470e4d6c12c846da721432c029">CHESS_DEFINE_INTEGRAL_CONSTANT</a></div><div class="ttdeci">#define CHESS_DEFINE_INTEGRAL_CONSTANT(type, name, value)</div><div class="ttdoc">Defines a compile time integral constant.</div><div class="ttdef"><b>Definition</b> macros.h:64</div></div>
-<div class="ttc" id="asquare_8h_html_a4857b635806ef3a14364c33dc4b4637e"><div class="ttname"><a href="square_8h.html#a4857b635806ef3a14364c33dc4b4637e">ChessSquare</a></div><div class="ttdeci">ChessSquare</div><div class="ttdoc">Represents the squares on a chessboard, from A1 to H8.</div><div class="ttdef"><b>Definition</b> square.h:35</div></div>
-<div class="ttc" id="astructChessMove_html"><div class="ttname"><a href="structChessMove.html">ChessMove</a></div><div class="ttdef"><b>Definition</b> move.h:19</div></div>
+<div class="ttc" id="amove_8h_html"><div class="ttname"><a href="move_8h.html">move.h</a></div><div class="ttdoc">Defines the chess move type and related utility functions for representing and manipulating chess mov...</div></div>
+<div class="ttc" id="asquare_8h_html_a4857b635806ef3a14364c33dc4b4637e"><div class="ttname"><a href="square_8h.html#a4857b635806ef3a14364c33dc4b4637e">ChessSquare</a></div><div class="ttdeci">ChessSquare</div><div class="ttdoc">Represents the squares on a chess board, from A1 to H8.</div><div class="ttdef"><b>Definition</b> square.h:35</div></div>
+<div class="ttc" id="astructChessMove_html"><div class="ttname"><a href="structChessMove.html">ChessMove</a></div><div class="ttdoc">Represents a move in a chess game.</div><div class="ttdef"><b>Definition</b> move.h:30</div></div>
+<div class="ttc" id="astructChessMove_html_ad3b8a4322162a6cd7ea454da1a300731"><div class="ttname"><a href="structChessMove.html#ad3b8a4322162a6cd7ea454da1a300731">ChessMove::from</a></div><div class="ttdeci">ChessSquare from</div><div class="ttdef"><b>Definition</b> move.h:31</div></div>
 <div class="ttc" id="astructChessMoves_html"><div class="ttname"><a href="structChessMoves.html">ChessMoves</a></div><div class="ttdef"><b>Definition</b> moves.h:15</div></div>
-<div class="ttc" id="astructChessPosition_html"><div class="ttname"><a href="structChessPosition.html">ChessPosition</a></div><div class="ttdef"><b>Definition</b> position.h:26</div></div>
+<div class="ttc" id="astructChessPosition_html"><div class="ttname"><a href="structChessPosition.html">ChessPosition</a></div><div class="ttdoc">Represents the position in a chess game.</div><div class="ttdef"><b>Definition</b> position.h:30</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

@@ -4,7 +4,7 @@ var dir_e0aef313599eac671f160072b95549f2 =
     [ "color.h", "color_8h.html", "color_8h" ],
     [ "file.h", "file_8h.html", "file_8h" ],
     [ "macros.h", "macros_8h.html", "macros_8h" ],
-    [ "move.h", "move_8h_source.html", null ],
+    [ "move.h", "move_8h.html", "move_8h" ],
     [ "moves.h", "moves_8h_source.html", null ],
     [ "piece.h", "piece_8h.html", "piece_8h" ],
     [ "piece_type.h", "piece__type_8h.html", "piece__type_8h" ],
