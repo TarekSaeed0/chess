@@ -25,8 +25,8 @@ typedef struct ChessPosition ChessPosition;
  * Stores a position key and its associated count.
  */
 typedef struct ChessPositionCounterEntry {
-	uint64_t key;       /**< Hash key for the position. */
-	unsigned int value; /**< Number of times the position has occurred. */
+	uint64_t key;       /**< The hash key for the position. */
+	unsigned int value; /**< The number of times the position has occurred. */
 } ChessPositionCounterEntry;
 
 /**
@@ -37,13 +37,13 @@ typedef struct ChessPositionCounterEntry {
  */
 typedef struct ChessPositionCounter {
 	ChessPositionCounterEntry *entries; /**< Array of entries. */
-	size_t size;                        /**< Allocated size of the table. */
-	size_t count;                       /**< Number of entries in use. */
+	size_t size;                        /**< The allocated size of the table. */
+	size_t count;                       /**< The number of entries in use. */
 } ChessPositionCounter;
 
 /**
- * @brief Checks if the position counter is valid.
- * @param[in] counter Pointer to the position counter.
+ * @brief Checks if the given position counter is valid.
+ * @param[in] counter Pointer to the position counter to check.
  * @return true if the position counter is valid, false otherwise.
  */
 bool chess_position_counter_is_valid(const ChessPositionCounter *counter);
@@ -55,13 +55,13 @@ bool chess_position_counter_is_valid(const ChessPositionCounter *counter);
 ChessPositionCounter chess_position_counter_new(void);
 
 /**
- * @brief Releases resources held by the position counter.
+ * @brief Releases resources held by the given position counter.
  * @param[inout] counter Pointer to the position counter to drop.
  */
 void chess_position_counter_drop(ChessPositionCounter *counter);
 
 /**
- * @brief Clears all entries from the position counter.
+ * @brief Clears all entries from the given position counter.
  * @param[inout] counter Pointer to the position counter to clear.
  */
 void chess_position_counter_clear(ChessPositionCounter *counter);

@@ -30,7 +30,7 @@ typedef struct ChessPosition ChessPosition;
 
 /**
  * @enum ChessSquare
- * @brief Represents the squares on a chessboard, from A1 to H8.
+ * @brief Represents the squares on a chess board, from A1 to H8.
  */
 CHESS_ENUM(uint8_t, ChessSquare){
 	CHESS_SQUARE_A1   = CHESS_FILE_A | CHESS_RANK_1 << 4U, /**< Square A1 */

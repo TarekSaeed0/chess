@@ -22,7 +22,7 @@ extern "C" {
 
 /**
  * @enum ChessFile
- * @brief Represents the files (columns) on a chessboard, from A to H.
+ * @brief Represents the files (columns) on a chess board, from A to H.
  */
 CHESS_ENUM(int8_t, ChessFile){
 	CHESS_FILE_A    = 0, /**< File A */

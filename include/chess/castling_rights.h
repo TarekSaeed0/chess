@@ -17,7 +17,7 @@
 
 /**
  * @enum ChessCastlingRights
- * @brief Represents the castling rights in chess.
+ * @brief Represents the castling rights in a chess game.
  */
 CHESS_ENUM(uint8_t, ChessCastlingRights){
 	CHESS_CASTLING_RIGHTS_NONE            = 0U, /**< No castling rights. */

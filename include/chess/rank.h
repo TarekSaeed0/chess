@@ -22,7 +22,7 @@ extern "C" {
 
 /**
  * @enum ChessRank
- * @brief Represents the ranks (rows) on a chessboard, from 1 to 8.
+ * @brief Represents the ranks (rows) on a chess board, from 1 to 8.
  */
 CHESS_ENUM(int8_t, ChessRank){
 	CHESS_RANK_1    = 0, /**< Rank 1 */

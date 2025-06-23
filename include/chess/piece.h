@@ -23,7 +23,7 @@ extern "C" {
 
 /**
  * @enum ChessPieceType
- * @brief Represents the chess pieces.
+ * @brief Represents the pieces in a chess game.
  */
 CHESS_ENUM(uint8_t, ChessPiece){
 	CHESS_PIECE_WHITE_PAWN   = CHESS_COLOR_WHITE << 3U | CHESS_PIECE_TYPE_PAWN,   /**< White pawn piece */
