@@ -58,7 +58,6 @@ static void chess_moves_generate_pawn(
 	assert(moves != CHESS_NULL && chess_position_is_valid(position) && chess_square_is_valid(from));
 
 	ChessOffset direction    = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_OFFSET_NORTH : CHESS_OFFSET_SOUTH;
-
 	ChessRank promotion_rank = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_RANK_8 : CHESS_RANK_1;
 
 	ChessSquare to           = (ChessSquare)(from + direction);
@@ -238,48 +237,47 @@ static void chess_moves_generate_castlings(ChessMoves *moves, const ChessPositio
 
 	ChessColor other_side                         = chess_color_opposite(position->side_to_move);
 
-	if (position->castling_rights & king_side_castling_right) {
-		if (position->board[from + CHESS_OFFSET_EAST] == CHESS_PIECE_NONE &&
-		    position->board[from + 2 * CHESS_OFFSET_EAST] == CHESS_PIECE_NONE &&
-		    !chess_square_is_attacked(position, from, other_side) &&
-		    !chess_square_is_attacked(position, (ChessSquare)(from + CHESS_OFFSET_EAST), other_side) &&
-		    !chess_square_is_attacked(position, (ChessSquare)(from + 2 * CHESS_OFFSET_EAST), other_side)) {
-			chess_moves_add(
-			    moves,
-			    position,
-			    (ChessMove){
-			        .from                       = from,
-			        .to                         = (ChessSquare)(from + 2 * CHESS_OFFSET_EAST),
-			        .promotion_type             = CHESS_PIECE_TYPE_NONE,
-			        .captured_piece             = CHESS_PIECE_NONE,
-			        .previous_castling_rights   = position->castling_rights,
-			        .previous_en_passant_square = position->en_passant_square,
-			        .previous_half_move_clock   = position->half_move_clock,
-			    }
-			);
-		}
+	if ((position->castling_rights & king_side_castling_right) &&
+	    position->board[from + CHESS_OFFSET_EAST] == CHESS_PIECE_NONE &&
+	    position->board[from + 2 * CHESS_OFFSET_EAST] == CHESS_PIECE_NONE &&
+	    !chess_square_is_attacked(position, from, other_side) &&
+	    !chess_square_is_attacked(position, (ChessSquare)(from + CHESS_OFFSET_EAST), other_side) &&
+	    !chess_square_is_attacked(position, (ChessSquare)(from + 2 * CHESS_OFFSET_EAST), other_side)) {
+		chess_moves_add(
+		    moves,
+		    position,
+		    (ChessMove){
+		        .from                       = from,
+		        .to                         = (ChessSquare)(from + 2 * CHESS_OFFSET_EAST),
+		        .promotion_type             = CHESS_PIECE_TYPE_NONE,
+		        .captured_piece             = CHESS_PIECE_NONE,
+		        .previous_castling_rights   = position->castling_rights,
+		        .previous_en_passant_square = position->en_passant_square,
+		        .previous_half_move_clock   = position->half_move_clock,
+		    }
+		);
 	}
-	if (position->castling_rights & queen_side_castling_right) {
-		if (position->board[from + CHESS_OFFSET_WEST] == CHESS_PIECE_NONE &&
-		    position->board[from + 2 * CHESS_OFFSET_WEST] == CHESS_PIECE_NONE &&
-		    position->board[from + 3 * CHESS_OFFSET_WEST] == CHESS_PIECE_NONE &&
-		    !chess_square_is_attacked(position, from, other_side) &&
-		    !chess_square_is_attacked(position, (ChessSquare)(from + CHESS_OFFSET_WEST), other_side) &&
-		    !chess_square_is_attacked(position, (ChessSquare)(from + 2 * CHESS_OFFSET_WEST), other_side)) {
-			chess_moves_add(
-			    moves,
-			    position,
-			    (ChessMove){
-			        .from                       = from,
-			        .to                         = (ChessSquare)(from + 2 * CHESS_OFFSET_WEST),
-			        .promotion_type             = CHESS_PIECE_TYPE_NONE,
-			        .captured_piece             = CHESS_PIECE_NONE,
-			        .previous_castling_rights   = position->castling_rights,
-			        .previous_en_passant_square = position->en_passant_square,
-			        .previous_half_move_clock   = position->half_move_clock,
-			    }
-			);
-		}
+
+	if ((position->castling_rights & queen_side_castling_right) &&
+	    position->board[from + CHESS_OFFSET_WEST] == CHESS_PIECE_NONE &&
+	    position->board[from + 2 * CHESS_OFFSET_WEST] == CHESS_PIECE_NONE &&
+	    position->board[from + 3 * CHESS_OFFSET_WEST] == CHESS_PIECE_NONE &&
+	    !chess_square_is_attacked(position, from, other_side) &&
+	    !chess_square_is_attacked(position, (ChessSquare)(from + CHESS_OFFSET_WEST), other_side) &&
+	    !chess_square_is_attacked(position, (ChessSquare)(from + 2 * CHESS_OFFSET_WEST), other_side)) {
+		chess_moves_add(
+		    moves,
+		    position,
+		    (ChessMove){
+		        .from                       = from,
+		        .to                         = (ChessSquare)(from + 2 * CHESS_OFFSET_WEST),
+		        .promotion_type             = CHESS_PIECE_TYPE_NONE,
+		        .captured_piece             = CHESS_PIECE_NONE,
+		        .previous_castling_rights   = position->castling_rights,
+		        .previous_en_passant_square = position->en_passant_square,
+		        .previous_half_move_clock   = position->half_move_clock,
+		    }
+		);
 	}
 }
 static void chess_moves_generate_from_(ChessMoves *moves, const ChessPosition *position, ChessSquare from) {

@@ -1,4 +1,3 @@
-#include "chess/position.h"
 #include <assert.h>
 #include <chess.h>
 #include <stdio.h>

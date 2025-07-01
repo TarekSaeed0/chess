@@ -1,5 +1,3 @@
-#include "chess/color.h"
-#include "chess/piece_type.h"
 #include <chess/piece.h>
 
 #include <assert.h>
@@ -69,7 +67,7 @@ bool chess_piece_is_valid(ChessPiece piece) {
 	}
 }
 ChessPiece chess_piece_new(ChessColor color, ChessPieceType type) {
-	assert(chess_color_is_valid(color) && chess_piece_type_is_valid(type));
+	assert((chess_color_is_valid(color) || color == CHESS_COLOR_NONE) && (chess_piece_type_is_valid(type) || type == CHESS_PIECE_TYPE_NONE));
 
 	return (ChessPiece)(color << 3U | type);
 }

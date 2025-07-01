@@ -11,6 +11,7 @@
 #include <chess/piece_type.h>
 #include <chess/position.h>
 #include <chess/position_counter.h>
+#include <chess/position_private.h>
 #include <chess/rank.h>
 #include <chess/square.h>
 
@@ -38,15 +39,15 @@ void chess_move_debug(ChessMove move) {
 	chess_piece_debug(move.captured_piece);
 	printf(",\n");
 
-	printf("\t.castling_rights = ");
+	printf("\t.previous_castling_rights = ");
 	chess_castling_rights_debug(move.previous_castling_rights);
 	printf(",\n");
 
-	printf("\t.en_passant_square = ");
+	printf("\t.previous_en_passant_square = ");
 	chess_square_debug(move.previous_en_passant_square);
 	printf(",\n");
 
-	printf("\t.half_move_clock = %u,\n", move.previous_half_move_clock);
+	printf("\t.previous_half_move_clock = %u,\n", move.previous_half_move_clock);
 
 	printf("}");
 }

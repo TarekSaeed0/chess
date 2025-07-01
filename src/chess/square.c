@@ -164,7 +164,7 @@ bool chess_square_is_attacked(const ChessPosition *position, ChessSquare square,
 			[CHESS_OFFSET_EAST + 2 * CHESS_OFFSET_NORTH + 0x77] = 1U << CHESS_PIECE_TYPE_KNIGHT,
 		};
 
-		int8_t difference            = (int8_t)(square - attacker_square);
+		ChessOffset difference       = square - attacker_square;
 		uint8_t index                = (uint8_t)(difference + 0x77);
 
 		ChessPieceType attacker_type = chess_piece_type(attacker);

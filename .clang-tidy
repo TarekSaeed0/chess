@@ -13,6 +13,7 @@ Checks: >
   -hicpp-signed-bitwise,
   -readability-implicit-bool-conversion,
   -misc-no-recursion,
+  -llvm-header-guard,
 
 CheckOptions:
   readability-identifier-length.IgnoredVariableNames: "^to$"
