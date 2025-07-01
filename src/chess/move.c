@@ -375,23 +375,267 @@ size_t chess_move_to_algebraic(const ChessPosition *position, ChessMove move, ch
 
 	return total_written;
 }
+bool chess_move_is_pseudolegal(const ChessPosition *position, ChessMove move) {
+	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
+
+	if (move.previous_en_passant_square != position->en_passant_square ||
+	    move.previous_castling_rights != position->castling_rights ||
+	    move.previous_half_move_clock != position->half_move_clock) {
+		return false;
+	}
+
+	ChessPiece piece = position->board[move.from];
+
+	ChessColor color = chess_piece_color(piece);
+	if (color != position->side_to_move) {
+		return false;
+	}
+
+	static CHESS_CONSTEXPR uint8_t moves[256] = {
+		[CHESS_OFFSET_NORTH + 0x77]                         = 1U << CHESS_PIECE_TYPE_PAWN | 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN | 1U << CHESS_PIECE_TYPE_KING,
+		[2 * CHESS_OFFSET_NORTH + 0x77]                     = 1U << CHESS_PIECE_TYPE_PAWN | 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[3 * CHESS_OFFSET_NORTH + 0x77]                     = 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[4 * CHESS_OFFSET_NORTH + 0x77]                     = 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[5 * CHESS_OFFSET_NORTH + 0x77]                     = 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[6 * CHESS_OFFSET_NORTH + 0x77]                     = 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[7 * CHESS_OFFSET_NORTH + 0x77]                     = 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN,
+
+		[CHESS_OFFSET_EAST + 0x77]                          = 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN | 1U << CHESS_PIECE_TYPE_KING,
+		[2 * CHESS_OFFSET_EAST + 0x77]                      = 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN | 1U << CHESS_PIECE_TYPE_KING,
+		[3 * CHESS_OFFSET_EAST + 0x77]                      = 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[4 * CHESS_OFFSET_EAST + 0x77]                      = 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[5 * CHESS_OFFSET_EAST + 0x77]                      = 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[6 * CHESS_OFFSET_EAST + 0x77]                      = 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[7 * CHESS_OFFSET_EAST + 0x77]                      = 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN,
+
+		[CHESS_OFFSET_SOUTH + 0x77]                         = 1U << CHESS_PIECE_TYPE_PAWN | 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN | 1U << CHESS_PIECE_TYPE_KING,
+		[2 * CHESS_OFFSET_SOUTH + 0x77]                     = 1U << CHESS_PIECE_TYPE_PAWN | 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[3 * CHESS_OFFSET_SOUTH + 0x77]                     = 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[4 * CHESS_OFFSET_SOUTH + 0x77]                     = 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[5 * CHESS_OFFSET_SOUTH + 0x77]                     = 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[6 * CHESS_OFFSET_SOUTH + 0x77]                     = 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[7 * CHESS_OFFSET_SOUTH + 0x77]                     = 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN,
+
+		[CHESS_OFFSET_WEST + 0x77]                          = 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN | 1U << CHESS_PIECE_TYPE_KING,
+		[2 * CHESS_OFFSET_WEST + 0x77]                      = 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN | 1U << CHESS_PIECE_TYPE_KING,
+		[3 * CHESS_OFFSET_WEST + 0x77]                      = 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[4 * CHESS_OFFSET_WEST + 0x77]                      = 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[5 * CHESS_OFFSET_WEST + 0x77]                      = 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[6 * CHESS_OFFSET_WEST + 0x77]                      = 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[7 * CHESS_OFFSET_WEST + 0x77]                      = 1U << CHESS_PIECE_TYPE_ROOK | 1U << CHESS_PIECE_TYPE_QUEEN,
+
+		[CHESS_OFFSET_NORTH_EAST + 0x77]                    = 1U << CHESS_PIECE_TYPE_PAWN | 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN | 1U << CHESS_PIECE_TYPE_KING,
+		[2 * CHESS_OFFSET_NORTH_EAST + 0x77]                = 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[3 * CHESS_OFFSET_NORTH_EAST + 0x77]                = 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[4 * CHESS_OFFSET_NORTH_EAST + 0x77]                = 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[5 * CHESS_OFFSET_NORTH_EAST + 0x77]                = 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[6 * CHESS_OFFSET_NORTH_EAST + 0x77]                = 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[7 * CHESS_OFFSET_NORTH_EAST + 0x77]                = 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN,
+
+		[CHESS_OFFSET_SOUTH_EAST + 0x77]                    = 1U << CHESS_PIECE_TYPE_PAWN | 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN | 1U << CHESS_PIECE_TYPE_KING,
+		[2 * CHESS_OFFSET_SOUTH_EAST + 0x77]                = 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[3 * CHESS_OFFSET_SOUTH_EAST + 0x77]                = 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[4 * CHESS_OFFSET_SOUTH_EAST + 0x77]                = 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[5 * CHESS_OFFSET_SOUTH_EAST + 0x77]                = 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[6 * CHESS_OFFSET_SOUTH_EAST + 0x77]                = 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[7 * CHESS_OFFSET_SOUTH_EAST + 0x77]                = 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN,
+
+		[CHESS_OFFSET_SOUTH_WEST + 0x77]                    = 1U << CHESS_PIECE_TYPE_PAWN | 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN | 1U << CHESS_PIECE_TYPE_KING,
+		[2 * CHESS_OFFSET_SOUTH_WEST + 0x77]                = 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[3 * CHESS_OFFSET_SOUTH_WEST + 0x77]                = 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[4 * CHESS_OFFSET_SOUTH_WEST + 0x77]                = 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[5 * CHESS_OFFSET_SOUTH_WEST + 0x77]                = 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[6 * CHESS_OFFSET_SOUTH_WEST + 0x77]                = 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[7 * CHESS_OFFSET_SOUTH_WEST + 0x77]                = 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN,
+
+		[CHESS_OFFSET_NORTH_WEST + 0x77]                    = 1U << CHESS_PIECE_TYPE_PAWN | 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN | 1U << CHESS_PIECE_TYPE_KING,
+		[2 * CHESS_OFFSET_NORTH_WEST + 0x77]                = 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[3 * CHESS_OFFSET_NORTH_WEST + 0x77]                = 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[4 * CHESS_OFFSET_NORTH_WEST + 0x77]                = 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[5 * CHESS_OFFSET_NORTH_WEST + 0x77]                = 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[6 * CHESS_OFFSET_NORTH_WEST + 0x77]                = 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN,
+		[7 * CHESS_OFFSET_NORTH_WEST + 0x77]                = 1U << CHESS_PIECE_TYPE_BISHOP | 1U << CHESS_PIECE_TYPE_QUEEN,
+
+		[CHESS_OFFSET_WEST + 2 * CHESS_OFFSET_SOUTH + 0x77] = 1U << CHESS_PIECE_TYPE_KNIGHT,
+		[CHESS_OFFSET_EAST + 2 * CHESS_OFFSET_SOUTH + 0x77] = 1U << CHESS_PIECE_TYPE_KNIGHT,
+		[2 * CHESS_OFFSET_WEST + CHESS_OFFSET_SOUTH + 0x77] = 1U << CHESS_PIECE_TYPE_KNIGHT,
+		[2 * CHESS_OFFSET_EAST + CHESS_OFFSET_SOUTH + 0x77] = 1U << CHESS_PIECE_TYPE_KNIGHT,
+		[2 * CHESS_OFFSET_WEST + CHESS_OFFSET_NORTH + 0x77] = 1U << CHESS_PIECE_TYPE_KNIGHT,
+		[2 * CHESS_OFFSET_EAST + CHESS_OFFSET_NORTH + 0x77] = 1U << CHESS_PIECE_TYPE_KNIGHT,
+		[CHESS_OFFSET_WEST + 2 * CHESS_OFFSET_NORTH + 0x77] = 1U << CHESS_PIECE_TYPE_KNIGHT,
+		[CHESS_OFFSET_EAST + 2 * CHESS_OFFSET_NORTH + 0x77] = 1U << CHESS_PIECE_TYPE_KNIGHT,
+	};
+
+	ChessOffset difference = move.to - move.from;
+	uint8_t index          = (uint8_t)(difference + 0x77);
+
+	ChessPieceType type    = chess_piece_type(piece);
+	if (!(moves[index] & (1U << type))) {
+		return false;
+	}
+
+	switch (type) {
+		case CHESS_PIECE_TYPE_PAWN: {
+			ChessOffset direction    = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_OFFSET_NORTH : CHESS_OFFSET_SOUTH;
+			ChessRank promotion_rank = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_RANK_8 : CHESS_RANK_1;
+
+			if (difference == direction) {
+				return position->board[move.to] == CHESS_PIECE_NONE &&
+				       !(chess_square_rank(move.to) == promotion_rank && move.promotion_type == CHESS_PIECE_TYPE_NONE);
+			}
+
+			if (difference == 2 * direction) {
+				ChessRank start_rank = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_RANK_2 : CHESS_RANK_7;
+				return chess_square_rank(move.from) == start_rank &&
+				       position->board[move.from + direction] == CHESS_PIECE_NONE &&
+				       position->board[move.to] == CHESS_PIECE_NONE;
+			}
+
+			if (difference == direction + CHESS_OFFSET_EAST || difference == direction + CHESS_OFFSET_WEST) {
+				return move.to == position->en_passant_square ||
+				       (chess_piece_color(position->board[move.to]) == chess_color_opposite(position->side_to_move) &&
+				        !(chess_square_rank(move.to) == promotion_rank && move.promotion_type == CHESS_PIECE_TYPE_NONE));
+			}
+
+			return false;
+		} break;
+		case CHESS_PIECE_TYPE_KNIGHT: {
+			return chess_piece_color(position->board[move.to]) != position->side_to_move;
+		} break;
+		case CHESS_PIECE_TYPE_BISHOP:
+		case CHESS_PIECE_TYPE_ROOK:
+		case CHESS_PIECE_TYPE_QUEEN: {
+			if (chess_piece_color(position->board[move.to]) == position->side_to_move) {
+				return false;
+			}
+
+			static CHESS_CONSTEXPR ChessOffset directions[256] = {
+				[CHESS_OFFSET_NORTH + 0x77]          = CHESS_OFFSET_NORTH,
+				[2 * CHESS_OFFSET_NORTH + 0x77]      = CHESS_OFFSET_NORTH,
+				[3 * CHESS_OFFSET_NORTH + 0x77]      = CHESS_OFFSET_NORTH,
+				[4 * CHESS_OFFSET_NORTH + 0x77]      = CHESS_OFFSET_NORTH,
+				[5 * CHESS_OFFSET_NORTH + 0x77]      = CHESS_OFFSET_NORTH,
+				[6 * CHESS_OFFSET_NORTH + 0x77]      = CHESS_OFFSET_NORTH,
+				[7 * CHESS_OFFSET_NORTH + 0x77]      = CHESS_OFFSET_NORTH,
+
+				[CHESS_OFFSET_EAST + 0x77]           = CHESS_OFFSET_EAST,
+				[2 * CHESS_OFFSET_EAST + 0x77]       = CHESS_OFFSET_EAST,
+				[3 * CHESS_OFFSET_EAST + 0x77]       = CHESS_OFFSET_EAST,
+				[4 * CHESS_OFFSET_EAST + 0x77]       = CHESS_OFFSET_EAST,
+				[5 * CHESS_OFFSET_EAST + 0x77]       = CHESS_OFFSET_EAST,
+				[6 * CHESS_OFFSET_EAST + 0x77]       = CHESS_OFFSET_EAST,
+				[7 * CHESS_OFFSET_EAST + 0x77]       = CHESS_OFFSET_EAST,
+
+				[CHESS_OFFSET_SOUTH + 0x77]          = CHESS_OFFSET_SOUTH,
+				[2 * CHESS_OFFSET_SOUTH + 0x77]      = CHESS_OFFSET_SOUTH,
+				[3 * CHESS_OFFSET_SOUTH + 0x77]      = CHESS_OFFSET_SOUTH,
+				[4 * CHESS_OFFSET_SOUTH + 0x77]      = CHESS_OFFSET_SOUTH,
+				[5 * CHESS_OFFSET_SOUTH + 0x77]      = CHESS_OFFSET_SOUTH,
+				[6 * CHESS_OFFSET_SOUTH + 0x77]      = CHESS_OFFSET_SOUTH,
+				[7 * CHESS_OFFSET_SOUTH + 0x77]      = CHESS_OFFSET_SOUTH,
+
+				[CHESS_OFFSET_WEST + 0x77]           = CHESS_OFFSET_WEST,
+				[2 * CHESS_OFFSET_WEST + 0x77]       = CHESS_OFFSET_WEST,
+				[3 * CHESS_OFFSET_WEST + 0x77]       = CHESS_OFFSET_WEST,
+				[4 * CHESS_OFFSET_WEST + 0x77]       = CHESS_OFFSET_WEST,
+				[5 * CHESS_OFFSET_WEST + 0x77]       = CHESS_OFFSET_WEST,
+				[6 * CHESS_OFFSET_WEST + 0x77]       = CHESS_OFFSET_WEST,
+				[7 * CHESS_OFFSET_WEST + 0x77]       = CHESS_OFFSET_WEST,
+
+				[CHESS_OFFSET_NORTH_EAST + 0x77]     = CHESS_OFFSET_NORTH_EAST,
+				[2 * CHESS_OFFSET_NORTH_EAST + 0x77] = CHESS_OFFSET_NORTH_EAST,
+				[3 * CHESS_OFFSET_NORTH_EAST + 0x77] = CHESS_OFFSET_NORTH_EAST,
+				[4 * CHESS_OFFSET_NORTH_EAST + 0x77] = CHESS_OFFSET_NORTH_EAST,
+				[5 * CHESS_OFFSET_NORTH_EAST + 0x77] = CHESS_OFFSET_NORTH_EAST,
+				[6 * CHESS_OFFSET_NORTH_EAST + 0x77] = CHESS_OFFSET_NORTH_EAST,
+				[7 * CHESS_OFFSET_NORTH_EAST + 0x77] = CHESS_OFFSET_NORTH_EAST,
+
+				[CHESS_OFFSET_SOUTH_EAST + 0x77]     = CHESS_OFFSET_SOUTH_EAST,
+				[2 * CHESS_OFFSET_SOUTH_EAST + 0x77] = CHESS_OFFSET_SOUTH_EAST,
+				[3 * CHESS_OFFSET_SOUTH_EAST + 0x77] = CHESS_OFFSET_SOUTH_EAST,
+				[4 * CHESS_OFFSET_SOUTH_EAST + 0x77] = CHESS_OFFSET_SOUTH_EAST,
+				[5 * CHESS_OFFSET_SOUTH_EAST + 0x77] = CHESS_OFFSET_SOUTH_EAST,
+				[6 * CHESS_OFFSET_SOUTH_EAST + 0x77] = CHESS_OFFSET_SOUTH_EAST,
+				[7 * CHESS_OFFSET_SOUTH_EAST + 0x77] = CHESS_OFFSET_SOUTH_EAST,
+
+				[CHESS_OFFSET_SOUTH_WEST + 0x77]     = CHESS_OFFSET_SOUTH_WEST,
+				[2 * CHESS_OFFSET_SOUTH_WEST + 0x77] = CHESS_OFFSET_SOUTH_WEST,
+				[3 * CHESS_OFFSET_SOUTH_WEST + 0x77] = CHESS_OFFSET_SOUTH_WEST,
+				[4 * CHESS_OFFSET_SOUTH_WEST + 0x77] = CHESS_OFFSET_SOUTH_WEST,
+				[5 * CHESS_OFFSET_SOUTH_WEST + 0x77] = CHESS_OFFSET_SOUTH_WEST,
+				[6 * CHESS_OFFSET_SOUTH_WEST + 0x77] = CHESS_OFFSET_SOUTH_WEST,
+				[7 * CHESS_OFFSET_SOUTH_WEST + 0x77] = CHESS_OFFSET_SOUTH_WEST,
+
+				[CHESS_OFFSET_NORTH_WEST + 0x77]     = CHESS_OFFSET_NORTH_WEST,
+				[2 * CHESS_OFFSET_NORTH_WEST + 0x77] = CHESS_OFFSET_NORTH_WEST,
+				[3 * CHESS_OFFSET_NORTH_WEST + 0x77] = CHESS_OFFSET_NORTH_WEST,
+				[4 * CHESS_OFFSET_NORTH_WEST + 0x77] = CHESS_OFFSET_NORTH_WEST,
+				[5 * CHESS_OFFSET_NORTH_WEST + 0x77] = CHESS_OFFSET_NORTH_WEST,
+				[6 * CHESS_OFFSET_NORTH_WEST + 0x77] = CHESS_OFFSET_NORTH_WEST,
+				[7 * CHESS_OFFSET_NORTH_WEST + 0x77] = CHESS_OFFSET_NORTH_WEST,
+			};
+
+			ChessOffset direction = directions[index];
+			ChessSquare current   = (ChessSquare)(move.from + direction);
+			while (true) {
+				if (current == move.to) {
+					return true;
+				}
+				if (position->board[current] != CHESS_PIECE_NONE) {
+					return false;
+				}
+				current += direction;
+			}
+		} break;
+		case CHESS_PIECE_TYPE_KING: {
+			if (difference == 2 * CHESS_OFFSET_EAST) {
+				ChessCastlingRights castling_right = position->side_to_move == CHESS_COLOR_WHITE
+				                                         ? CHESS_CASTLING_RIGHTS_WHITE_KINGSIDE
+				                                         : CHESS_CASTLING_RIGHTS_BLACK_KINGSIDE;
+
+				ChessColor other_side              = chess_color_opposite(position->side_to_move);
+
+				return (position->castling_rights & castling_right) &&
+				       position->board[move.from + CHESS_OFFSET_EAST] == CHESS_PIECE_NONE &&
+				       position->board[move.from + 2 * CHESS_OFFSET_EAST] == CHESS_PIECE_NONE &&
+				       !chess_square_is_attacked(position, move.from, other_side) &&
+				       !chess_square_is_attacked(position, (ChessSquare)(move.from + CHESS_OFFSET_EAST), other_side) &&
+				       !chess_square_is_attacked(position, (ChessSquare)(move.from + 2 * CHESS_OFFSET_EAST), other_side);
+			}
+
+			if (difference == 2 * CHESS_OFFSET_WEST) {
+				ChessCastlingRights castling_right = position->side_to_move == CHESS_COLOR_WHITE
+				                                         ? CHESS_CASTLING_RIGHTS_WHITE_QUEENSIDE
+				                                         : CHESS_CASTLING_RIGHTS_BLACK_QUEENSIDE;
+
+				ChessColor other_side              = chess_color_opposite(position->side_to_move);
+
+				return (position->castling_rights & castling_right) &&
+				       position->board[move.from + CHESS_OFFSET_WEST] == CHESS_PIECE_NONE &&
+				       position->board[move.from + 2 * CHESS_OFFSET_WEST] == CHESS_PIECE_NONE &&
+				       position->board[move.from + 3 * CHESS_OFFSET_WEST] == CHESS_PIECE_NONE &&
+				       !chess_square_is_attacked(position, move.from, other_side) &&
+				       !chess_square_is_attacked(position, (ChessSquare)(move.from + CHESS_OFFSET_WEST), other_side) &&
+				       !chess_square_is_attacked(position, (ChessSquare)(move.from + 2 * CHESS_OFFSET_WEST), other_side);
+			}
+
+			return chess_piece_color(position->board[move.to]) != position->side_to_move;
+		} break;
+		default: assert(false);
+	}
+
+	return true;
+}
 bool chess_move_is_legal(const ChessPosition *position, ChessMove move) {
 	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
 
-	// TODO: implement actual move legality checking
-	ChessMoves moves = chess_moves_generate_from(position, move.from);
-	for (size_t i = 0; i < moves.count; i++) {
-		if (moves.moves[i].to == move.to &&
-		    moves.moves[i].promotion_type == move.promotion_type &&
-		    moves.moves[i].captured_piece == move.captured_piece &&
-		    moves.moves[i].previous_castling_rights == move.previous_castling_rights &&
-		    moves.moves[i].previous_en_passant_square == move.previous_en_passant_square &&
-		    moves.moves[i].previous_half_move_clock == move.previous_half_move_clock) {
-			return true;
-		}
+	if (!chess_move_is_pseudolegal(position, move)) {
+		return false;
 	}
 
-	return false;
+	ChessPosition position_after_move = *position;
+	chess_move_do_unchecked(&position_after_move, move);
+	return !chess_position_is_king_attacked(&position_after_move, position->side_to_move);
 }
 bool chess_move_is_promotion(const ChessPosition *position, ChessMove move) {
 	assert(chess_position_is_valid(position) && chess_move_is_valid(move));
