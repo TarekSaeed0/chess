@@ -43,7 +43,8 @@ bool chess_piece_type_is_valid(ChessPieceType type) {
 	}
 }
 size_t chess_piece_type_from_algebraic(ChessPieceType *type, const char *string) {
-	assert(type != CHESS_NULL && string != CHESS_NULL);
+	assert(type != CHESS_NULL);
+	assert(string != CHESS_NULL);
 
 	switch (string[0]) {
 		case 'P': *type = CHESS_PIECE_TYPE_PAWN; break;
@@ -58,7 +59,8 @@ size_t chess_piece_type_from_algebraic(ChessPieceType *type, const char *string)
 	return 1;
 }
 size_t chess_piece_type_to_algebraic(ChessPieceType type, char *string, size_t string_size) {
-	assert(chess_piece_type_is_valid(type) && (string != CHESS_NULL || string_size == 0));
+	assert(chess_piece_type_is_valid(type));
+	assert((string != CHESS_NULL || string_size == 0));
 
 	if (string != CHESS_NULL && string_size >= 2) {
 		switch (type) {

@@ -67,7 +67,8 @@ bool chess_piece_is_valid(ChessPiece piece) {
 	}
 }
 ChessPiece chess_piece_new(ChessColor color, ChessPieceType type) {
-	assert((chess_color_is_valid(color) || color == CHESS_COLOR_NONE) && (chess_piece_type_is_valid(type) || type == CHESS_PIECE_TYPE_NONE));
+	assert(chess_color_is_valid(color) || color == CHESS_COLOR_NONE);
+	assert(chess_piece_type_is_valid(type) || type == CHESS_PIECE_TYPE_NONE);
 
 	return (ChessPiece)(color << 3U | type);
 }
@@ -82,7 +83,8 @@ ChessPieceType chess_piece_type(ChessPiece piece) {
 	return (ChessPieceType)(piece & 0x7U);
 }
 size_t chess_piece_from_algebraic(ChessPiece *piece, const char *string) {
-	assert(piece != CHESS_NULL && string != CHESS_NULL);
+	assert(piece != CHESS_NULL);
+	assert(string != CHESS_NULL);
 
 	switch (string[0]) {
 		case 'P': *piece = CHESS_PIECE_WHITE_PAWN; break;
@@ -105,7 +107,8 @@ size_t chess_piece_from_algebraic(ChessPiece *piece, const char *string) {
 	return 1;
 }
 size_t chess_piece_to_algebraic(ChessPiece piece, char *string, size_t string_size) {
-	assert(chess_piece_is_valid(piece) && (string != CHESS_NULL || string_size == 0));
+	assert(chess_piece_is_valid(piece));
+	assert(string != CHESS_NULL || string_size == 0);
 
 	if (string != CHESS_NULL && string_size >= 2) {
 		switch (piece) {

@@ -96,6 +96,7 @@ static bool chess_position_counter_expand(ChessPositionCounter *counter) {
 }
 unsigned int chess_position_counter_count(const ChessPositionCounter *counter, const ChessPosition *position) {
 	assert(chess_position_counter_is_valid(counter));
+	assert(chess_position_is_valid(position));
 
 	if (counter->entries == CHESS_NULL) {
 		return 0;
@@ -114,6 +115,7 @@ unsigned int chess_position_counter_count(const ChessPositionCounter *counter, c
 }
 bool chess_position_counter_increment(ChessPositionCounter *counter, const ChessPosition *position) {
 	assert(chess_position_counter_is_valid(counter));
+	assert(chess_position_is_valid(position));
 
 	if (counter->entries == CHESS_NULL || (float)counter->count / (float)counter->size > CHESS_POSITION_COUNTER_MAXIMUM_LOAD_FACTOR) {
 		if (!chess_position_counter_expand(counter)) {
@@ -139,6 +141,7 @@ bool chess_position_counter_increment(ChessPositionCounter *counter, const Chess
 }
 bool chess_position_counter_decrement(ChessPositionCounter *counter, const ChessPosition *position) {
 	assert(chess_position_counter_is_valid(counter));
+	assert(chess_position_is_valid(position));
 
 	if (counter->entries == CHESS_NULL) {
 		return false;

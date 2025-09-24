@@ -17,7 +17,9 @@
 #include <string.h>
 
 static void chess_moves_add(ChessMoves *moves, const ChessPosition *position, ChessMove move) {
-	assert(moves != CHESS_NULL && chess_position_is_valid(position) && chess_move_is_valid(move));
+	assert(moves != CHESS_NULL);
+	assert(chess_position_is_valid(position));
+	assert(chess_move_is_valid(move));
 
 	ChessPosition position_after_move = *position;
 	chess_move_do_unchecked(&position_after_move, move);
@@ -32,7 +34,10 @@ static void chess_moves_generate_pawn_promotions(
     ChessSquare from,
     ChessSquare to
 ) {
-	assert(moves != CHESS_NULL && chess_position_is_valid(position) && chess_square_is_valid(from) && chess_square_is_valid(to));
+	assert(moves != CHESS_NULL);
+	assert(chess_position_is_valid(position));
+	assert(chess_square_is_valid(from));
+	assert(chess_square_is_valid(to));
 
 	for (ChessPieceType promotion_type = CHESS_PIECE_TYPE_KNIGHT; promotion_type <= CHESS_PIECE_TYPE_QUEEN; promotion_type++) {
 		chess_moves_add(
@@ -55,7 +60,9 @@ static void chess_moves_generate_pawn(
     const ChessPosition *position,
     ChessSquare from
 ) {
-	assert(moves != CHESS_NULL && chess_position_is_valid(position) && chess_square_is_valid(from));
+	assert(moves != CHESS_NULL);
+	assert(chess_position_is_valid(position));
+	assert(chess_square_is_valid(from));
 
 	ChessOffset direction    = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_OFFSET_NORTH : CHESS_OFFSET_SOUTH;
 	ChessRank promotion_rank = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_RANK_8 : CHESS_RANK_1;
@@ -150,7 +157,9 @@ static void chess_moves_generate_directions(
     const ChessOffset *directions,
     size_t direction_count
 ) {
-	assert(moves != CHESS_NULL && chess_position_is_valid(position) && (directions != CHESS_NULL || direction_count == 0));
+	assert(moves != CHESS_NULL);
+	assert(chess_position_is_valid(position));
+	assert(directions != CHESS_NULL || direction_count == 0);
 
 	for (size_t i = 0; i < direction_count; i++) {
 		ChessOffset direction = directions[i];
@@ -203,7 +212,9 @@ static void chess_moves_generate_offsets(
     const ChessOffset *offsets,
     size_t offset_count
 ) {
-	assert(moves != CHESS_NULL && chess_position_is_valid(position) && (offsets != CHESS_NULL || offset_count == 0));
+	assert(moves != CHESS_NULL);
+	assert(chess_position_is_valid(position));
+	assert(offsets != CHESS_NULL || offset_count == 0);
 
 	for (size_t i = 0; i < offset_count; i++) {
 		ChessSquare to = (ChessSquare)(from + offsets[i]);
@@ -225,7 +236,8 @@ static void chess_moves_generate_offsets(
 	}
 }
 static void chess_moves_generate_castlings(ChessMoves *moves, const ChessPosition *position) {
-	assert(moves != CHESS_NULL && chess_position_is_valid(position));
+	assert(moves != CHESS_NULL);
+	assert(chess_position_is_valid(position));
 
 	ChessSquare from                              = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_SQUARE_E1 : CHESS_SQUARE_E8;
 	ChessCastlingRights king_side_castling_right  = position->side_to_move == CHESS_COLOR_WHITE
@@ -281,7 +293,9 @@ static void chess_moves_generate_castlings(ChessMoves *moves, const ChessPositio
 	}
 }
 static void chess_moves_generate_from_(ChessMoves *moves, const ChessPosition *position, ChessSquare from) {
-	assert(moves != CHESS_NULL && chess_position_is_valid(position) && chess_square_is_valid(from));
+	assert(moves != CHESS_NULL);
+	assert(chess_position_is_valid(position));
+	assert(chess_square_is_valid(from));
 
 	ChessPiece piece = position->board[from];
 
@@ -356,7 +370,8 @@ static void chess_moves_generate_from_(ChessMoves *moves, const ChessPosition *p
 	}
 }
 ChessMoves chess_moves_generate_from(const ChessPosition *position, ChessSquare from) {
-	assert(chess_position_is_valid(position) && chess_square_is_valid(from));
+	assert(chess_position_is_valid(position));
+	assert(chess_square_is_valid(from));
 
 	ChessMoves moves = { 0 };
 

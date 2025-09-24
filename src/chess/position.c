@@ -225,7 +225,8 @@ void chess_position_drop(ChessPosition *position) {
 	chess_position_counter_drop(&position->position_counter);
 }
 ChessPiece chess_position_piece_at_square(const ChessPosition *position, ChessSquare square) {
-	assert(chess_position_is_valid(position) && chess_square_is_valid(square));
+	assert(chess_position_is_valid(position));
+assert(chess_square_is_valid(square));
 
 	return position->board[square];
 }
@@ -235,7 +236,8 @@ ChessColor chess_position_side_to_move(const ChessPosition *position) {
 	return position->side_to_move;
 }
 size_t chess_position_from_fen(ChessPosition *position, const char *string) {
-	assert(position != CHESS_NULL && string != CHESS_NULL);
+	assert(position != CHESS_NULL);
+assert(string != CHESS_NULL);
 
 	size_t total_read = 0;
 

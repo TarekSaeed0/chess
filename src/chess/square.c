@@ -26,7 +26,8 @@ bool chess_square_is_valid(ChessSquare square) {
 	return (square & 0x88U) == 0;
 }
 ChessSquare chess_square_new(ChessFile file, ChessRank rank) {
-	assert(chess_file_is_valid(file) && chess_rank_is_valid(rank));
+	assert(chess_file_is_valid(file));
+	assert(chess_rank_is_valid(rank));
 
 	ChessSquare square = file | rank << 4U;
 
@@ -48,7 +49,8 @@ ChessColor chess_square_color(ChessSquare square) {
 	return (chess_square_file(square) + chess_square_rank(square)) % 2U ? CHESS_COLOR_BLACK : CHESS_COLOR_WHITE;
 }
 size_t chess_square_from_algebraic(ChessSquare *square, const char *string) {
-	assert(square != CHESS_NULL && string != CHESS_NULL);
+	assert(square != CHESS_NULL);
+	assert(string != CHESS_NULL);
 
 	size_t total_read = 0;
 
@@ -75,7 +77,8 @@ size_t chess_square_to_algebraic(ChessSquare square, char *string, size_t string
 	return total_written;
 }
 bool chess_square_is_attacked(const ChessPosition *position, ChessSquare square, ChessColor color) {
-	assert(chess_position_is_valid(position) && chess_square_is_valid(square));
+	assert(chess_position_is_valid(position));
+	assert(chess_square_is_valid(square));
 
 	for (ChessSquare attacker_square = CHESS_SQUARE_A1; attacker_square <= CHESS_SQUARE_H8; attacker_square++) {
 		if (!chess_square_is_valid(attacker_square)) {

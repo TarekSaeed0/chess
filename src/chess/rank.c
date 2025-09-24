@@ -41,7 +41,8 @@ bool chess_rank_is_valid(ChessRank rank) {
 	return (rank & 0x8U) == 0;
 }
 size_t chess_rank_from_algebraic(ChessRank *rank, const char *string) {
-	assert(rank != CHESS_NULL && string != CHESS_NULL);
+	assert(rank != CHESS_NULL);
+	assert(string != CHESS_NULL);
 
 	if (string[0] < '1' || '8' < string[0]) {
 		return 0;
@@ -54,7 +55,8 @@ size_t chess_rank_from_algebraic(ChessRank *rank, const char *string) {
 	return 1;
 }
 size_t chess_rank_to_algebraic(ChessRank rank, char *string, size_t string_size) {
-	assert(chess_rank_is_valid(rank) && (string != CHESS_NULL || string_size == 0));
+	assert(chess_rank_is_valid(rank));
+	assert(string != CHESS_NULL || string_size == 0);
 
 	if (string != CHESS_NULL && string_size >= 2) {
 		string[0] = (char)('1' + (rank - CHESS_RANK_1));
