@@ -110,28 +110,6 @@ size_t chess_move_from_algebraic(const ChessPosition *position, ChessMove *move,
 		total_read++;
 	}
 
-	if (strncmp(&string[total_read], "O-O", 3) == 0) {
-		ChessSquare from = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_SQUARE_E1 : CHESS_SQUARE_E8;
-
-		if (chess_piece_type(position->board[from]) != CHESS_PIECE_TYPE_KING) {
-			return 0;
-		}
-
-		*move = (ChessMove){
-			.from                       = from,
-			.to                         = (ChessSquare)(from + 2 * CHESS_OFFSET_EAST),
-			.promotion_type             = CHESS_PIECE_TYPE_NONE,
-			.captured_piece             = CHESS_PIECE_NONE,
-			.previous_castling_rights   = position->castling_rights,
-			.previous_en_passant_square = position->en_passant_square,
-			.previous_half_move_clock   = position->half_move_clock,
-		};
-		total_read += 3;
-
-		assert(chess_move_is_valid(*move));
-
-		return total_read;
-	}
 	if (strncmp(&string[total_read], "O-O-O", 5) == 0) {
 		ChessSquare from = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_SQUARE_E1 : CHESS_SQUARE_E8;
 
@@ -151,6 +129,31 @@ size_t chess_move_from_algebraic(const ChessPosition *position, ChessMove *move,
 		total_read += 5;
 
 		assert(chess_move_is_valid(*move));
+		assert(chess_move_is_queenside_castling(position, *move));
+
+		return total_read;
+	}
+
+	if (strncmp(&string[total_read], "O-O", 3) == 0) {
+		ChessSquare from = position->side_to_move == CHESS_COLOR_WHITE ? CHESS_SQUARE_E1 : CHESS_SQUARE_E8;
+
+		if (chess_piece_type(position->board[from]) != CHESS_PIECE_TYPE_KING) {
+			return 0;
+		}
+
+		*move = (ChessMove){
+			.from                       = from,
+			.to                         = (ChessSquare)(from + 2 * CHESS_OFFSET_EAST),
+			.promotion_type             = CHESS_PIECE_TYPE_NONE,
+			.captured_piece             = CHESS_PIECE_NONE,
+			.previous_castling_rights   = position->castling_rights,
+			.previous_en_passant_square = position->en_passant_square,
+			.previous_half_move_clock   = position->half_move_clock,
+		};
+		total_read += 3;
+
+		assert(chess_move_is_valid(*move));
+		assert(chess_move_is_kingside_castling(position, *move));
 
 		return total_read;
 	}
