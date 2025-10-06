@@ -642,10 +642,6 @@ bool chess_position_is_insufficient_material(const ChessPosition *position) {
 	    white_knights == 0 && black_knights == 0) {
 		return true;
 	}
-	if (white_bishops == 0 && black_bishops == 0 &&
-	    white_knights == 0 && black_knights == 0) {
-		return true;
-	}
 
 	if ((white_bishops == 1) + (white_knights == 1) + (black_bishops == 1) + (black_knights == 1) == 1) {
 		return true;
@@ -802,9 +798,9 @@ double chess_position_evaluate(const ChessPosition *position) {
 
 	ChessPosition temporary = *position;
 	temporary.side_to_move  = CHESS_COLOR_WHITE;
-	value += 0.1 * chess_moves_generate(position).count;
+	value += 0.1 * chess_moves_generate(&temporary).count;
 	temporary.side_to_move = CHESS_COLOR_BLACK;
-	value -= 0.1 * chess_moves_generate(position).count;
+	value -= 0.1 * chess_moves_generate(&temporary).count;
 
 	return value;
 }
