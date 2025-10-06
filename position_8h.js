@@ -3,6 +3,7 @@ var position_8h =
     [ "ChessPosition", "structChessPosition.html", "structChessPosition" ],
     [ "chess_position_debug", "position_8h.html#a1709de7d96c060d184feeb10bce7751a", null ],
     [ "chess_position_drop", "position_8h.html#a0010f4a37c6b145b465852497b442834", null ],
+    [ "chess_position_evaluate", "position_8h.html#a79d107a3c42d3401eba879d197d99467", null ],
     [ "chess_position_from_fen", "position_8h.html#a8fc73d8777bfdc34dfd8e1cfcd3b3b17", null ],
     [ "chess_position_hash", "position_8h.html#af88c291ca2525ee4b47e04034c86f4d4", null ],
     [ "chess_position_is_check", "position_8h.html#a2a4988da72b357668745205dff4a7c83", null ],
