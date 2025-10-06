@@ -377,7 +377,7 @@ ChessMoves chess_moves_generate_from(const ChessPosition *position, ChessSquare 
 
 	chess_moves_generate_from_(&moves, position, from);
 
-	if (from == position->king_squares[position->side_to_move]) {
+	if (from == position->pieces[position->side_to_move][CHESS_PIECE_TYPE_KING][0]) {
 		chess_moves_generate_castlings(&moves, position);
 	}
 
@@ -388,13 +388,14 @@ ChessMoves chess_moves_generate(const ChessPosition *position) {
 
 	ChessMoves moves = { 0 };
 
-	for (ChessSquare square = CHESS_SQUARE_A1; square <= CHESS_SQUARE_H8; square++) {
-		if (!chess_square_is_valid(square)) {
-			square += CHESS_SQUARE_A2 - (CHESS_SQUARE_H1 + 1) - 1;
-			continue;
-		}
+	for (ChessColor color = CHESS_COLOR_WHITE; color <= CHESS_COLOR_BLACK; color++) {
+		for (ChessPieceType type = CHESS_PIECE_TYPE_PAWN; type <= CHESS_PIECE_TYPE_KING; type++) {
+			for (size_t i = 0; i < position->piece_counts[color][type]; i++) {
+				ChessSquare square = position->pieces[color][type][i];
 
-		chess_moves_generate_from_(&moves, position, square);
+				chess_moves_generate_from_(&moves, position, square);
+			}
+		}
 	}
 
 	chess_moves_generate_castlings(&moves, position);

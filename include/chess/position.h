@@ -28,14 +28,15 @@ extern "C" {
  * @brief Represents the position in a chess game.
  */
 typedef struct ChessPosition {
-	ChessPiece board[128];                           /**< Array representing the pieces on each square (0x88 board). */
-	ChessColor side_to_move;                         /**< The color of the side to move next. */
-	ChessCastlingRights castling_rights;             /**< The current castling rights for both sides. */
-	ChessSquare en_passant_square;                   /**< The square over which a pawn has just passed while moving two squares, or `CHESS_SQUARE_NONE` if not available. */
-	unsigned int half_move_clock;                    /**< The number of halfmoves since the last capture or pawn advance, used for the fifty-move rule. */
-	unsigned int full_move_number;                   /**< The number of the full moves. It starts at 1 and is incremented after Black's move. */
-	ChessSquare king_squares[CHESS_COLOR_BLACK + 1]; /**< The squares of the White and Black kings. */
-	ChessPositionCounter position_counter;           /**< Counter for position repetitions (for threefold repetition rule). */
+	ChessPiece board[128];                                                    /**< Array representing the pieces on each square (0x88 board). */
+	ChessSquare pieces[CHESS_COLOR_BLACK + 1][CHESS_PIECE_TYPE_KING + 1][12]; /**< Array storing the squares of each piece type for both colors. */
+	uint8_t piece_counts[CHESS_COLOR_BLACK + 1][CHESS_PIECE_TYPE_KING + 1];   /**< Array storing the count of each piece type for both colors. */
+	ChessColor side_to_move;                                                  /**< The color of the side to move next. */
+	ChessCastlingRights castling_rights;                                      /**< The current castling rights for both sides. */
+	ChessSquare en_passant_square;                                            /**< The square over which a pawn has just passed while moving two squares, or `CHESS_SQUARE_NONE` if not available. */
+	unsigned int half_move_clock;                                             /**< The number of halfmoves since the last capture or pawn advance, used for the fifty-move rule. */
+	unsigned int full_move_number;                                            /**< The number of the full moves. It starts at 1 and is incremented after Black's move. */
+	ChessPositionCounter position_counter;                                    /**< Counter for position repetitions (for threefold repetition rule). */
 } ChessPosition;
 
 /**
@@ -143,6 +144,13 @@ bool chess_position_is_insufficient_material(const ChessPosition *position);
  * @return The hash value of the position.
  */
 uint64_t chess_position_hash(const ChessPosition *position);
+
+/**
+ * @brief Evaluates the given position.
+ * @param[in] position Pointer to the position.
+ * @return The value of the position (positive for White's advantage, negative for Black's advantage).
+ */
+double chess_position_evaluate(const ChessPosition *position);
 
 #ifdef __cplusplus
 }

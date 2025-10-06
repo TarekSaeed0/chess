@@ -13,6 +13,7 @@
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
+#include <inttypes.h>
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
@@ -38,6 +39,41 @@ void chess_position_debug(const ChessPosition *position) {
 	}
 	printf("\t},\n");
 
+	printf("\t.pieces = {\n");
+	for (ChessColor color = CHESS_COLOR_WHITE; color <= CHESS_COLOR_BLACK; color++) {
+		printf("\t\t[");
+		chess_color_debug(color);
+		printf("] = {\n");
+		for (ChessPieceType type = CHESS_PIECE_TYPE_PAWN; type <= CHESS_PIECE_TYPE_KING; type++) {
+			printf("\t\t\t[");
+			chess_piece_type_debug(type);
+			printf("] = {");
+			for (size_t i = 0; i < position->piece_counts[color][type]; i++) {
+				if (i > 0) {
+					printf(", ");
+				}
+				chess_square_debug(position->pieces[color][type][i]);
+			}
+			printf("},\n");
+		}
+		printf("\t\t},\n");
+	}
+	printf("\t},\n");
+
+	printf("\t.piece_counts = {\n");
+	for (ChessColor color = CHESS_COLOR_WHITE; color <= CHESS_COLOR_BLACK; color++) {
+		printf("\t\t[");
+		chess_color_debug(color);
+		printf("] = {\n");
+		for (ChessPieceType type = CHESS_PIECE_TYPE_PAWN; type <= CHESS_PIECE_TYPE_KING; type++) {
+			printf("\t\t\t[");
+			chess_piece_type_debug(type);
+			printf("] = %" PRIu8 ",\n", position->piece_counts[color][type]);
+		}
+		printf("\t\t},\n");
+	}
+	printf("\t},\n");
+
 	printf("\t.side_to_move = ");
 	chess_color_debug(position->side_to_move);
 	printf(",\n");
@@ -54,15 +90,6 @@ void chess_position_debug(const ChessPosition *position) {
 
 	printf("\t.full_move_number = %u,\n", position->full_move_number);
 
-	printf("\t.king_squares = {\n");
-	printf("\t\t[CHESS_COLOR_WHITE] = ");
-	chess_square_debug(position->king_squares[CHESS_COLOR_WHITE]);
-	printf(",\n");
-	printf("\t\t[CHESS_COLOR_BLACK] = ");
-	chess_square_debug(position->king_squares[CHESS_COLOR_BLACK]);
-	printf(",\n");
-	printf("\t},\n");
-
 	printf("}");
 }
 bool chess_position_is_valid(const ChessPosition *position) {
@@ -71,13 +98,6 @@ bool chess_position_is_valid(const ChessPosition *position) {
 	}
 
 	if (!chess_color_is_valid(position->side_to_move)) {
-		return false;
-	}
-
-	if (!chess_square_is_valid(position->king_squares[CHESS_COLOR_WHITE]) ||
-	    position->board[position->king_squares[CHESS_COLOR_WHITE]] != CHESS_PIECE_WHITE_KING ||
-	    !chess_square_is_valid(position->king_squares[CHESS_COLOR_BLACK]) ||
-	    position->board[position->king_squares[CHESS_COLOR_BLACK]] != CHESS_PIECE_BLACK_KING) {
 		return false;
 	}
 
@@ -108,6 +128,8 @@ bool chess_position_is_valid(const ChessPosition *position) {
 		return false;
 	}
 
+	uint8_t piece_counts[CHESS_COLOR_BLACK + 1][CHESS_PIECE_TYPE_KING + 1] = { 0 };
+
 	for (ChessSquare square = CHESS_SQUARE_A1; square <= CHESS_SQUARE_H8; square++) {
 		if (!chess_square_is_valid(square)) {
 			square += CHESS_SQUARE_A2 - (CHESS_SQUARE_H1 + 1) - 1;
@@ -115,21 +137,40 @@ bool chess_position_is_valid(const ChessPosition *position) {
 		}
 
 		ChessPiece piece = position->board[square];
-		if (piece != CHESS_PIECE_NONE && !chess_piece_is_valid(piece)) {
+
+		if (piece == CHESS_PIECE_NONE) {
+			continue;
+		}
+
+		if (!chess_piece_is_valid(piece)) {
 			return false;
 		}
 
 		ChessColor color    = chess_piece_color(piece);
 		ChessPieceType type = chess_piece_type(piece);
-		if (type == CHESS_PIECE_TYPE_KING && square != position->king_squares[color]) {
-			return false;
+
+		piece_counts[color][type]++;
+	}
+
+	for (ChessColor color = CHESS_COLOR_WHITE; color <= CHESS_COLOR_BLACK; color++) {
+		for (ChessPieceType type = CHESS_PIECE_TYPE_PAWN; type <= CHESS_PIECE_TYPE_KING; type++) {
+			if (piece_counts[color][type] != position->piece_counts[color][type]) {
+				return false;
+			}
+
+			for (size_t i = 0; i < position->piece_counts[color][type]; i++) {
+				ChessSquare square = position->pieces[color][type][i];
+				if (!chess_square_is_valid(square) || position->board[square] != chess_piece_new(color, type)) {
+					return false;
+				}
+			}
 		}
 	}
 
 	return chess_position_counter_is_valid(&position->position_counter);
 }
 ChessPosition chess_position_new(void) {
-	ChessPosition positon = {
+	ChessPosition position = {
 		.board = {
 		    [CHESS_SQUARE_A8] = CHESS_PIECE_BLACK_ROOK,
 		    [CHESS_SQUARE_B8] = CHESS_PIECE_BLACK_KNIGHT,
@@ -203,21 +244,97 @@ ChessPosition chess_position_new(void) {
 		    [CHESS_SQUARE_G1] = CHESS_PIECE_WHITE_KNIGHT,
 		    [CHESS_SQUARE_H1] = CHESS_PIECE_WHITE_ROOK,
 		},
+		.pieces = {
+		    [CHESS_COLOR_WHITE] = {
+		        [CHESS_PIECE_TYPE_PAWN] = {
+		            CHESS_SQUARE_A2,
+		            CHESS_SQUARE_B2,
+		            CHESS_SQUARE_C2,
+		            CHESS_SQUARE_D2,
+		            CHESS_SQUARE_E2,
+		            CHESS_SQUARE_F2,
+		            CHESS_SQUARE_G2,
+		            CHESS_SQUARE_H2,
+		        },
+		        [CHESS_PIECE_TYPE_KNIGHT] = {
+		            CHESS_SQUARE_B1,
+		            CHESS_SQUARE_G1,
+		        },
+		        [CHESS_PIECE_TYPE_BISHOP] = {
+		            CHESS_SQUARE_C1,
+		            CHESS_SQUARE_F1,
+		        },
+		        [CHESS_PIECE_TYPE_ROOK] = {
+		            CHESS_SQUARE_A1,
+		            CHESS_SQUARE_H1,
+		        },
+		        [CHESS_PIECE_TYPE_QUEEN] = {
+		            CHESS_SQUARE_D1,
+		        },
+		        [CHESS_PIECE_TYPE_KING] = {
+		            CHESS_SQUARE_E1,
+		        },
+		    },
+		    [CHESS_COLOR_BLACK] = {
+		        [CHESS_PIECE_TYPE_PAWN] = {
+		            CHESS_SQUARE_A7,
+		            CHESS_SQUARE_B7,
+		            CHESS_SQUARE_C7,
+		            CHESS_SQUARE_D7,
+		            CHESS_SQUARE_E7,
+		            CHESS_SQUARE_F7,
+		            CHESS_SQUARE_G7,
+		            CHESS_SQUARE_H7,
+		        },
+		        [CHESS_PIECE_TYPE_KNIGHT] = {
+		            CHESS_SQUARE_B8,
+		            CHESS_SQUARE_G8,
+		        },
+		        [CHESS_PIECE_TYPE_BISHOP] = {
+		            CHESS_SQUARE_C8,
+		            CHESS_SQUARE_F8,
+		        },
+		        [CHESS_PIECE_TYPE_ROOK] = {
+		            CHESS_SQUARE_A8,
+		            CHESS_SQUARE_H8,
+		        },
+		        [CHESS_PIECE_TYPE_QUEEN] = {
+		            CHESS_SQUARE_D8,
+		        },
+		        [CHESS_PIECE_TYPE_KING] = {
+		            CHESS_SQUARE_E8,
+		        },
+		    },
+		},
+		.piece_counts = {
+		    [CHESS_COLOR_WHITE] = {
+		        [CHESS_PIECE_TYPE_PAWN]   = 8,
+		        [CHESS_PIECE_TYPE_KNIGHT] = 2,
+		        [CHESS_PIECE_TYPE_BISHOP] = 2,
+		        [CHESS_PIECE_TYPE_ROOK]   = 2,
+		        [CHESS_PIECE_TYPE_QUEEN]  = 1,
+		        [CHESS_PIECE_TYPE_KING]   = 1,
+		    },
+		    [CHESS_COLOR_BLACK] = {
+		        [CHESS_PIECE_TYPE_PAWN]   = 8,
+		        [CHESS_PIECE_TYPE_KNIGHT] = 2,
+		        [CHESS_PIECE_TYPE_BISHOP] = 2,
+		        [CHESS_PIECE_TYPE_ROOK]   = 2,
+		        [CHESS_PIECE_TYPE_QUEEN]  = 1,
+		        [CHESS_PIECE_TYPE_KING]   = 1,
+		    },
+		},
 		.side_to_move      = CHESS_COLOR_WHITE,
 		.castling_rights   = CHESS_CASTLING_RIGHTS_ALL,
 		.en_passant_square = CHESS_SQUARE_NONE,
 		.half_move_clock   = 0,
 		.full_move_number  = 1,
-		.king_squares      = {
-        [CHESS_COLOR_WHITE] = CHESS_SQUARE_E1,
-        [CHESS_COLOR_BLACK] = CHESS_SQUARE_E8,
-    },
-		.position_counter = chess_position_counter_new(),
+		.position_counter  = chess_position_counter_new(),
 	};
 
-	assert(chess_position_is_valid(&positon));
+	assert(chess_position_is_valid(&position));
 
-	return positon;
+	return position;
 }
 void chess_position_drop(ChessPosition *position) {
 	assert(chess_position_is_valid(position));
@@ -226,7 +343,7 @@ void chess_position_drop(ChessPosition *position) {
 }
 ChessPiece chess_position_piece_at_square(const ChessPosition *position, ChessSquare square) {
 	assert(chess_position_is_valid(position));
-assert(chess_square_is_valid(square));
+	assert(chess_square_is_valid(square));
 
 	return position->board[square];
 }
@@ -235,9 +352,59 @@ ChessColor chess_position_side_to_move(const ChessPosition *position) {
 
 	return position->side_to_move;
 }
+void chess_position_place_piece(ChessPosition *position, ChessPiece piece, ChessSquare square) {
+	assert(chess_piece_is_valid(piece));
+	assert(chess_square_is_valid(square));
+	assert(position->board[square] == CHESS_PIECE_NONE);
+
+	ChessColor color                                                     = chess_piece_color(piece);
+	ChessPieceType type                                                  = chess_piece_type(piece);
+
+	position->board[square]                                              = piece;
+	position->pieces[color][type][position->piece_counts[color][type]++] = square;
+}
+ChessPiece chess_position_remove_piece(ChessPosition *position, ChessSquare square) {
+	assert(chess_square_is_valid(square));
+	assert(position->board[square] != CHESS_PIECE_NONE);
+
+	ChessPiece piece        = position->board[square];
+	ChessColor color        = chess_piece_color(piece);
+	ChessPieceType type     = chess_piece_type(piece);
+
+	position->board[square] = CHESS_PIECE_NONE;
+	for (size_t i = 0; i < position->piece_counts[color][type]; i++) {
+		if (position->pieces[color][type][i] == square) {
+			position->pieces[color][type][i] = position->pieces[color][type][--position->piece_counts[color][type]];
+			break;
+		}
+	}
+
+	assert(type != CHESS_PIECE_TYPE_KING);
+
+	return piece;
+}
+void chess_position_move_piece(ChessPosition *position, ChessSquare from, ChessSquare to) {
+	assert(chess_square_is_valid(from));
+	assert(chess_square_is_valid(to));
+	assert(position->board[from] != CHESS_PIECE_NONE);
+	assert(position->board[to] == CHESS_PIECE_NONE);
+
+	ChessPiece piece      = position->board[from];
+	ChessColor color      = chess_piece_color(piece);
+	ChessPieceType type   = chess_piece_type(piece);
+
+	position->board[to]   = piece;
+	position->board[from] = CHESS_PIECE_NONE;
+	for (size_t i = 0; i < position->piece_counts[color][type]; i++) {
+		if (position->pieces[color][type][i] == from) {
+			position->pieces[color][type][i] = to;
+			break;
+		}
+	}
+}
 size_t chess_position_from_fen(ChessPosition *position, const char *string) {
 	assert(position != CHESS_NULL);
-assert(string != CHESS_NULL);
+	assert(string != CHESS_NULL);
 
 	size_t total_read = 0;
 
@@ -246,6 +413,8 @@ assert(string != CHESS_NULL);
 	}
 
 	memset(position->board, CHESS_PIECE_NONE, sizeof(position->board));
+	memset(position->pieces, CHESS_SQUARE_NONE, sizeof(position->pieces));
+	memset(position->piece_counts, 0, sizeof(position->piece_counts));
 	for (ChessRank rank = CHESS_RANK_8; rank >= CHESS_RANK_1; rank--) {
 		for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
 			ChessSquare square = chess_square_new(file, rank);
@@ -256,11 +425,10 @@ assert(string != CHESS_NULL);
 				file += (string[total_read] - '1');
 				total_read++;
 			} else {
-				CHESS_READ(chess_piece_from_algebraic, &position->board[square]);
+				ChessPiece piece = CHESS_PIECE_NONE;
+				CHESS_READ(chess_piece_from_algebraic, &piece);
 
-				if (chess_piece_type(position->board[square]) == CHESS_PIECE_TYPE_KING) {
-					position->king_squares[chess_piece_color(position->board[square])] = square;
-				}
+				chess_position_place_piece(position, piece, square);
 			}
 		}
 		if (rank != CHESS_RANK_1) {
@@ -423,7 +591,7 @@ size_t chess_position_to_fen(const ChessPosition *position, char *string, size_t
 bool chess_position_is_king_attacked(const ChessPosition *position, ChessColor color) {
 	assert(chess_position_is_valid(position));
 
-	return chess_square_is_attacked(position, position->king_squares[color], chess_color_opposite(color));
+	return chess_square_is_attacked(position, position->pieces[color][CHESS_PIECE_TYPE_KING][0], chess_color_opposite(color));
 }
 bool chess_position_is_check(const ChessPosition *position) {
 	assert(chess_position_is_valid(position));
@@ -453,44 +621,27 @@ bool chess_position_is_threefold_repetition(const ChessPosition *position) {
 bool chess_position_is_insufficient_material(const ChessPosition *position) {
 	assert(chess_position_is_valid(position));
 
-	unsigned int white_bishops           = 0;
-	unsigned int black_bishops           = 0;
-	unsigned int white_knights           = 0;
-	unsigned int black_knights           = 0;
+	unsigned int white_bishops           = position->piece_counts[CHESS_COLOR_WHITE][CHESS_PIECE_TYPE_BISHOP];
+	unsigned int black_bishops           = position->piece_counts[CHESS_COLOR_BLACK][CHESS_PIECE_TYPE_BISHOP];
+	unsigned int white_knights           = position->piece_counts[CHESS_COLOR_WHITE][CHESS_PIECE_TYPE_KNIGHT];
+	unsigned int black_knights           = position->piece_counts[CHESS_COLOR_BLACK][CHESS_PIECE_TYPE_KNIGHT];
 	ChessColor white_bishop_square_color = CHESS_COLOR_NONE;
+	for (size_t i = 0; i < white_bishops; i++) {
+		ChessSquare square        = position->pieces[CHESS_COLOR_WHITE][CHESS_PIECE_TYPE_BISHOP][i];
+		white_bishop_square_color = chess_square_color(square);
+		break;
+	}
 	ChessColor black_bishop_square_color = CHESS_COLOR_NONE;
-	for (ChessSquare square = CHESS_SQUARE_A1; square <= CHESS_SQUARE_H8; square++) {
-		if (!chess_square_is_valid(square)) {
-			square += CHESS_SQUARE_A2 - (CHESS_SQUARE_H1 + 1) - 1;
-		}
-
-		ChessPiece piece    = position->board[square];
-		ChessPieceType type = chess_piece_type(piece);
-		if (type == CHESS_PIECE_TYPE_NONE || type == CHESS_PIECE_TYPE_KING) {
-			continue;
-		}
-
-		if (type == CHESS_PIECE_TYPE_BISHOP) {
-			ChessColor color = chess_piece_color(piece);
-			if (color == CHESS_COLOR_WHITE) {
-				white_bishops++;
-				white_bishop_square_color = chess_square_color(square);
-			} else if (color == CHESS_COLOR_BLACK) {
-				black_bishops++;
-				black_bishop_square_color = chess_square_color(square);
-			}
-		} else if (type == CHESS_PIECE_TYPE_KNIGHT) {
-			ChessColor color = chess_piece_color(piece);
-			if (color == CHESS_COLOR_WHITE) {
-				white_knights++;
-			} else if (color == CHESS_COLOR_BLACK) {
-				black_knights++;
-			}
-		} else {
-			return false;
-		}
+	for (size_t i = 0; i < black_bishops; i++) {
+		ChessSquare square        = position->pieces[CHESS_COLOR_BLACK][CHESS_PIECE_TYPE_BISHOP][i];
+		black_bishop_square_color = chess_square_color(square);
+		break;
 	}
 
+	if (white_bishops == 0 && black_bishops == 0 &&
+	    white_knights == 0 && black_knights == 0) {
+		return true;
+	}
 	if (white_bishops == 0 && black_bishops == 0 &&
 	    white_knights == 0 && black_knights == 0) {
 		return true;
@@ -562,18 +713,13 @@ uint64_t chess_position_hash(const ChessPosition *position) {
 
 	uint64_t hash = 0;
 
-	for (ChessSquare square = CHESS_SQUARE_A1; square <= CHESS_SQUARE_H8; square++) {
-		if (!chess_square_is_valid(square)) {
-			square += CHESS_SQUARE_A2 - (CHESS_SQUARE_H1 + 1) - 1;
-			continue;
+	for (ChessColor color = CHESS_COLOR_WHITE; color <= CHESS_COLOR_BLACK; color++) {
+		for (ChessPieceType type = CHESS_PIECE_TYPE_PAWN; type <= CHESS_PIECE_TYPE_KING; type++) {
+			for (size_t i = 0; i < position->piece_counts[color][type]; i++) {
+				ChessSquare square = position->pieces[color][type][i];
+				hash ^= piece_at_square_hash[position->board[square]][square];
+			}
 		}
-
-		ChessPiece piece = position->board[square];
-		if (piece == CHESS_PIECE_NONE) {
-			continue;
-		}
-
-		hash ^= piece_at_square_hash[piece][square];
 	}
 
 	if (position->side_to_move == CHESS_COLOR_BLACK) {
@@ -588,4 +734,77 @@ uint64_t chess_position_hash(const ChessPosition *position) {
 	}
 
 	return hash;
+}
+double chess_position_evaluate(const ChessPosition *position) {
+	assert(chess_position_is_valid(position));
+
+	static const double piece_values[] = {
+		[CHESS_PIECE_WHITE_PAWN]   = 1.0,
+		[CHESS_PIECE_WHITE_KNIGHT] = 3.0,
+		[CHESS_PIECE_WHITE_BISHOP] = 3.0,
+		[CHESS_PIECE_WHITE_ROOK]   = 5.0,
+		[CHESS_PIECE_WHITE_QUEEN]  = 9.0,
+		[CHESS_PIECE_WHITE_KING]   = 200.0,
+
+		[CHESS_PIECE_BLACK_PAWN]   = -1.0,
+		[CHESS_PIECE_BLACK_KNIGHT] = -3.0,
+		[CHESS_PIECE_BLACK_BISHOP] = -3.0,
+		[CHESS_PIECE_BLACK_ROOK]   = -5.0,
+		[CHESS_PIECE_BLACK_QUEEN]  = -9.0,
+		[CHESS_PIECE_BLACK_KING]   = -200.0,
+
+		[CHESS_PIECE_NONE]         = 0.0,
+	};
+
+	double value                                                           = 0.0;
+
+	unsigned int pawn_file_counts[CHESS_COLOR_BLACK + 1][CHESS_FILE_H + 1] = { 0 };
+	unsigned int weak_pawns[CHESS_COLOR_BLACK + 1]                         = { 0 };
+
+	for (ChessColor color = CHESS_COLOR_WHITE; color <= CHESS_COLOR_BLACK; color++) {
+		for (ChessPieceType type = CHESS_PIECE_TYPE_PAWN; type <= CHESS_PIECE_TYPE_KING; type++) {
+			for (size_t i = 0; i < position->piece_counts[color][type]; i++) {
+				ChessSquare square = position->pieces[color][type][i];
+				ChessPiece piece   = position->board[square];
+
+				value += piece_values[piece];
+
+				if (type == CHESS_PIECE_TYPE_PAWN) {
+					ChessFile file = chess_square_file(square);
+					pawn_file_counts[color][file]++;
+
+					ChessOffset direction = color == CHESS_COLOR_WHITE ? CHESS_OFFSET_NORTH : CHESS_OFFSET_SOUTH;
+					if (chess_square_is_valid(square + direction) &&
+					    position->board[square + direction] != CHESS_PIECE_NONE) {
+						weak_pawns[color]++;
+					}
+				}
+			}
+		}
+	}
+
+	for (ChessColor color = CHESS_COLOR_WHITE; color <= CHESS_COLOR_BLACK; color++) {
+		for (ChessFile file = CHESS_FILE_A; file <= CHESS_FILE_H; file++) {
+			if (pawn_file_counts[color][file] == 0) {
+				continue;
+			}
+
+			weak_pawns[color] += pawn_file_counts[color][file] - 1;
+
+			if (!(file > CHESS_FILE_A && pawn_file_counts[color][file - 1] > 0) && !(file < CHESS_FILE_H && pawn_file_counts[color][file + 1] > 0)) {
+				weak_pawns[color] += pawn_file_counts[color][file];
+			}
+		}
+	}
+
+	value -= 0.5 * weak_pawns[CHESS_COLOR_WHITE];
+	value += 0.5 * weak_pawns[CHESS_COLOR_BLACK];
+
+	ChessPosition temporary = *position;
+	temporary.side_to_move  = CHESS_COLOR_WHITE;
+	value += 0.1 * chess_moves_generate(position).count;
+	temporary.side_to_move = CHESS_COLOR_BLACK;
+	value -= 0.1 * chess_moves_generate(position).count;
+
+	return value;
 }

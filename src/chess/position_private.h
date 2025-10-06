@@ -12,6 +12,9 @@ extern "C" {
 	#include <stdbool.h>
 #endif
 
+void chess_position_place_piece(ChessPosition *position, ChessPiece piece, ChessSquare square);
+ChessPiece chess_position_remove_piece(ChessPosition *position, ChessSquare square);
+void chess_position_move_piece(ChessPosition *position, ChessSquare from, ChessSquare to);
 bool chess_position_is_king_attacked(const ChessPosition *position, ChessColor color);
 
 #ifdef __cplusplus
