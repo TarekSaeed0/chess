@@ -621,6 +621,15 @@ bool chess_position_is_threefold_repetition(const ChessPosition *position) {
 bool chess_position_is_insufficient_material(const ChessPosition *position) {
 	assert(chess_position_is_valid(position));
 
+	if (position->piece_counts[CHESS_COLOR_WHITE][CHESS_PIECE_TYPE_PAWN] > 0 ||
+	    position->piece_counts[CHESS_COLOR_BLACK][CHESS_PIECE_TYPE_PAWN] > 0 ||
+	    position->piece_counts[CHESS_COLOR_WHITE][CHESS_PIECE_TYPE_ROOK] > 0 ||
+	    position->piece_counts[CHESS_COLOR_BLACK][CHESS_PIECE_TYPE_ROOK] > 0 ||
+	    position->piece_counts[CHESS_COLOR_WHITE][CHESS_PIECE_TYPE_QUEEN] > 0 ||
+	    position->piece_counts[CHESS_COLOR_BLACK][CHESS_PIECE_TYPE_QUEEN] > 0) {
+		return false;
+	}
+
 	unsigned int white_bishops           = position->piece_counts[CHESS_COLOR_WHITE][CHESS_PIECE_TYPE_BISHOP];
 	unsigned int black_bishops           = position->piece_counts[CHESS_COLOR_BLACK][CHESS_PIECE_TYPE_BISHOP];
 	unsigned int white_knights           = position->piece_counts[CHESS_COLOR_WHITE][CHESS_PIECE_TYPE_KNIGHT];
