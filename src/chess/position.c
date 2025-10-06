@@ -625,17 +625,17 @@ bool chess_position_is_insufficient_material(const ChessPosition *position) {
 	unsigned int black_bishops           = position->piece_counts[CHESS_COLOR_BLACK][CHESS_PIECE_TYPE_BISHOP];
 	unsigned int white_knights           = position->piece_counts[CHESS_COLOR_WHITE][CHESS_PIECE_TYPE_KNIGHT];
 	unsigned int black_knights           = position->piece_counts[CHESS_COLOR_BLACK][CHESS_PIECE_TYPE_KNIGHT];
+
 	ChessColor white_bishop_square_color = CHESS_COLOR_NONE;
-	for (size_t i = 0; i < white_bishops; i++) {
-		ChessSquare square        = position->pieces[CHESS_COLOR_WHITE][CHESS_PIECE_TYPE_BISHOP][i];
+	if (white_bishops > 0) {
+		ChessSquare square        = position->pieces[CHESS_COLOR_WHITE][CHESS_PIECE_TYPE_BISHOP][0];
 		white_bishop_square_color = chess_square_color(square);
-		break;
 	}
+
 	ChessColor black_bishop_square_color = CHESS_COLOR_NONE;
-	for (size_t i = 0; i < black_bishops; i++) {
-		ChessSquare square        = position->pieces[CHESS_COLOR_BLACK][CHESS_PIECE_TYPE_BISHOP][i];
+	if (black_bishops > 0) {
+		ChessSquare square        = position->pieces[CHESS_COLOR_BLACK][CHESS_PIECE_TYPE_BISHOP][0];
 		black_bishop_square_color = chess_square_color(square);
-		break;
 	}
 
 	if (white_bishops == 0 && black_bishops == 0 &&
