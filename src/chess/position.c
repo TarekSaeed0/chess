@@ -74,6 +74,21 @@ void chess_position_debug(const ChessPosition *position) {
 	}
 	printf("\t},\n");
 
+	printf("\t.piece_indices = {\n");
+	for (ChessSquare square = CHESS_SQUARE_A1; square <= CHESS_SQUARE_H8; square++) {
+		if (!chess_square_is_valid(square)) {
+			square += CHESS_SQUARE_A2 - (CHESS_SQUARE_H1 + 1) - 1;
+		}
+
+		if (position->board[square] == CHESS_PIECE_NONE) {
+			continue;
+		}
+		printf("\t\t[");
+		chess_square_debug(square);
+		printf("] = %" PRIu8 ",\n", position->piece_indices[square]);
+	}
+	printf("\t},\n");
+
 	printf("\t.side_to_move = ");
 	chess_color_debug(position->side_to_move);
 	printf(",\n");
@@ -160,6 +175,11 @@ bool chess_position_is_valid(const ChessPosition *position) {
 
 			for (size_t i = 0; i < position->piece_counts[color][type]; i++) {
 				ChessSquare square = position->pieces[color][type][i];
+
+				if (position->piece_indices[square] != i) {
+					return false;
+				}
+
 				if (!chess_square_is_valid(square) || position->board[square] != chess_piece_new(color, type)) {
 					return false;
 				}
@@ -324,6 +344,51 @@ ChessPosition chess_position_new(void) {
 		        [CHESS_PIECE_TYPE_KING]   = 1,
 		    },
 		},
+		.piece_indices = {
+		    [CHESS_SQUARE_A2] = 0,
+		    [CHESS_SQUARE_B2] = 1,
+		    [CHESS_SQUARE_C2] = 2,
+		    [CHESS_SQUARE_D2] = 3,
+		    [CHESS_SQUARE_E2] = 4,
+		    [CHESS_SQUARE_F2] = 5,
+		    [CHESS_SQUARE_G2] = 6,
+		    [CHESS_SQUARE_H2] = 7,
+
+		    [CHESS_SQUARE_B1] = 0,
+		    [CHESS_SQUARE_G1] = 1,
+
+		    [CHESS_SQUARE_C1] = 0,
+		    [CHESS_SQUARE_F1] = 1,
+
+		    [CHESS_SQUARE_A1] = 0,
+		    [CHESS_SQUARE_H1] = 1,
+
+		    [CHESS_SQUARE_D1] = 0,
+
+		    [CHESS_SQUARE_E1] = 0,
+
+		    [CHESS_SQUARE_A7] = 0,
+		    [CHESS_SQUARE_B7] = 1,
+		    [CHESS_SQUARE_C7] = 2,
+		    [CHESS_SQUARE_D7] = 3,
+		    [CHESS_SQUARE_E7] = 4,
+		    [CHESS_SQUARE_F7] = 5,
+		    [CHESS_SQUARE_G7] = 6,
+		    [CHESS_SQUARE_H7] = 7,
+
+		    [CHESS_SQUARE_B8] = 0,
+		    [CHESS_SQUARE_G8] = 1,
+
+		    [CHESS_SQUARE_C8] = 0,
+		    [CHESS_SQUARE_F8] = 1,
+
+		    [CHESS_SQUARE_A8] = 0,
+		    [CHESS_SQUARE_H8] = 1,
+
+		    [CHESS_SQUARE_D8] = 0,
+
+		    [CHESS_SQUARE_E8] = 0,
+		},
 		.side_to_move      = CHESS_COLOR_WHITE,
 		.castling_rights   = CHESS_CASTLING_RIGHTS_ALL,
 		.en_passant_square = CHESS_SQUARE_NONE,
@@ -357,29 +422,24 @@ void chess_position_place_piece(ChessPosition *position, ChessPiece piece, Chess
 	assert(chess_square_is_valid(square));
 	assert(position->board[square] == CHESS_PIECE_NONE);
 
-	ChessColor color                                                     = chess_piece_color(piece);
-	ChessPieceType type                                                  = chess_piece_type(piece);
+	ChessColor color                                                   = chess_piece_color(piece);
+	ChessPieceType type                                                = chess_piece_type(piece);
 
-	position->board[square]                                              = piece;
-	position->pieces[color][type][position->piece_counts[color][type]++] = square;
+	position->board[square]                                            = piece;
+	position->pieces[color][type][position->piece_counts[color][type]] = square;
+	position->piece_indices[square]                                    = position->piece_counts[color][type]++;
 }
 ChessPiece chess_position_remove_piece(ChessPosition *position, ChessSquare square) {
 	assert(chess_square_is_valid(square));
 	assert(position->board[square] != CHESS_PIECE_NONE);
 
-	ChessPiece piece        = position->board[square];
-	ChessColor color        = chess_piece_color(piece);
-	ChessPieceType type     = chess_piece_type(piece);
+	ChessPiece piece                                                                            = position->board[square];
+	ChessColor color                                                                            = chess_piece_color(piece);
+	ChessPieceType type                                                                         = chess_piece_type(piece);
 
-	position->board[square] = CHESS_PIECE_NONE;
-	for (size_t i = 0; i < position->piece_counts[color][type]; i++) {
-		if (position->pieces[color][type][i] == square) {
-			position->pieces[color][type][i] = position->pieces[color][type][--position->piece_counts[color][type]];
-			break;
-		}
-	}
-
-	assert(type != CHESS_PIECE_TYPE_KING);
+	position->board[square]                                                                     = CHESS_PIECE_NONE;
+	position->pieces[color][type][position->piece_indices[square]]                              = position->pieces[color][type][--position->piece_counts[color][type]];
+	position->piece_indices[position->pieces[color][type][position->piece_counts[color][type]]] = position->piece_indices[square];
 
 	return piece;
 }
@@ -389,18 +449,14 @@ void chess_position_move_piece(ChessPosition *position, ChessSquare from, ChessS
 	assert(position->board[from] != CHESS_PIECE_NONE);
 	assert(position->board[to] == CHESS_PIECE_NONE);
 
-	ChessPiece piece      = position->board[from];
-	ChessColor color      = chess_piece_color(piece);
-	ChessPieceType type   = chess_piece_type(piece);
+	ChessPiece piece                                             = position->board[from];
+	ChessColor color                                             = chess_piece_color(piece);
+	ChessPieceType type                                          = chess_piece_type(piece);
 
-	position->board[to]   = piece;
-	position->board[from] = CHESS_PIECE_NONE;
-	for (size_t i = 0; i < position->piece_counts[color][type]; i++) {
-		if (position->pieces[color][type][i] == from) {
-			position->pieces[color][type][i] = to;
-			break;
-		}
-	}
+	position->board[to]                                          = piece;
+	position->board[from]                                        = CHESS_PIECE_NONE;
+	position->pieces[color][type][position->piece_indices[from]] = to;
+	position->piece_indices[to]                                  = position->piece_indices[from];
 }
 size_t chess_position_from_fen(ChessPosition *position, const char *string) {
 	assert(position != CHESS_NULL);
@@ -806,10 +862,17 @@ double chess_position_evaluate(const ChessPosition *position) {
 	value += 0.5 * weak_pawns[CHESS_COLOR_BLACK];
 
 	ChessPosition temporary = *position;
-	temporary.side_to_move  = CHESS_COLOR_WHITE;
-	value += 0.1 * chess_moves_generate(&temporary).count;
-	temporary.side_to_move = CHESS_COLOR_BLACK;
-	value -= 0.1 * chess_moves_generate(&temporary).count;
+	if (position->side_to_move == CHESS_COLOR_WHITE) {
+		value += 0.1 * (double)chess_moves_generate(&temporary).count;
+		temporary.side_to_move      = CHESS_COLOR_BLACK;
+		temporary.en_passant_square = CHESS_SQUARE_NONE;
+		value -= 0.1 * (double)chess_moves_generate(&temporary).count;
+	} else {
+		value -= 0.1 * (double)chess_moves_generate(&temporary).count;
+		temporary.side_to_move      = CHESS_COLOR_WHITE;
+		temporary.en_passant_square = CHESS_SQUARE_NONE;
+		value += 0.1 * (double)chess_moves_generate(&temporary).count;
+	}
 
 	return value;
 }

@@ -19,6 +19,11 @@
 static void chess_moves_add(ChessMoves *moves, const ChessPosition *position, ChessMove move) {
 	assert(moves != CHESS_NULL);
 	assert(chess_position_is_valid(position));
+
+	if (chess_piece_type(move.captured_piece) == CHESS_PIECE_TYPE_KING) {
+		return;
+	}
+
 	assert(chess_move_is_valid(move));
 
 	ChessPosition position_after_move = *position;
@@ -114,7 +119,7 @@ static void chess_moves_generate_pawn(
 	};
 	for (size_t i = 0; i < CHESS_ARRAY_LENGTH(offsets); i++) {
 		to = (ChessSquare)(from + direction + offsets[i]);
-		if (to == position->en_passant_square) {
+		if (to == position->en_passant_square && chess_piece_color(position->board[to - direction]) == chess_color_opposite(position->side_to_move)) {
 			chess_moves_add(
 			    moves,
 			    position,

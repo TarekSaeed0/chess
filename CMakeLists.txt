@@ -48,11 +48,11 @@ elseif(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
 	target_compile_options(chess PRIVATE /WX /W4)
 endif()
 
-add_executable(main src/main.c)
-target_link_libraries(main chess)
+add_executable(cli src/cli.c)
+target_link_libraries(cli chess)
 if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 	target_compile_options(
-		main
+		cli
 		PRIVATE -Werror
 				-Wall
 				-Wextra
@@ -68,7 +68,7 @@ if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 				-Wcast-qual
 	)
 elseif(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-	target_compile_options(main PRIVATE /WX /W4)
+	target_compile_options(cli PRIVATE /WX /W4)
 endif()
 
 if(UNIT_TESTING)
