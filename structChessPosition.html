@@ -124,6 +124,8 @@ Data Fields</h2></td></tr>
 <tr class="separator:afaeb6d8b095194b3bf47b99ed2a62a97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a70521db0af985c968d7fd607b44070a9" id="r_a70521db0af985c968d7fd607b44070a9"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChessPosition.html#a70521db0af985c968d7fd607b44070a9">piece_counts</a> [<a class="el" href="color_8h.html#a60efa98c0c8a123187662e31475dfb2aa103089b3ccca3023a04668ef26ca1917">CHESS_COLOR_BLACK</a>+1][<a class="el" href="piece__type_8h.html#a1a7448bed2ee1c215d65cab2f3f22163acb677da801d9eec60d072c378651fd17">CHESS_PIECE_TYPE_KING</a>+1]</td></tr>
 <tr class="separator:a70521db0af985c968d7fd607b44070a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a908c8ff2e3169a1b9a9576f36dd383ea" id="r_a908c8ff2e3169a1b9a9576f36dd383ea"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChessPosition.html#a908c8ff2e3169a1b9a9576f36dd383ea">piece_indices</a> [128]</td></tr>
+<tr class="separator:a908c8ff2e3169a1b9a9576f36dd383ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac3327b502d8c7d9540f323a0c8a30ff6" id="r_ac3327b502d8c7d9540f323a0c8a30ff6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="color_8h.html#a60efa98c0c8a123187662e31475dfb2a">ChessColor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChessPosition.html#ac3327b502d8c7d9540f323a0c8a30ff6">side_to_move</a></td></tr>
 <tr class="separator:ac3327b502d8c7d9540f323a0c8a30ff6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a368f8ed7615f801d30b49ad3b3c974e9" id="r_a368f8ed7615f801d30b49ad3b3c974e9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="castling__rights_8h.html#a273597951792eb0fb28e74656a8869b3">ChessCastlingRights</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChessPosition.html#a368f8ed7615f801d30b49ad3b3c974e9">castling_rights</a></td></tr>
@@ -227,6 +229,21 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Array storing the count of each piece type for both colors. </p>
+
+</div>
+</div>
+<a id="a908c8ff2e3169a1b9a9576f36dd383ea" name="a908c8ff2e3169a1b9a9576f36dd383ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a908c8ff2e3169a1b9a9576f36dd383ea">&#9670;&#160;</a></span>piece_indices</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t ChessPosition::piece_indices[128]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Array storing the index of the piece on each square in the piece list </p>
 
 </div>
 </div>
