@@ -31,6 +31,7 @@ typedef struct ChessPosition {
 	ChessPiece board[128];                                                    /**< Array representing the pieces on each square (0x88 board). */
 	ChessSquare pieces[CHESS_COLOR_BLACK + 1][CHESS_PIECE_TYPE_KING + 1][12]; /**< Array storing the squares of each piece type for both colors. */
 	uint8_t piece_counts[CHESS_COLOR_BLACK + 1][CHESS_PIECE_TYPE_KING + 1];   /**< Array storing the count of each piece type for both colors. */
+	uint8_t piece_indices[128];                                               /**< Array storing the index of the piece on each square in the piece list */
 	ChessColor side_to_move;                                                  /**< The color of the side to move next. */
 	ChessCastlingRights castling_rights;                                      /**< The current castling rights for both sides. */
 	ChessSquare en_passant_square;                                            /**< The square over which a pawn has just passed while moving two squares, or `CHESS_SQUARE_NONE` if not available. */
