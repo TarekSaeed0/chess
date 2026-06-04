@@ -8,6 +8,9 @@ project(
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+option(UNIT_TESTING "Enable unit testing" OFF)
+option(ENABLE_COVERAGE "Enable code coverage instrumentation" OFF)
+
 add_library(
 	chess
 	src/chess/color.c
@@ -44,6 +47,10 @@ if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 				-Wwrite-strings
 				-Wcast-qual
 	)
+	if(ENABLE_COVERAGE)
+		target_compile_options(chess PUBLIC --coverage)
+		target_link_options(chess PUBLIC --coverage)
+	endif()
 elseif(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
 	target_compile_options(chess PRIVATE /WX /W4)
 endif()
